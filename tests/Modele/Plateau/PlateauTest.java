@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Random;
+
 public class PlateauTest {
 	Plateau p;
 	@Before
@@ -42,6 +44,22 @@ public class PlateauTest {
 		pos = new Position(2,2);
 		expected = new Cellule(pos, true);
 		Assert.assertEquals(expected, p.getCellule(pos));
+	}
+
+	@Test
+	public void isInTab() {
+		System.out.println("isInTab() : tests non implémentés");
+		Random r = new Random();
+		Position pos = new Position(0,0);
+		Assert.assertTrue(p.isInTab(pos));
+		pos = new Position(p.getSize() - 1, p.getSize() - 1);
+		Assert.assertTrue(p.isInTab(pos));
+		pos = new Position(-1,0);
+		Assert.assertFalse(p.isInTab(pos));
+		pos = new Position(0,-1);
+		Assert.assertFalse(p.isInTab(pos));
+		pos = new Position(p.getSize(), p.getSize());
+		Assert.assertFalse(p.isInTab(pos));
 	}
 
 }

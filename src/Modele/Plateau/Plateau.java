@@ -32,6 +32,19 @@ public class Plateau {
 	}
 
 	/**
+	 * isInTab : si une position est dans le tableau
+	 * @param p : la position
+	 * @return : vrai si la position est dans le tableau,
+	 * faux sinon.
+	 */
+	public boolean isInTab(Position p) {
+		return 0 <= p.i()
+				&& p.i() < size
+				&& 0 <= p.j()
+				&& p.j() < size;
+	}
+
+	/**
 	 * getCellule : recupère une cellule
 	 * @param p : la position de la cellule dans le tableau
 	 * @return : l'objet Cellule
