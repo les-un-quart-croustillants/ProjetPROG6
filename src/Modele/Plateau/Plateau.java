@@ -74,11 +74,11 @@ public class Plateau {
 	}
 
 	public String displayTab() {
-		String res = "[";
+		String res = "[ ";
 		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + ",";
+			res += Arrays.toString(line) + " ";
 		}
-		return res;
+		return res + "]";
 	}
 
 	public int getSize() {
