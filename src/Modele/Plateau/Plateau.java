@@ -2,6 +2,7 @@ package Modele.Plateau;
 
 import Utils.Position;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Plateau {
@@ -54,6 +55,14 @@ public class Plateau {
 		return tab[p.i()][p.j()];
 	}
 
+	public String displayTab() {
+		String res = "[";
+		for (Cellule[] line: this.tab) {
+			res += Arrays.toString(line) + ",";
+		}
+		return res;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -62,4 +71,8 @@ public class Plateau {
 		return tab;
 	}
 
+	@Override
+	public String toString() {
+		return "{" + size + ", " + displayTab() + '}';
+	}
 }
