@@ -91,7 +91,7 @@ public class Plateau {
 	 * @param p : position courante
 	 * @return : la liste des position accessibles
 	 */
-	public LinkedList<Position> accessible(Position p) {
+	public LinkedList<Position> accessible(Position p) { // TODO : don't add destroyed cells' position
 		Position candidat;
 		LinkedList<Position> res = new LinkedList<>();
 		for (int i = 0; i < this.size; i++) {
