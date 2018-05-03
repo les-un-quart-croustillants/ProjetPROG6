@@ -58,6 +58,12 @@ public class Plateau {
 		return res;
 	}
 
+	/**
+	 * getNeighbours : récupère la liste des cases voisine de {@code p}
+	 * @param p : la position de la case courante
+	 * @return : une LinkedList de Cellule
+	 * @See Cellule
+	 */
 	public LinkedList<Position> getNeighbours(Position p) {
 		LinkedList<Position> r = new LinkedList<>();
 		for (Position candidat: new Position[]{
