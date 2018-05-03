@@ -90,15 +90,10 @@ public class Plateau {
 		LinkedList<Position> res = new LinkedList<>();
 		for (int i = 0; i < this.size; i++) {
 			if (i != p.i()) {
-				if (i < p.i())
-					j = p.j() + ((p.i() - i)); // diagonale haute
-				else // (i > p.i())
-					j = p.j() + ((i - p.i())); // diagonale basse
-				candidat = new Position(i, p.j()); // colonne
+				candidat = new Position(i, p.j() + ((p.i()) - i));
 				safeAdd(res, candidat);
-				candidat = new Position(i, j); // diagonale
+				candidat = new Position(i, p.j() + ((i - p.i())));
 				safeAdd(res, candidat);
-
 			}
 			if (i != p.j()) {
 				candidat = new Position(p.i(), i); // ligne
