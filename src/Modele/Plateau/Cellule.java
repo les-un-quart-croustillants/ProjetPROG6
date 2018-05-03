@@ -3,8 +3,8 @@ package Modele.Plateau;
 import Utils.Position;
 
 public class Cellule {
-	Position position;
-	boolean b;
+	private Position position;
+	private boolean destroyed;
 
 	public Cellule() {
 		this(new Position(0,0), false);
@@ -15,20 +15,27 @@ public class Cellule {
 	public Cellule(int i, int j, boolean b) {
 		this(new Position(i,j),b);
 	}
-
-	public Cellule(Position position, boolean b) {
+	public Cellule(Position position, boolean destroyed, int fish) {
 		this.position = position;
-		this.b = b;
+		this.destroyed = destroyed;
+	}
+
+	public void destroy() {
+		this.destroyed = true;
+	}
+
+	public boolean isDestroyed() {
+		return destroyed;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
-				&& ((Cellule) obj).b == this.b;
+				&& ((Cellule) obj).destroyed == this.destroyed;
 	}
 
 	@Override
 	public String toString() {
-		return "[" + position + ", " + b + ']';
+		return "[" + position + "," + destroyed + "," + fish + ']';
 	}
 }
