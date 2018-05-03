@@ -5,19 +5,21 @@ import Utils.Position;
 public class Cellule {
 	private Position position;
 	private boolean destroyed;
+	private int fish;
 
 	public Cellule() {
-		this(new Position(0,0), false);
+		this(new Position(0,0), false, 0);
 	}
-	public Cellule(Position position) {
-		this(position, false);
+	public Cellule(Position position, boolean destroyed) {
+		this(position, destroyed, 0);
 	}
-	public Cellule(int i, int j, boolean b) {
-		this(new Position(i,j),b);
+	public Cellule(Position position, int fish) {
+		this(position, false, fish);
 	}
 	public Cellule(Position position, boolean destroyed, int fish) {
 		this.position = position;
 		this.destroyed = destroyed;
+		this.fish = fish;
 	}
 
 	public void destroy() {
@@ -26,6 +28,10 @@ public class Cellule {
 
 	public boolean isDestroyed() {
 		return destroyed;
+	}
+
+	public int getFish() {
+		return fish;
 	}
 
 	@Override

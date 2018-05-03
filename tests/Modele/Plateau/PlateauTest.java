@@ -19,10 +19,18 @@ public class PlateauTest {
 	public void initTab() {
 		for (int i = 0; i < p.getSize(); i++) {
 			if (i % 2 == 0) { // TODO : inverser lignes longues/courtes
-				Assert.assertTrue("initTab : test " + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
+				Assert.assertTrue("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
 			}
 			else {
-				Assert.assertFalse("initTab : test " + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
+				Assert.assertFalse("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
+			}
+			for (int j = 0; j < p.getSize(); j++) {
+				Position pos = new Position(i,j);
+				Cellule cell = p.getCellule(pos);
+				boolean condition = cell.isDestroyed()
+									|| (0 < cell.getFish()
+									&& cell.getFish() <= 3);
+				Assert.assertTrue("initTab : test nombre de poisson " + (i+j) + "/" + (2*p.getSize()) + " failed.", condition);
 			}
 		}
 	}

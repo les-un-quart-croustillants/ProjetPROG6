@@ -23,11 +23,11 @@ public class Plateau {
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
-				if(i % 2 == 0 && j == this.size-1) {
-					tab[i][j] = new Cellule(new Position(i,j),true);
+				if(i % 2 == 0 && j == this.size-1) { // TODO : inverser les lignes longues/courtes
+					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
-					tab[i][j] = new Cellule(new Position(i,j));
+					tab[i][j] = new Cellule(new Position(i,j), r.nextInt(3) + 1);
 				}
 			}
 		}
