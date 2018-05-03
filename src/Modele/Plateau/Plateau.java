@@ -1,5 +1,7 @@
 package Modele.Plateau;
 
+import IA.Pingouins;
+
 import Utils.Position;
 
 import java.util.Arrays;
@@ -108,6 +110,30 @@ public class Plateau {
 		return res;
 	}
 
+	/**
+	 * jouer : déplace un pinguoin si possible
+	 * @param penguin : le pinguoin à déplacer
+	 * @param target : la position cible
+	 * @return le nombre de poissons mangés si le déplacement est possible
+	 * -1 sinon.
+	 */
+	public int jouer(Pingouin penguin, Position target) {
+		int res = -1;
+		Cellule currentCell, targetCell;
+		Position current = penguin.position();
+
+		if (isInTab(target)) {
+			targetCell = getCellule(target);
+			if (accessible(current).contains(target) && !targetCell.isDestroyed()) {
+				currentCell = getCellule(current);
+				currentCell.destroy();
+				penguin.setPosition(target);
+				// targetCell.addPenguin(penguin);
+				res = targetCell.getFish();
+			}
+		}
+		return res;
+	}
 
 	public String tabToString() {
 		String res = "[ ";
