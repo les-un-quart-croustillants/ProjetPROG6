@@ -79,7 +79,7 @@ public class Plateau {
 		return r;
 	}
 
-	public String displayTab() {
+	public String tabToString() {
 		String res = "[ ";
 		for (Cellule[] line: this.tab) {
 			res += Arrays.toString(line) + " ";
@@ -97,6 +97,6 @@ public class Plateau {
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " + displayTab() + '}';
+		return "{" + size + ", " + tabToString() + '}';
 	}
 }
