@@ -84,6 +84,11 @@ public class Plateau {
 			l.add(candidat);
 	}
 
+	/**
+	 * accessible : les positions accessibles depuis une position
+	 * @param p : position courante
+	 * @return : la liste des position accessibles
+	 */
 	public LinkedList<Position> accessible(Position p) {
 		int j;
 		Position candidat;
