@@ -75,5 +75,14 @@ public class PlateauTest {
 		expected.add(new Position(2,1));
 		expected.add(new Position(2,2));
 		Assert.assertEquals(expected, p.getNeighbours(new Position(1,1)));
+
+		expected = new LinkedList<>();
+		expected.add(new Position(0,1));
+		expected.add(new Position(1,0));
+		expected.add(new Position(1,1));
+		Assert.assertEquals(expected, p.getNeighbours(new Position(0,0)));
+
+		Plateau vide = new Plateau(1);
+		Assert.assertTrue(vide.getNeighbours(new Position(0,0)).isEmpty());
 	}
 }
