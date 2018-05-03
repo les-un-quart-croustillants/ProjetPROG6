@@ -34,6 +34,10 @@ public class Cellule {
 		return fish;
 	}
 
+	public Position getPosition() {
+		return position;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
