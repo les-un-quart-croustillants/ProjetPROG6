@@ -3,6 +3,7 @@ package Modele.Plateau;
 import Utils.Position;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Plateau {
@@ -53,6 +54,21 @@ public class Plateau {
 	 */
 	public Cellule getCellule(Position p) throws IndexOutOfBoundsException { // TODO : créer une exception spécific
 		return tab[p.i()][p.j()];
+	}
+
+	public LinkedList<Position> getNeighbours(Position p) {
+		LinkedList<Position> r = new LinkedList<>();
+		for (Position candidat: new Position[]{
+				new Position(p.i() - 1,p.j()),
+				new Position(p.i() - 1,p.j() + 1),
+				new Position(p.i(),p.j() - 1),
+				new Position(p.i(),p.j() + 1),
+				new Position(p.i() + 1,p.j()),
+				new Position(p.i() + 1,p.j() + 1)}) {
+			if (isInTab(p) && (getCellule(candidat) != null))
+				r.add(candidat);
+		}
+		return r;
 	}
 
 	public String displayTab() {

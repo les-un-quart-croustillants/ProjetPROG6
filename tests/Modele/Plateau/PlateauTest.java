@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 public class PlateauTest {
@@ -62,4 +63,17 @@ public class PlateauTest {
 		Assert.assertFalse(p.isInTab(pos));
 	}
 
+	@Test
+	public void getNeighbours() {
+		LinkedList<Position> expected = new LinkedList<>();
+		expected.add(new Position(0,1));
+		expected.add(new Position(0,2) );
+
+		expected.add(new Position(1,0) );
+		expected.add(new Position(1,2));
+
+		expected.add(new Position(2,1));
+		expected.add(new Position(2,2));
+		Assert.assertEquals(expected, p.getNeighbours(new Position(1,1)));
+	}
 }
