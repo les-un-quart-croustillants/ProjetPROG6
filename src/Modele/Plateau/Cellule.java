@@ -3,32 +3,49 @@ package Modele.Plateau;
 import Utils.Position;
 
 public class Cellule {
-	Position position;
-	boolean b;
+	private Position position;
+	private boolean destroyed;
+	private int fish;
 
 	public Cellule() {
-		this(new Position(0,0), false);
+		this(new Position(0,0), false, 0);
 	}
-	public Cellule(Position position) {
-		this(position, false);
+	public Cellule(Position position, boolean destroyed) {
+		this(position, destroyed, 0);
 	}
-	public Cellule(int i, int j, boolean b) {
-		this(new Position(i,j),b);
+	public Cellule(Position position, int fish) {
+		this(position, false, fish);
+	}
+	public Cellule(Position position, boolean destroyed, int fish) {
+		this.position = position;
+		this.destroyed = destroyed;
+		this.fish = fish;
 	}
 
-	public Cellule(Position position, boolean b) {
-		this.position = position;
-		this.b = b;
+	public void destroy() {
+		this.destroyed = true;
+	}
+
+	public boolean isDestroyed() {
+		return destroyed;
+	}
+
+	public int getFish() {
+		return fish;
+	}
+
+	public Position getPosition() {
+		return position;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
-				&& ((Cellule) obj).b == this.b;
+				&& ((Cellule) obj).destroyed == this.destroyed;
 	}
 
 	@Override
 	public String toString() {
-		return "[" + position + ", " + b + ']';
+		return "[" + position + "," + destroyed + "," + fish + ']';
 	}
 }
