@@ -30,4 +30,23 @@ public class Plateau {
 			}
 		}
 	}
+
+	/**
+	 * getCellule : recupère une cellule
+	 * @param p : la position de la cellule dans le tableau
+	 * @return : l'objet Cellule
+	 * @throws IndexOutOfBoundsException si p n'est pas dans le tableau
+	 */
+	public Cellule getCellule(Position p) throws IndexOutOfBoundsException { // TODO : créer une exception spécific
+		return tab[p.i()][p.j()];
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public Cellule[][] getTab() {
+		return tab;
+	}
+
 }

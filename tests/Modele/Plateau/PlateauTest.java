@@ -21,4 +21,27 @@ public class PlateauTest {
 				"}";
 		Assert.assertEquals(expected, p.toString());
 	}
+
+	@Test
+	public void getCellule() {
+		Position pos;
+		Cellule expected;
+
+		pos = new Position(0,0);
+		expected = new Cellule(pos, false);
+		Assert.assertEquals(expected, p.getCellule(pos));
+
+		pos = new Position(0,2);
+		expected = new Cellule(pos, true);
+		Assert.assertEquals(expected, p.getCellule(pos));
+
+		pos = new Position(1,2);
+		expected = new Cellule(pos, false);
+		Assert.assertEquals(expected, p.getCellule(pos));
+
+		pos = new Position(2,2);
+		expected = new Cellule(pos, true);
+		Assert.assertEquals(expected, p.getCellule(pos));
+	}
+
 }
