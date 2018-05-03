@@ -79,6 +79,37 @@ public class Plateau {
 		return r;
 	}
 
+	private void safeAdd(LinkedList<Position> l, Position candidat) {
+		if (isInTab(candidat))
+			l.add(candidat);
+	}
+
+	public LinkedList<Position> accessible(Position p) {
+		int j;
+		Position candidat;
+		LinkedList<Position> res = new LinkedList<>();
+		for (int i = 0; i < this.size; i++) {
+			if (i != p.i()) {
+				if (i < p.i())
+					j = p.j() + ((p.i() - i)); // diagonale haute
+				else // (i > p.i())
+					j = p.j() + ((i - p.i())); // diagonale basse
+				candidat = new Position(i, p.j()); // colonne
+				safeAdd(res, candidat);
+				candidat = new Position(i, j); // diagonale
+				safeAdd(res, candidat);
+
+			}
+			if (i != p.j()) {
+				candidat = new Position(p.i(), i); // ligne
+				safeAdd(res, candidat);
+			}
+		}
+
+		return res;
+	}
+
+
 	public String tabToString() {
 		String res = "[ ";
 		for (Cellule[] line: this.tab) {

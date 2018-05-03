@@ -85,4 +85,59 @@ public class PlateauTest {
 		Plateau vide = new Plateau(1);
 		Assert.assertTrue(vide.getNeighbours(new Position(0,0)).isEmpty());
 	}
+
+	@Test
+	public void accessible() {
+		Plateau sujet = new Plateau(10);
+		Position pos = new Position(5,0);
+		LinkedList<Position> expected = new LinkedList<>();
+
+		expected.add(new Position(0,0));
+		expected.add(new Position(0,5));
+
+		expected.add(new Position(1,0));
+		expected.add(new Position(1,4));
+		expected.add(new Position(5,1));
+
+		expected.add(new Position(2,0));
+		expected.add(new Position(2,3));
+		expected.add(new Position(5,2));
+
+		expected.add(new Position(3,0));
+		expected.add(new Position(3,2));
+		expected.add(new Position(5,3));
+
+		expected.add(new Position(4,0));
+		expected.add(new Position(4,1));
+		expected.add(new Position(5,4));
+
+		expected.add(new Position(5,5));
+
+		expected.add(new Position(6,0));
+		expected.add(new Position(6,1));
+		expected.add(new Position(5,6));
+
+		expected.add(new Position(7,0));
+		expected.add(new Position(7,2));
+		expected.add(new Position(5,7));
+
+		expected.add(new Position(8,0));
+		expected.add(new Position(8,3));
+		expected.add(new Position(5,8));
+
+		expected.add(new Position(9,0));
+		expected.add(new Position(9,4));
+		expected.add(new Position(5,9));
+
+		Assert.assertEquals(expected, sujet.accessible(pos));
+
+		pos = new Position(p.getSize() - 1,p.getSize() - 1);
+		expected = new LinkedList<>();
+		expected.add(new Position(0,2));
+		expected.add(new Position(2,0));
+		expected.add(new Position(1,2));
+		expected.add(new Position(2,1));
+
+		Assert.assertEquals(expected, p.accessible(pos));
+	}
 }
