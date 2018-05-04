@@ -3,26 +3,26 @@ package Joueurs;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public abstract class Joueur {
 	private int id;
-	private LinkedList<Pingouin> squad;
+	private ArrayList<Pingouin> squad;
 	private int score;
 
 	Joueur(){
 		this.id = 0;
-		this.squad = new LinkedList<Pingouin>();
+		this.squad = new ArrayList<Pingouin>();
 		this.score = 0;
 	}
 	
 	Joueur(int id){
 		this.id = id;
-		this.squad = new LinkedList<Pingouin>();
+		this.squad = new ArrayList<Pingouin>();
 		this.score = 0;
 	}
 
-	Joueur(int id, LinkedList<Pingouin> s){
+	Joueur(int id, ArrayList<Pingouin> s){
 		this.id = id;
 		this.squad = s;
 		this.score = 0;
@@ -32,7 +32,7 @@ public abstract class Joueur {
 		return this.id;
 	}
 	
-	public LinkedList<Pingouin> squad(){
+	public ArrayList<Pingouin> squad(){
 		return this.squad;
 	}
 
@@ -56,7 +56,7 @@ public abstract class Joueur {
 		this.score -= l;
 	}
 
-	public void setSquad(LinkedList<Pingouin> s) {
+	public void setSquad(ArrayList<Pingouin> s) {
 		this.squad = s;
 	}
 
@@ -64,8 +64,13 @@ public abstract class Joueur {
 		return this.squad.size();
 	}
 
-	public void addSquad(Pingouin p) {
-		this.squad.add(p);
+	public void addSquad(Pingouin p) throws Exception {
+		if(p.employeur() == this.id()) {
+			this.squad.add(p);
+		} else {
+			throw new Exception("insertion impossible. Le pingouin en "+p.position()+" n'appartient pas au joueur "+this.id()+".");
+		}
+		
 	}
 
 	public void removeSquad(Pingouin p) {
