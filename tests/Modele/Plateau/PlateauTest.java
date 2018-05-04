@@ -18,7 +18,7 @@ public class PlateauTest {
 	@Test
 	public void initTab() {
 		for (int i = 0; i < p.getSize(); i++) {
-			if (i % 2 == 0) { // TODO : inverser lignes longues/courtes
+			if (i % 2 == 1) {
 				Assert.assertTrue("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
 			}
 			else {
@@ -45,15 +45,15 @@ public class PlateauTest {
 		Assert.assertEquals("getCellule test #1/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(0,2);
-		expected = new Cellule(pos, true);
+		expected = new Cellule(pos, false);
 		Assert.assertEquals("getCellule test #2/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(1,2);
-		expected = new Cellule(pos, false);
+		expected = new Cellule(pos, true);
 		Assert.assertEquals("getCellule test #3/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(2,2);
-		expected = new Cellule(pos, true);
+		expected = new Cellule(pos, false);
 		Assert.assertEquals("getCellule test #4/4 failed", expected, p.getCellule(pos));
 	}
 

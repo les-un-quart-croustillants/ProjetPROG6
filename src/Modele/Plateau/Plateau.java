@@ -25,7 +25,7 @@ public class Plateau {
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
-				if(i % 2 == 0 && j == this.size-1) { // TODO : inverser les lignes longues/courtes
+				if(i % 2 == 1 && j == this.size-1) { // TODO : inverser les lignes longues/courtes
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
@@ -91,7 +91,7 @@ public class Plateau {
 	 * @param p : position courante
 	 * @return : la liste des position accessibles
 	 */
-	public LinkedList<Position> accessible(Position p) { // TODO : don't add destroyed cells' position
+	public LinkedList<Position> accessible(Position p) {
 		Position candidat;
 		LinkedList<Position> res = new LinkedList<>();
 		for (int i = 0; i < this.size; i++) {
