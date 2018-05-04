@@ -1,8 +1,9 @@
-package Vue;
+package Vue.GameObject;
 
 
 import com.sun.javafx.geom.Vec2d;
 
+import Vue.OnDestroyHandler;
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject {
