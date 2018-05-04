@@ -10,19 +10,19 @@ public abstract class Joueur {
 	private ArrayList<Pingouin> squad;
 	private int score;
 
-	Joueur(){
+	public Joueur(){
 		this.id = 0;
 		this.squad = new ArrayList<Pingouin>();
 		this.score = 0;
 	}
 	
-	Joueur(int id){
+	public Joueur(int id){
 		this.id = id;
 		this.squad = new ArrayList<Pingouin>();
 		this.score = 0;
 	}
 
-	Joueur(int id, ArrayList<Pingouin> s){
+	public Joueur(int id, ArrayList<Pingouin> s){
 		this.id = id;
 		this.squad = s;
 		this.score = 0;
