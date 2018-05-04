@@ -2,9 +2,6 @@ package Vue;
 
 import java.awt.Point;
 import java.awt.Polygon;
-
-import com.sun.javafx.geom.Vec2f;
-
 import Utils.Position;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -62,30 +59,7 @@ public class Case extends GameObject {
 	}
 
 	public boolean collision(Point p) {
-		Vec2f p2 = new Vec2f(polygon.xpoints[0], polygon.ypoints[0]);
-		Vec2f p1 = new Vec2f(polygon.xpoints[5], polygon.ypoints[5]);
-		Vec2f vpoly = new Vec2f();
-		Vec2f vpoint = new Vec2f();
-		for (int i = 1; i < 6; i++) {
-			vpoly.x = p2.x - p1.x;
-			vpoly.y = p2.y - p1.y;
-			vpoint.x = p.x - p1.x;
-			vpoint.y = p.y - p1.y;
-			if (vpoly.x * vpoint.y - vpoly.y * vpoint.x < 0) {
-				return false;
-			}
-			p1 = p2;
-			p2 = new Vec2f(polygon.xpoints[i], polygon.ypoints[i]);
-		}
-		vpoly.x = p2.x - p1.x;
-		vpoly.y = p2.y - p1.y;
-		vpoint.x = p.x - p1.x;
-		vpoint.y = p.y - p1.y;
-		if (vpoly.x * vpoint.y - vpoly.y * vpoint.x < 0) {
-			return false;
-		}
-
-		return true;
+		return polygon.contains(p);
 	}
 
 	public void select() {

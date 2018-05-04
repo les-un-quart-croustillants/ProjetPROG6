@@ -6,7 +6,6 @@ import Vue.Case;
 import Vue.PlateauCadre;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 public class ClicPlateau implements EventHandler<MouseEvent> {
 
