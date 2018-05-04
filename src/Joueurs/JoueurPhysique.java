@@ -10,9 +10,7 @@ public class JoueurPhysique extends Joueur {
 		
 		if(pingouin.employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
 			if(this.squad().contains(pingouin)) { //test si le joueur reconnais bien le pingouin
-				this.removeSquad(pingouin);
-				res = plateau.jouer(pingouin, goal);
-				this.addSquad(pingouin);
+				res = plateau.jouer(this.squad().get(this.squad().indexOf(pingouin)), goal);
 				return res;
 			} else {
 				throw new Exception("Le pingouin en "+pingouin.position()+" n'est pas reconnus par le joueur "+this.id()+" (erreur interne).");
