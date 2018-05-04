@@ -74,6 +74,7 @@ public abstract class Joueur {
 
 	/**
 	 * Fonction appelee dans l'IA pour calculer le prochain coup
+	 * renvoie (-1,-1) si une erreur c'est produite
 	 * @param plateau
 	 * @return
 	 */
@@ -83,10 +84,13 @@ public abstract class Joueur {
 
 	/**
 	 * Fonction appellee par un joueur pour jouer un coup
-	 * @param plateau
-	 * @param pingouin
-	 * @param goal
-	 * @return
+	 * renvois le nombre de poissons mangee par le pingouin lors du coup
+	 * ou -1 si une erreur c'est produite
+	 * 
+	 * @param plateau le plateau de jeu
+	 * @param pingouin le pingouin concerne
+	 * @param goal la destination souhaitee
+	 * @return le nombre de poissons mangee par le pingouin lors du coup ou -1 si une erreur c'est produite
 	 * @throws Exception 
 	 */
 	public int jouerCoup(Plateau plateau, Pingouin pingouin, Position goal) throws Exception {
