@@ -1,7 +1,6 @@
 package Modele.Plateau;
 
-import IA.Pingouins;
-
+import Joueurs.Pingouin;
 import Utils.Position;
 
 import java.util.Arrays;
