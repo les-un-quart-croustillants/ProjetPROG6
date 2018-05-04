@@ -1,9 +1,23 @@
 package Joueurs;
 
+import java.util.ArrayList;
+
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
 public class JoueurPhysique extends Joueur {
+	public JoueurPhysique(){
+		super();
+	}
+	
+	public JoueurPhysique(int id){
+		super(id);
+	}
+
+	public JoueurPhysique(int id, ArrayList<Pingouin> s){
+		super(id,s);
+	}
+	
 	@Override
 	public int jouerCoup(Plateau plateau,Pingouin pingouin, Position goal) throws Exception {
 		int res;
