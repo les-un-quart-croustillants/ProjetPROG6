@@ -1,6 +1,7 @@
-package Vue;
+package Vue.Cadre;
 
-import Controleur.ClicPlateau;
+import Controleur.MiseEnEvidenceCase;
+import Controleur.PoserPingouin;
 import Modele.Plateau.Plateau;
 import Vue.GameObject.PlateauGraphique;
 
@@ -8,11 +9,16 @@ public class PlateauCadre extends Cadre{
 	public PlateauGraphique plateauGraphique;
 	public Plateau plateau;
 	
+	/**
+	 * init : initialisation (appelée par les constructeurs)
+	 * @param p :  un plateau
+	 */
 	private void init(Plateau p){
 		this.plateau = p;
 		this.plateauGraphique = new PlateauGraphique(p,this);
 		this.gameObjects.add(plateauGraphique);
-		this.setOnMouseMoved(new ClicPlateau(this));
+		this.setOnMouseMoved(new MiseEnEvidenceCase(this));
+		this.setOnMousePressed(new PoserPingouin(this));
 	}
 
 	public PlateauCadre(Plateau p){
