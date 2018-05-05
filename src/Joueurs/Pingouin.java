@@ -7,13 +7,13 @@ public class Pingouin {
 	private int nbPoissonManges;
 	private Position position;
 
-	Pingouin(int e){
+	public Pingouin(int e){
 		this.employeur = e;
 		this.nbPoissonManges = 0;
 		this.position = new Position(0,0);
 	}
 
-	Pingouin(int e, Position p){
+	public Pingouin(int e, Position p){
 		this.employeur = e;
 		this.nbPoissonManges = 0;
 		this.position = p;

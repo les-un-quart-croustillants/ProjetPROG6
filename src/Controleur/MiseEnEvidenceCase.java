@@ -2,16 +2,16 @@ package Controleur;
 
 import java.awt.Point;
 
-import Vue.PlateauCadre;
+import Vue.Cadre.PlateauCadre;
 import Vue.GameObject.Case;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
-public class ClicPlateau implements EventHandler<MouseEvent> {
+public class MiseEnEvidenceCase implements EventHandler<MouseEvent> {
 
 	PlateauCadre pc;
 
-	public ClicPlateau(PlateauCadre pc) {
+	public MiseEnEvidenceCase(PlateauCadre pc) {
 		this.pc = pc;
 	}
 

@@ -3,7 +3,6 @@ package Vue.GameObject;
 
 import com.sun.javafx.geom.Vec2d;
 
-import Vue.OnDestroyHandler;
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject {
@@ -54,6 +53,9 @@ public class GameObject {
 		this.odh = odh;
 	}
 	
+	/**
+     * onDestroy : cette fonction est automatiquement appelé par le cadre contenant le gameobject à la destruction du gameobject.
+     */
 	public void onDestroy() {
 		if(odh!=null)
 			odh.handle();
