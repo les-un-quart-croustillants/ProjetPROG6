@@ -2,8 +2,20 @@
 	-fx-alignment: center;
 	-fx-font-size: 38px;
 	-fx-font-family: "Luckiest Guy";
+	-fx-background-color: radial-gradient(radius 100%, #1cc6ea, #1a2baa);	
 }
 
 .button {
-	-fx-background-color: transparent;
+	-fx-background-color: white;
+	-fx-border-image-source: url("border_banquise.png");
+	-fx-border-image-slice: 20, 20, 25, 20;
+	-fx-border-image-repeat: stretch;
+	-fx-border-image-width: 20px 20px 25px 20px;
+	-fx-background-insets: 15px;
+	/*-fx-padding: 0px;*/
+}
+
+.button:hover {
+	-fx-effect:  dropshadow(three-pass-box, rgba(255,255,255,1), 15, 0, 0, 0);
+	/*-fx-padding: 0px 10px 0px 10px;*/
 }

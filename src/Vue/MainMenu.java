@@ -1,6 +1,7 @@
 package Vue;
 
 import javafx.scene.layout.VBox;
+import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
 
@@ -29,5 +30,10 @@ public class MainMenu extends VBox {
 		this.getChildren().add(new_game);
 		this.getChildren().add(highscores);
 		this.getChildren().add(quit);
+		
+		quit.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+			}
+		});
 	}
 }
