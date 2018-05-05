@@ -7,6 +7,7 @@ public class Pingouin {
 	private int nbPoissonManges;
 	private Position position;
 
+
 	public Pingouin(int e){
 		this.employeur = e;
 		this.nbPoissonManges = 0;
