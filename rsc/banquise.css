@@ -1,0 +1,9 @@
+.menu {
+	-fx-alignment: center;
+	-fx-font-size: 38px;
+	-fx-font-family: "Luckiest Guy";
+}
+
+.button {
+	-fx-background-color: transparent;
+}
