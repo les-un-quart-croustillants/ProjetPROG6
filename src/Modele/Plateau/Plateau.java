@@ -157,6 +157,14 @@ public class Plateau {
 		return fishAte;
 	}
 
+	public int redo() { // TODO : implementer redo
+		// System.err.println("Plateau.redo not implemented");
+		// return false;
+		if (undoList.isEmpty())
+			return -1;
+		return jouer(undoList.removeFirst());
+	}
+
 	public String tabToString() {
 		String res = "[ ";
 		for (Cellule[] line: this.tab) {
