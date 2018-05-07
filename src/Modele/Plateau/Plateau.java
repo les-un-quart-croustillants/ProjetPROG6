@@ -10,9 +10,11 @@ public class Plateau {
 	private int size;
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
+	private LinkedList<Move> undoList;
 
 	public Plateau(int size) {
 		this.size = size;
+		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
 		initTab();
@@ -134,6 +136,25 @@ public class Plateau {
 			}
 		}
 		return res;
+	}
+
+	public int undo() {
+		if(history.isEmpty())
+			return -1;
+
+		Move lastMove = history.removeLast();
+		Pingouin penguin = lastMove.getPenguin();
+		Position currentPosition = penguin.position();
+		Position targetPosition = lastMove.getPrevious();
+		int fishAte = lastMove.getFishAte();
+
+		this.undoList.addLast(lastMove);
+
+		tab[targetPosition.i()][targetPosition.j()].setDestroyed(false);
+		tab[currentPosition.i()][currentPosition.j()].setFish(fishAte);
+		penguin.setPosition(targetPosition);
+
+		return fishAte;
 	}
 
 	public String tabToString() {
