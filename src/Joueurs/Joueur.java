@@ -7,11 +7,19 @@ import java.util.ArrayList;
 
 public abstract class Joueur {
 	private int id;
+	private int nbPingouins;
 	private int scoreFish;
 	private int scoreDestroyed;
 	
 	public Joueur(int id){
 		this.id = id;
+		this.scoreFish = 0;
+		this.scoreDestroyed = 0;
+	}
+	
+	public Joueur(int id,int p){
+		this.id = id;
+		this.nbPingouins = p;
 		this.scoreFish = 0;
 		this.scoreDestroyed = 0;
 	}
@@ -26,6 +34,10 @@ public abstract class Joueur {
 	
 	public int scoreDestroyed() {
 		return this.scoreDestroyed;
+	}
+	
+	public int nbPingouin() {
+		return this.nbPingouins;
 	}
 	
 	public void setId(int id) {
@@ -54,6 +66,18 @@ public abstract class Joueur {
 	
 	public void subScoreDestroyed(int l) {
 		this.scoreDestroyed -= l;
+	}
+	
+	public void setNbPingouins(int s) {
+		this.nbPingouins = s;
+	}
+	
+	public void addNbPingouins(int a) {
+		this.nbPingouins += a;
+	}
+	
+	public void subNbPingouins(int l) {
+		this.nbPingouins -= l;
 	}
 
 	/**

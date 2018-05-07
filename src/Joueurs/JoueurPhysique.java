@@ -11,6 +11,10 @@ public class JoueurPhysique extends Joueur {
 		super(id);
 	}
 	
+	public JoueurPhysique(int id,int p){
+		super(id,p);
+	}
+	
 	@Override
 	public int jouerCoup(Plateau plateau,Position start, Position goal) throws Exception {
 		int res;

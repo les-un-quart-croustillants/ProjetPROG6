@@ -11,6 +11,10 @@ public class JoueurIA extends Joueur {
 		super(id);
 	}
 	
+	public JoueurIA(int id,int p){
+		super(id,p);
+	}
+	
 	@Override
 	public Position prochainCoup(Plateau plateau) {
 		return new Position(-1,-1);
