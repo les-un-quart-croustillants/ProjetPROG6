@@ -25,15 +25,15 @@ public class Moteur {
 	 */
 	public enum State {
 		INIT,
-		MAINMENU;
+		POSER_PINGOUIN;
 		
 		
 		static public String toString(State s) {
 			switch(s) {
 			case INIT:
 				return "INIT";
-			case MAINMENU:
-				return "MAINMENU";
+			case POSER_PINGOUIN:
+				return "POSER_PINGOUIN";
 			default:
 				return "undefined";
 			}
@@ -65,20 +65,35 @@ public class Moteur {
 	 *
 	 */
 	public enum Action {
-		ERROR;
+		ERROR,POSER_PINGOUIN;
 		
 		static public String toString(Action s) {
 			switch(s) {
 			case ERROR:
 				return "ERROR";
+			case POSER_PINGOUIN:
+				return "POSER_PINGOUIN";
 			default:
 				return "undefined";
 			}
 		}
 	}
 	
-	public Moteur() {
+	/*private Moteur() {
 		
+		joueurs = new Joueur[njoueurs];
+		currentState = State.INIT;
+		initTransitions();
+		
+		//par defaut, on met que des joueurs physiques
+		for(int i=0;i<njoueurs;i++) {
+			joueurs[i] = new JoueurPhysique(i);
+		}
+	}*/
+	
+	public Moteur(Plateau p,int njoueurs){
+		this.plateau = p;
+		this.njoueurs = njoueurs;
 		joueurs = new Joueur[njoueurs];
 		currentState = State.INIT;
 		initTransitions();
@@ -94,7 +109,7 @@ public class Moteur {
 	 */
 	private void initTransitions() {
 		this.transition = new HashMap<Couple<State,Action>,State>();
-		this.transition.put(new Couple<State,Action>(State.INIT,Action.ERROR), State.MAINMENU);
+		//this.transition.put(new Couple<State,Action>(State.INIT,Action.ERROR), State.MAINMENU);
 	}
 	
 	public void transition(Action action) {
@@ -103,6 +118,10 @@ public class Moteur {
 	
 	public State currentState() {
 		return this.currentState;
+	}
+	
+	public void setCurrentState(State s){
+		this.currentState = s;
 	}
 	
 	public Plateau plateau() {

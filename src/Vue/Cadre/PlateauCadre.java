@@ -4,13 +4,15 @@ import Controleur.MiseEnEvidenceCase;
 import Controleur.PoserPingouin;
 import Modele.Plateau.Plateau;
 import Vue.GameObject.PlateauGraphique;
+import Vue.Moteur.State;
+import Vue.Pane.GamePane;
 
 public class PlateauCadre extends Cadre{	
 	public PlateauGraphique plateauGraphique;
 	public Plateau plateau;
 	
 	/**
-	 * init : initialisation (appelée par les constructeurs)
+	 * init : initialisation (appelï¿½e par les constructeurs)
 	 * @param p :  un plateau
 	 */
 	private void init(Plateau p){
