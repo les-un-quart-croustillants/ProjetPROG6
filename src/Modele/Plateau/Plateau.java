@@ -9,9 +9,11 @@ import java.util.Random;
 public class Plateau {
 	private int size;
 	private Cellule[][] tab;
+	private LinkedList<Move> history;
 
 	public Plateau(int size) {
 		this.size = size;
+		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
 		initTab();
 	}
@@ -123,6 +125,7 @@ public class Plateau {
 		if (isInTab(target)) {
 			targetCell = getCellule(target);
 			if (accessible(current).contains(target) && !targetCell.isDestroyed()) {
+				history.addLast(new Move(penguin, target, current, targetCell.getFish()));
 				currentCell = getCellule(current);
 				currentCell.destroy();
 				penguin.setPosition(target);
