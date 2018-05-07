@@ -138,6 +138,10 @@ public class Plateau {
 		return res;
 	}
 
+	private int jouer(Move m) {
+		return jouer(m.getPenguin(), m.getTarget());
+	}
+
 	public int undo() {
 		if(history.isEmpty())
 			return -1;
