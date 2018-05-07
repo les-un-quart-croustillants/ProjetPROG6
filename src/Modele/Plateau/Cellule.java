@@ -51,6 +51,18 @@ public class Cellule {
 		return this.pingouin;
 	}
 
+	public void setDestroyed(boolean b) {
+		this.destroyed = b;
+	}
+
+	public void setFish(int fish) {
+		this.fish = fish;
+	}
+
+	public Cellule clone() {
+		return new Cellule(this.position, this.destroyed, this.fish);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
