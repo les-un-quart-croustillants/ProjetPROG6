@@ -4,8 +4,6 @@ import Controleur.MiseEnEvidenceCase;
 import Controleur.PoserPingouin;
 import Modele.Plateau.Plateau;
 import Vue.GameObject.PlateauGraphique;
-import Vue.Moteur.State;
-import Vue.Pane.GamePane;
 
 public class PlateauCadre extends Cadre{	
 	public PlateauGraphique plateauGraphique;
