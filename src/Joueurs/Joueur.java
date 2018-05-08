@@ -3,8 +3,6 @@ package Joueurs;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
-import java.util.ArrayList;
-
 public abstract class Joueur {
 	private int id;
 	private int nbPingouins;
@@ -103,5 +101,10 @@ public abstract class Joueur {
 	 */
 	public int jouerCoup(Plateau plateau, Position start, Position goal) throws Exception {
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		return "[ID:"+this.id+", Pingouins:"+this.nbPingouins+", Score:"+this.scoreFish+"("+this.scoreDestroyed+")]";
 	}
 }
