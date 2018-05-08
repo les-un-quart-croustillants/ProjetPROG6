@@ -246,6 +246,7 @@ public class Plateau {
 			//Si la case en p a un seul poisson
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);
+				pingouin.setPosition(p);
 				return true;
 			}
 		}
