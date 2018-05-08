@@ -43,4 +43,9 @@ public class Pingouin {
 	public void setPosition(Position p) {
 		this.position = p;
 	}
+	
+	@Override
+	public String toString() {
+		return "{Position:"+this.position.toString()+", Joueur:"+this.employeur+", Score:"+this.nbPoissonManges+"}";
+	}
 }
