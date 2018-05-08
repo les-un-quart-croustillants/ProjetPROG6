@@ -15,6 +15,7 @@ public class Case extends GameObject {
 	private int[] px;
 	private int[] py;
 	private boolean selected;
+	private boolean miseEnValeur;
 	private PlateauGraphique pg;
 	
 	public Color couleur;
@@ -54,7 +55,11 @@ public class Case extends GameObject {
 	@Override
 	public void draw(GraphicsContext gc) {
 		gc.setFill(Color.ALICEBLUE);
-		if (selected) {
+		if(selected) {
+			gc.setStroke(new Color(1, 1, 0, 1));
+			gc.setLineWidth(5);
+		} 
+		else if (miseEnValeur) {
 			gc.setStroke(new Color(1, 0, 0, 1));
 			gc.setLineWidth(3);
 		} else {
@@ -118,5 +123,12 @@ public class Case extends GameObject {
 	 */
 	public void deselect() {
 		selected = false;
+	}
+	
+	public void mettreEnValeur() {
+		miseEnValeur = true;
+	}
+	public void enleverMiseEnValeur() {
+		miseEnValeur = false;
 	}
 }

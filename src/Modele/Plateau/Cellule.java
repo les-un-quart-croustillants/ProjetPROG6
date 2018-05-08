@@ -6,20 +6,25 @@ public class Cellule {
 	private Position position;
 	private boolean destroyed;
 	private int fish;
+	Pingouin pingouin;
 
 	public Cellule() {
-		this(new Position(0,0), false, 0);
+		this(new Position(0,0), false, 0, null);
 	}
 	public Cellule(Position position, boolean destroyed) {
-		this(position, destroyed, 0);
+		this(position, destroyed, 0, null);
 	}
 	public Cellule(Position position, int fish) {
-		this(position, false, fish);
+		this(position, false, fish, null);
 	}
 	public Cellule(Position position, boolean destroyed, int fish) {
+		this(position, destroyed, fish, null);
+	}
+	public Cellule(Position position, boolean destroyed, int fish, Pingouin pingouin) {
 		this.position = position;
 		this.destroyed = destroyed;
 		this.fish = fish;
+		this.pingouin = pingouin;
 	}
 
 	public void destroy() {
@@ -36,6 +41,14 @@ public class Cellule {
 
 	public Position getPosition() {
 		return position;
+	}
+
+	public boolean aPingouin() {
+		return this.pingouin != null;
+	}
+
+	public Pingouin pingouin() {
+		return this.pingouin;
 	}
 
 	@Override

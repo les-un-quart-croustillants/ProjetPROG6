@@ -1,4 +1,4 @@
-package Joueurs;
+package Modele.Plateau;
 
 import Utils.Position;
 
@@ -6,6 +6,7 @@ public class Pingouin {
 	private int employeur;
 	private int nbPoissonManges;
 	private Position position;
+
 
 	public Pingouin(int e){
 		this.employeur = e;
@@ -41,5 +42,10 @@ public class Pingouin {
 
 	public void setPosition(Position p) {
 		this.position = p;
+	}
+	
+	@Override
+	public String toString() {
+		return "{Position:"+this.position.toString()+", Joueur:"+this.employeur+", Score:"+this.nbPoissonManges+"}";
 	}
 }

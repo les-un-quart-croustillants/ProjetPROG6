@@ -1,16 +1,19 @@
 package Vue.Pane;
 
 import Modele.Plateau.Plateau;
+import Vue.Moteur;
 import Vue.Cadre.PlateauCadre;
+import Vue.Moteur.State;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 
 public class GamePane extends Pane{
 	private static GamePane instance = null;
 	private PlateauCadre plateauCadre;
+	private Moteur moteur;
 	
 	/**
-	 * getInstance : renvoie l'instance du singleton (ou la crée avec un plateau par défaut si elle n'existe pas)
+	 * getInstance : renvoie l'instance du singleton (ou la crï¿½e avec un plateau par dï¿½faut si elle n'existe pas)
 	 */
 	public static GamePane getInstance(){
 		if(GamePane.instance==null){
@@ -21,10 +24,12 @@ public class GamePane extends Pane{
 	}
 	
 	/**
-	 * init : initialisation (appelée par les constructeurs)
+	 * init : initialisation (appelï¿½e par les constructeurs)
 	 */
 	private void init(){
 		this.getChildren().add(plateauCadre);
+		this.moteur = new Moteur(plateauCadre.plateau,2);
+		this.moteur.setCurrentState(State.POSER_PINGOUIN);
 		new AnimationTimer() {
 			@Override
 			public void handle(long currentNanoTime) {
@@ -57,6 +62,9 @@ public class GamePane extends Pane{
 	
 	public static PlateauCadre getPlateauCadre(){
 		return GamePane.getInstance().plateauCadre;
+	}
+	public static Moteur moteur(){
+		return GamePane.getInstance().moteur;
 	}
 	
 }

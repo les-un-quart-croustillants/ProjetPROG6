@@ -22,9 +22,9 @@ public class MiseEnEvidenceCase implements EventHandler<MouseEvent> {
 				for (int j = 0; j < pc.plateau.getSize()-(1-i%2); j++) {
 					Case c = pc.plateauGraphique.cases[i][j];
 					if (c.collision(new Point((int) event.getX(), (int) event.getY()))) {
-						c.select();
+						c.mettreEnValeur();
 					} else {
-						c.deselect();
+						c.enleverMiseEnValeur();
 					}
 				}
 			}
