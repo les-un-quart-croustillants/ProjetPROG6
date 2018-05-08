@@ -187,6 +187,6 @@ public class Plateau {
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " + tabToString() + '}';
+		return "{" + size + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
 	}
 }
