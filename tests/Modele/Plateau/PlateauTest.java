@@ -127,7 +127,6 @@ public class PlateauTest {
 		expected.add(new Position(5,8));
 
 		expected.add(new Position(9,4));
-		expected.add(new Position(5,9));
 
 		Assert.assertEquals("accessible test #1/2 failed", expected, sujet.accessible(pos));
 
