@@ -1,6 +1,6 @@
 package Vue.GameObject;
 
-import Joueurs.Pingouin;
+import Modele.Plateau.Pingouin;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

@@ -1,4 +1,4 @@
-package Joueurs;
+package Modele.Plateau;
 
 import Utils.Position;
 
