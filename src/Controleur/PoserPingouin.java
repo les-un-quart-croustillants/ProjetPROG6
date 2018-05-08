@@ -1,6 +1,7 @@
 package Controleur;
 
 import java.awt.Point;
+import java.util.LinkedList;
 
 import Modele.Plateau.Pingouin;
 import Utils.Position;
@@ -51,18 +52,24 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				}
 			}
 			else if(GamePane.moteur().currentState() == State.SELECTIONNER_DESTINATION) {
-				/*Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
-				Position lastSelection = GamePane.moteur().pingouinSelection();
+				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
+				Position lastSelection = GamePane.moteur().pingouinSelection().position();
+				LinkedList<Position> lastaccessibles = pc.plateau.accessible(lastSelection);
 				if (c != null && GamePane.moteur().selectionnerDestination(c.posPlateau)) {
 					System.out.println("truc");
-				}
-				else {
-					for (Position pos : pc.plateau.accessible(lastSelection)) {
+					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].posPlateau=c.posPlateau;
+					for (Position pos : lastaccessibles) {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
 					}
+				}
+				else {
 					System.out.println(GamePane.moteur().currentState());
-				}*/
+					for (Position pos : lastaccessibles) {
+						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
+							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
+					}
+				}
 			}
 		}
 
