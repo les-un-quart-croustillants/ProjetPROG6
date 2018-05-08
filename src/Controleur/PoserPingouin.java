@@ -2,7 +2,7 @@ package Controleur;
 
 import java.awt.Point;
 
-import Joueurs.Pingouin;
+import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Cadre.PlateauCadre;
 import Vue.GameObject.Case;
@@ -21,13 +21,13 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 	@Override
 	public void handle(MouseEvent event) {
 		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-			/*Si la case cliquée n'est pas détruite(hors du terrain) et n'a pas deja un pingouin
-			 * On ajoute un pingouin à cette case
+			/*Si la case cliquï¿½e n'est pas dï¿½truite(hors du terrain) et n'a pas deja un pingouin
+			 * On ajoute un pingouin ï¿½ cette case
 			 */
 			
 			/*
 			 * Ci-dessous un exemple simple d'ajout de pingouin dans les gameobjects,
-			 * mais il faudra aussi l'ajouter dans le modèle!
+			 * mais il faudra aussi l'ajouter dans le modï¿½le!
 			 */
 			Case c = pc.plateauGraphique.XYtoCase(new Point((int)event.getX(),(int)event.getY()));
 			if(c!=null) {
