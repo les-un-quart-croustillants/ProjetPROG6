@@ -1,13 +1,12 @@
 package Joueurs;
 
 
+import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.fail;
 
@@ -16,22 +15,19 @@ public class JoueurPhysiqueTest {
 
 	@Before
 	public void setUp() {
-		ArrayList<Pingouin> s = new ArrayList<Pingouin>();
-		s.add(new Pingouin(0,new Position(1,1)));
-		s.add(new Pingouin(0,new Position(4,2)));
-		j = new JoueurPhysique(0,s);
+		j = new JoueurPhysique(0,2);
 	}
 
 	@Test
 	public void jouerCoup() {
-		Plateau plateau = new Plateau(10);;
-		Pingouin pingouin;
-		Position goal;
+		Plateau plateau = new Plateau(10);
+		Position start,goal;
 		int expected;
-
 		setUp();
+		
+		fail("Not implemented.");
 
-		pingouin = j.squad().get(0);
+		/*pingouin = j.squad().get(0);
 		goal = new Position(1,2);
 		expected = plateau.getCellule(goal).getFish();
 		try {
@@ -75,7 +71,7 @@ public class JoueurPhysiqueTest {
 		} catch (Exception e) {
 			Assert.assertEquals(e.getMessage(), "Le pingouin en (4,6) n'est pas reconnus par le joueur 0 (erreur interne).");
 		}
-
+		*/
 	}
 
 }

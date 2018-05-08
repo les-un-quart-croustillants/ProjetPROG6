@@ -3,78 +3,79 @@ package Joueurs;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
-import java.util.ArrayList;
-
 public abstract class Joueur {
 	private int id;
-	private ArrayList<Pingouin> squad;
-	private int score;
-
-	public Joueur(){
-		this.id = 0;
-		this.squad = new ArrayList<Pingouin>();
-		this.score = 0;
-	}
+	private int nbPingouins;
+	private int scoreFish;
+	private int scoreDestroyed;
 	
 	public Joueur(int id){
 		this.id = id;
-		this.squad = new ArrayList<Pingouin>();
-		this.score = 0;
+		this.scoreFish = 0;
+		this.scoreDestroyed = 0;
 	}
-
-	public Joueur(int id, ArrayList<Pingouin> s){
+	
+	public Joueur(int id,int p){
 		this.id = id;
-		this.squad = s;
-		this.score = 0;
+		this.nbPingouins = p;
+		this.scoreFish = 0;
+		this.scoreDestroyed = 0;
 	}
 
 	public int id() {
 		return this.id;
 	}
-	
-	public ArrayList<Pingouin> squad(){
-		return this.squad;
-	}
 
-	public int score() {
-		return this.score;
+	public int scoreFish() {
+		return this.scoreFish;
+	}
+	
+	public int scoreDestroyed() {
+		return this.scoreDestroyed;
+	}
+	
+	public int nbPingouin() {
+		return this.nbPingouins;
 	}
 	
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public void setScore(int s) {
-		this.score = s;
+	public void setScoreFish(int s) {
+		this.scoreFish = s;
 	}
 	
-	public void addScore(int a) {
-		this.score += a;
+	public void addScoreFish(int a) {
+		this.scoreFish += a;
 	}
 	
-	public void removeScore(int l) {
-		this.score -= l;
+	public void subScoreFish(int l) {
+		this.scoreFish -= l;
 	}
-
-	public void setSquad(ArrayList<Pingouin> s) {
-		this.squad = s;
+	
+	public void setScoreDestroyed(int s) {
+		this.scoreDestroyed = s;
 	}
-
-	public int squadSize() {
-		return this.squad.size();
+	
+	public void addScoreDestroyed(int a) {
+		this.scoreDestroyed += a;
 	}
-
-	public void addSquad(Pingouin p) throws Exception {
-		if(p.employeur() == this.id()) {
-			this.squad.add(p);
-		} else {
-			throw new Exception("insertion impossible. Le pingouin en "+p.position()+" n'appartient pas au joueur "+this.id()+".");
-		}
-		
+	
+	public void subScoreDestroyed(int l) {
+		this.scoreDestroyed -= l;
 	}
-
-	public void removeSquad(Pingouin p) {
-		this.squad.remove(p);
+	
+	public void setNbPingouins(int s) {
+		this.nbPingouins = s;
+	}
+	
+	public void addNbPingouins(int a) {
+		this.nbPingouins += a;
+	}
+	
+	public void subNbPingouins(int l) {
+		this.nbPingouins -= l;
 	}
 
 	/**
@@ -86,6 +87,17 @@ public abstract class Joueur {
 	public Position prochainCoup(Plateau plateau) {
 		return new Position(-1,-1);
 	}
+	
+	/**
+	 * Fonction appellee par un joueur pour poser un pingouin sur le plateau
+	 * renvois true si tout c'est bien passe, false sinon
+	 * @param plateau
+	 * @param position
+	 * @return
+	 */
+	public boolean poserPingouin(Plateau plateau,Position position) {
+		return false;
+	}
 
 	/**
 	 * Fonction appellee par un joueur pour jouer un coup
@@ -93,12 +105,17 @@ public abstract class Joueur {
 	 * ou -1 si une erreur c'est produite
 	 * 
 	 * @param plateau le plateau de jeu
-	 * @param pingouin le pingouin concerne
+	 * @param pingouin position du pingouin a deplacer
 	 * @param goal la destination souhaitee
 	 * @return le nombre de poissons mangee par le pingouin lors du coup ou -1 si une erreur c'est produite
 	 * @throws Exception 
 	 */
-	public int jouerCoup(Plateau plateau, Pingouin pingouin, Position goal) throws Exception {
+	public int jouerCoup(Plateau plateau, Position start, Position goal) throws Exception {
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		return "[ID:"+this.id+", Pingouins:"+this.nbPingouins+", Score:"+this.scoreFish+"("+this.scoreDestroyed+")]";
 	}
 }
