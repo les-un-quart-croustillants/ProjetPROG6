@@ -30,7 +30,7 @@ public class JoueurPhysique extends Joueur {
 		
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
-				res = -1;//plateau.jouer(start,goal);
+				res = plateau.jouer(start,goal);
 				if(res > 0) {
 					super.addScoreFish(res);	
 				}
