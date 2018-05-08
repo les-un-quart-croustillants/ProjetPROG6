@@ -21,11 +21,13 @@ public class JoueurPhysique extends Joueur {
 		
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
-				res = plateau.jouer(start,goal);
+				res = -1;//plateau.jouer(start,goal);
 				if(res > 0) {
 					super.addScoreFish(res);	
 				}
-				this.addScoreDestroyed(1);
+				if(res >= 0) {
+					this.addScoreDestroyed(1);	
+				}
 				return res;
 			} else {
 				throw new Exception("Le pingouin en "+start+" n'appartient pas au joueur "+this.id()+".");
