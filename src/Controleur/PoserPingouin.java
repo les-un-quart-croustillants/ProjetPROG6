@@ -51,7 +51,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				}
 			}
 			else if(GamePane.moteur().currentState() == State.SELECTIONNER_DESTINATION) {
-				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
+				/*Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				Position lastSelection = GamePane.moteur().pingouinSelection();
 				if (c != null && GamePane.moteur().selectionnerDestination(c.posPlateau)) {
 					System.out.println("truc");
@@ -62,7 +62,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
 					}
 					System.out.println(GamePane.moteur().currentState());
-				}
+				}*/
 			}
 		}
 
