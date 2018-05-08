@@ -6,7 +6,7 @@ public class Cellule {
 	private Position position;
 	private boolean destroyed;
 	private int fish;
-	Pingouin pingouin;
+	private Pingouin pingouin;
 
 	public Cellule() {
 		this(new Position(0,0), false, 0, null);
@@ -47,8 +47,28 @@ public class Cellule {
 		return this.pingouin != null;
 	}
 
+	public boolean isObstacle() {
+		return this.isDestroyed() || this.aPingouin();
+	}
+
 	public Pingouin pingouin() {
 		return this.pingouin;
+	}
+
+	public void setDestroyed(boolean b) {
+		this.destroyed = b;
+	}
+
+	public void setFish(int fish) {
+		this.fish = fish;
+	}
+
+	public void setPenguin(Pingouin pingouin) {
+		this.pingouin = pingouin;
+	}
+
+	public Cellule clone() {
+		return new Cellule(this.position, this.destroyed, this.fish);
 	}
 
 	@Override

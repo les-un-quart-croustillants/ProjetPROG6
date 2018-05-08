@@ -1,5 +1,6 @@
 package Joueurs;
 
+import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
@@ -14,12 +15,22 @@ public class JoueurPhysique extends Joueur {
 	}
 	
 	@Override
+	public boolean posePingouin(Plateau plateau,Position position) {
+		boolean res;
+		res = plateau.poserPingouin(position, new Pingouin(this.id()));
+		if(res) {
+			super.addScoreFish(1);
+		}
+		return res;
+	}
+	
+	@Override
 	public int jouerCoup(Plateau plateau,Position start, Position goal) throws Exception {
 		int res;
 		
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
-				res = -1;//plateau.jouer(start,goal);
+				res = plateau.jouer(start,goal);
 				if(res > 0) {
 					super.addScoreFish(res);	
 				}
