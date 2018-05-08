@@ -23,7 +23,7 @@ public class Plateau {
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
-				if(i % 2 == 1 && j == this.size-1) { // TODO : inverser les lignes longues/courtes
+				if(i % 2 == 1 && j == this.size-1) {
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
@@ -80,7 +80,7 @@ public class Plateau {
 	}
 
 	private void safeAdd(LinkedList<Position> l, Position candidat) {
-		if (isInTab(candidat))
+		if (isInTab(candidat) && !getCellule(candidat).isDestroyed())
 			l.add(candidat);
 	}
 
