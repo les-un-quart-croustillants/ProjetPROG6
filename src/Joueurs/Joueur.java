@@ -1,6 +1,5 @@
 package Joueurs;
 
-import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
