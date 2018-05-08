@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import Joueurs.Joueur;
 import Joueurs.JoueurPhysique;
+import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
@@ -13,8 +14,10 @@ public class Moteur {
 	private Joueur joueurs[];
 	private Plateau plateau;
 	private int njoueurs;
-	private int indexJoueurCourant = 0;
-	private State currentState;
+	private int nbPingouin;
+	private int indexJoueurCourant=0;
+	private Position selected;
+       	private State currentState;
 	private Position pingouinSelection;
 	private HashMap<Couple<State, Action>, State> transition;
 	
@@ -25,7 +28,11 @@ public class Moteur {
 	 *
 	 */
 	public enum State {
-		INIT, POSER_PINGOUIN, SELECTIONNER_PINGOUIN, SELECTIONNER_DESTINATION;
+		INIT, 						//Etat du moteur apres initialisation
+		POSER_PINGOUIN, 			//Phase de pose des pingouins
+		SELECTIONNER_PINGOUIN, 		//Deroulement du jeu: selection pingouin
+		SELECTIONNER_DESTINATION,	//Deroulement du jeu: selection destination
+		RESULTATS;					//Etat en fin de partie
 
 		static public String toString(State s) {
 			switch (s) {
@@ -37,11 +44,12 @@ public class Moteur {
 				return "SELECTIONNER_PINGOUIN";
 			case SELECTIONNER_DESTINATION:
 				return "SELECTIONNER_DESTINATION";
+			case RESULTATS:
+				return "RESULTATS";
 			default:
 				return "undefined";
 			}
 		}
-
 	}
 
 	/**
@@ -50,12 +58,21 @@ public class Moteur {
 	 *
 	 */
 	public enum Action {
-		ERROR;
+		MAUVAIS_ETAT,		// La machine a etat a deraillee
+		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
+		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
+		PINGOUINPOSES;		// La phase de pose de pingouin est terminee
 		
 		static public String toString(Action s) {
 			switch(s) {
-			case ERROR:
-				return "ERROR";
+			case MAUVAIS_ETAT:
+				return "MAUVAIS_ETAT";
+			case SELECTION_VALIDE:
+				return "SELECTION_VALIDE";
+			case SELECTION_INVALIDE:
+				return "SELECTION_INVALIDE";
+			case PINGOUINPOSES:
+				return "PINGOUINPOSES";
 			default:
 				return "undefined";
 			}
@@ -66,6 +83,7 @@ public class Moteur {
 		this.plateau = p;
 		this.njoueurs = njoueurs;
 		joueurs = new Joueur[njoueurs];
+		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
 
@@ -80,6 +98,22 @@ public class Moteur {
 	 */
 	private void initTransitions() {
 		this.transition = new HashMap<Couple<State,Action>,State>();
+		
+		// POSER_PINGOUIN
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.PINGOUINPOSES),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.SELECTION_VALIDE),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.SELECTION_INVALIDE),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.MAUVAIS_ETAT),State.POSER_PINGOUIN);
+		
+		// SELECTIONNER_PINGOUIN
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_VALIDE),State.SELECTIONNER_DESTINATION);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.MAUVAIS_ETAT),State.SELECTIONNER_PINGOUIN);
+		
+		// SELECTIONNER_DESTINATION
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_VALIDE),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_INVALIDE),State.SELECTIONNER_DESTINATION);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
 	}
 	
 	public void transition(Action action) {
@@ -124,75 +158,97 @@ public class Moteur {
 	}
 
 	/**
-	 * poserPingouin : pose un pingouin à la position donnée en paramètre et change
-	 * l'état du moteur (joueur courant + état courant)
+	 * poserPingouin : pose un pingouin ï¿½ la position donnï¿½e en paramï¿½tre et change
+	 * l'ï¿½tat du moteur (joueur courant + ï¿½tat courant)
 	 * 
 	 * @param p
-	 *            : position où poser le pingouin
-	 * @return true si le pingouin a été posé, false sinon
+	 *            : position oï¿½ poser le pingouin
+	 * @return true si le pingouin a ï¿½tï¿½ posï¿½, false sinon
 	 */
-	public boolean poserPingouin(Position p) {
+	public boolean poserPingouin(Position position) {
 		if (currentState == State.POSER_PINGOUIN) {
-			/*
-			 * Si plateau.getCellule(p) n'est pas un obstacle et n'a pas de pingouin
-			 * 		Si plateau.getCellule(p) a 1 seul poisson
-			 * 			plateau.getCellule(p).setPingouin(new Pingouin(joueurCourant))
-			 * 			joueurCourant.score++
-			 * 			joueurSuivant()
-			 * 			Si (njoueurs == 3 && npingouins == 9 || npingouins == 8)
-			 *				currentState = State.SELECTIONNER_PINGOUIN;
-			 *			return true
-			 */
+			//Si la pose reussis
+			if (this.joueurCourant().posePingouin(this.plateau, position)) {
+				this.nbPingouin++;
+				this.joueurSuivant();
+				// Si tout les pingouins ont ete poses
+				if(this.njoueurs == 3 && this.nbPingouin==9 || this.njoueurs != 3 && this.nbPingouin==8 ) {
+					transition(Action.PINGOUINPOSES);
+				} else {
+					transition(Action.SELECTION_VALIDE);
+				}
+				return true;
+			} else {
+				transition(Action.SELECTION_INVALIDE);
+				return false;
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return false;
 		}
-		return false;
 	}
 
 	/**
-	 * selectionnerPingouin : le moteur retiendra le pingouin selectionné (et change son état en conséquence)
+	 * selectionnerPingouin : le moteur retiendra le pingouin selectionnï¿½ (et change son ï¿½tat en consï¿½quence)
 	 * 
-	 * @param p : position du pingouin à selectionner
-	 * @return true si le pingouin a été séléctionné, false sinon
+	 * @param p : position du pingouin ï¿½ selectionner
+	 * @return true si le pingouin a ï¿½tï¿½ sï¿½lï¿½ctionnï¿½, false sinon
 	 */
 	public boolean selectionnerPingouin(Position p) {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
-			/*
-			 * Si plateau.getCellule(p).aPingouin && ce pingouin appartient au joueur courant
-			 * 		pingouinSelection = plateau.getCellule(p).pingouin
-			 * 		currentState = State.SELECTIONNER_DESTINATION
-			 * 		return true
-			 */
+			//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
+			if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
+				this.selected = p;
+				transition(Action.SELECTION_VALIDE);
+				return true;
+			} else {
+				transition(Action.SELECTION_INVALIDE);
+				return false;
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return false;
 		}
-		pingouinSelection = null;
-		return false;
 	}
 	
 	/**
-	 * selectionnerDestinnation : si possible, déplace le pingouin actuellement selectionné à la destination
+	 * selectionnerDestinnation : si possible, dï¿½place le pingouin actuellement selectionnï¿½ ï¿½ la destination
 	 * 
 	 * @param p : destination
-	 * @return true si le pingouin séléctionné a été déplacé, false sinon
+	 * @return true si le pingouin sï¿½lï¿½ctionnï¿½ a ï¿½tï¿½ dï¿½placï¿½, false sinon
+	 * @throws Exception 
 	 */
-	public boolean selectionnerDestination(Position p) {
+	public boolean selectionnerDestination(Position destination){
 		if (currentState == State.SELECTIONNER_DESTINATION) {
-			/*
-			 * Pingouin ping = plateau.getCellule(pingouinSelection,p)
-			 * Si ping!=null && pin.appartientJoueur(joueurCourant) && plateau.estAccessible(pingouinSelection.position,p)
-			 * 		plateau.jouer(ping,p)
-			 * 		joueurSuivant()
-			 * 		currentState = State.SELECTIONNER_PINGOUIN;
-			 * 		return true
-			 */
+			try {
+				if (this.joueurCourant().jouerCoup(this.plateau,selected,destination) < 0) {
+					transition(Action.SELECTION_INVALIDE);
+					return false;
+				} else {
+					joueurSuivant();
+					transition(Action.SELECTION_VALIDE);
+					return true;
+				}
+			} catch (Exception e) {
+				transition(Action.SELECTION_INVALIDE);
+				return false;
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return false;
 		}
-		currentState = State.SELECTIONNER_PINGOUIN;
-		return false;
 	}
 	
 	/**
-	 * pingouinSelection : renvoie le pingouin actuellement selectionné
+	 * pingouinSelection : renvoie le pingouin actuellement selectionnï¿½
 	 * 
-	 * @return le pingouin actuellement selectionné (ou null s'il n'y en a pas)
+	 * @return le pingouin actuellement selectionnï¿½ (ou null s'il n'y en a pas)
 	 */
-	public Position pingouinSelection() {
-		return pingouinSelection;
+	public Pingouin pingouinSelection() {
+		if(this.plateau.getCellule(this.selected).aPingouin()) {
+			return this.plateau.getCellule(this.selected).pingouin();
+		} else {
+			return null;
+		}
 	}
 }

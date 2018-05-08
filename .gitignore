@@ -27,3 +27,5 @@ hs_err_pid*
 # fichiers de config intellij idea
 .idea/
 *.iml
+
+todo
