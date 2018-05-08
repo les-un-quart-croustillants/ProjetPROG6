@@ -1,9 +1,12 @@
 package Vue;
 
 
+import java.util.HashMap;
+
 import Joueurs.Joueur;
 import Joueurs.JoueurPhysique;
 import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.Position;
 
 public class Moteur {
@@ -13,7 +16,8 @@ public class Moteur {
 	private int indexJoueurCourant = 0;
 	private State currentState;
 	private Position pingouinSelection;
-
+	private HashMap<Couple<State, Action>, State> transition;
+	
 	/**
 	 * Enum des etats de l'automate
 	 * 
@@ -40,16 +44,46 @@ public class Moteur {
 
 	}
 
+	/**
+	 * Actions possibles renvoyees par actionMoteur ou configMoteur
+	 * @author Louka Soret
+	 *
+	 */
+	public enum Action {
+		ERROR;
+		
+		static public String toString(Action s) {
+			switch(s) {
+			case ERROR:
+				return "ERROR";
+			default:
+				return "undefined";
+			}
+		}
+	}
+	
 	public Moteur(Plateau p, int njoueurs) {
 		this.plateau = p;
 		this.njoueurs = njoueurs;
 		joueurs = new Joueur[njoueurs];
 		currentState = State.INIT;
+		initTransitions();
 
 		// par defaut, on met que des joueurs physiques
 		for (int i = 0; i < njoueurs; i++) {
 			joueurs[i] = new JoueurPhysique(i);
 		}
+	}
+	
+	/**
+	 * Remplissage de la fonction de transition
+	 */
+	private void initTransitions() {
+		this.transition = new HashMap<Couple<State,Action>,State>();
+	}
+	
+	public void transition(Action action) {
+		this.currentState = this.transition.get(new Couple<State,Action>(this.currentState,action));
 	}
 
 	public State currentState() {
