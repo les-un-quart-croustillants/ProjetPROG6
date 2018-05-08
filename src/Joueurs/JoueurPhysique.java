@@ -19,8 +19,8 @@ public class JoueurPhysique extends Joueur {
 	public int jouerCoup(Plateau plateau,Position start, Position goal) throws Exception {
 		int res;
 		
-		if(plateau.foo(start)) { //test si le pingouin existe
-			if(plateau.foo2(start).employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
+		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
+			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
 				res = plateau.jouer(start,goal);
 				if(res > 0) {
 					super.addScoreFish(res);	
