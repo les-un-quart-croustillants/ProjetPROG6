@@ -1,6 +1,5 @@
 package Modele.Plateau;
 
-import Joueurs.Pingouin;
 import Utils.Position;
 
 public class Move {
