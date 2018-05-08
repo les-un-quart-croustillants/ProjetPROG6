@@ -3,7 +3,6 @@ package Vue;
 
 import Joueurs.Joueur;
 import Joueurs.JoueurPhysique;
-import Joueurs.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
@@ -90,21 +89,6 @@ public class Moteur {
 		return joueurCourant();
 	}
 
-	/*
-	 * FONCTION A REMPLACER PAR QQCHOSE DE PLUS PRATIQUE
-	 */
-	private boolean contientPingouin(Position p) {
-		for (int i = 0; i < njoueurs; i++) {
-			Joueur joueur = joueurs[i];
-			for (Pingouin pingouin : joueur.squad()) {
-				if (pingouin.position().i() == p.i() && pingouin.position().j() == p.j()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * poserPingouin : pose un pingouin à la position donnée en paramètre et change
 	 * l'état du moteur (joueur courant + état courant)
@@ -115,45 +99,16 @@ public class Moteur {
 	 */
 	public boolean poserPingouin(Position p) {
 		if (currentState == State.POSER_PINGOUIN) {
-			if (!contientPingouin(p)) {
-				pingouinSelection = p;
-				try {
-					joueurCourant().addSquad(new Pingouin(joueurCourant().id(), p));
-				} catch (Exception e) {
-					return false;
-				}
-				joueurSuivant();
-
-				int npingouins = 0;
-				for (int i = 0; i < njoueurs; i++) {
-					npingouins += joueurs[i].squadSize();
-				}
-				if (njoueurs == 3 && npingouins == 9 || npingouins == 8) {
-					currentState = State.SELECTIONNER_PINGOUIN;
-				}
-
-				return true;
-			}
-		}
-		return false;
-	}
-
-	
-	/*
-	 * FONCTION A REMPLACER PAR QQCHOSE DE PLUS PRATIQUE
-	 */
-	/**
-	 * pingouinAJoueurCourant : test si le joueur courant a un pingouin sur la position donnée en paramètre
-	 * 
-	 * @param p : position du pingouin
-	 * @return true le joueur courant a un pingouin à cette position, false sinon
-	 */
-	private boolean pingouinAJoueurCourant(Position p) {
-		Joueur joueur = joueurCourant();
-		for (Pingouin pingouin : joueur.squad()) {
-			if (pingouin.position().i() == p.i() && pingouin.position().j() == p.j()) {
-				return true;
-			}
+			/*
+			 * Si plateau.getCellule(p) n'est pas un obstacle et n'a pas de pingouin
+			 * 		Si plateau.getCellule(p) a 1 seul poisson
+			 * 			plateau.getCellule(p).setPingouin(new Pingouin(joueurCourant))
+			 * 			joueurCourant.score++
+			 * 			joueurSuivant()
+			 * 			Si (njoueurs == 3 && npingouins == 9 || npingouins == 8)
+			 *				currentState = State.SELECTIONNER_PINGOUIN;
+			 *			return true
+			 */
 		}
 		return false;
 	}
@@ -166,26 +121,15 @@ public class Moteur {
 	 */
 	public boolean selectionnerPingouin(Position p) {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
-			if (pingouinAJoueurCourant(p)) {
-				pingouinSelection = p;
-				currentState = State.SELECTIONNER_DESTINATION;
-				return true;
-			}
+			/*
+			 * Si plateau.getCellule(p).aPingouin && ce pingouin appartient au joueur courant
+			 * 		pingouinSelection = plateau.getCellule(p).pingouin
+			 * 		currentState = State.SELECTIONNER_DESTINATION
+			 * 		return true
+			 */
 		}
 		pingouinSelection = null;
 		return false;
-	}
-	
-	/*
-	 * FONCTION A REMPLACER PAR QQCHOSE DE PLUS PRATIQUE
-	 */
-	private Pingouin getPingouin(Joueur j,Position p) {
-		for (Pingouin pingouin : j.squad()) {
-			if (pingouin.position().i() == p.i() && pingouin.position().j() == p.j()) {
-				return pingouin;
-			}
-		}
-		return null;
 	}
 	
 	/**
@@ -196,15 +140,14 @@ public class Moteur {
 	 */
 	public boolean selectionnerDestination(Position p) {
 		if (currentState == State.SELECTIONNER_DESTINATION) {
-			if (!contientPingouin(p)) {
-				Pingouin ping = getPingouin(joueurCourant(), pingouinSelection);
-				if(ping!=null) {
-					plateau.jouer(getPingouin(joueurCourant(), pingouinSelection),p);
-					joueurSuivant();
-					currentState = State.SELECTIONNER_PINGOUIN;
-					return true;
-				}
-			}
+			/*
+			 * Pingouin ping = plateau.getCellule(pingouinSelection,p)
+			 * Si ping!=null && pin.appartientJoueur(joueurCourant) && plateau.estAccessible(pingouinSelection.position,p)
+			 * 		plateau.jouer(ping,p)
+			 * 		joueurSuivant()
+			 * 		currentState = State.SELECTIONNER_PINGOUIN;
+			 * 		return true
+			 */
 		}
 		currentState = State.SELECTIONNER_PINGOUIN;
 		return false;

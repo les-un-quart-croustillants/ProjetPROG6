@@ -1,7 +1,8 @@
 package Controleur;
 
 import java.awt.Point;
-import Joueurs.Pingouin;
+
+import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.Moteur.State;
