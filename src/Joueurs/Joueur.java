@@ -87,6 +87,17 @@ public abstract class Joueur {
 	public Position prochainCoup(Plateau plateau) {
 		return new Position(-1,-1);
 	}
+	
+	/**
+	 * Fonction appellee par un joueur pour poser un pingouin sur le plateau
+	 * renvois true si tout c'est bien passe, false sinon
+	 * @param plateau
+	 * @param position
+	 * @return
+	 */
+	public boolean poserPingouin(Plateau plateau,Position position) {
+		return false;
+	}
 
 	/**
 	 * Fonction appellee par un joueur pour jouer un coup
