@@ -212,15 +212,20 @@ public class Moteur {
 	 * @return true si le pingouin s�l�ctionn� a �t� d�plac�, false sinon
 	 * @throws Exception 
 	 */
-	public boolean selectionnerDestination(Position destination) throws Exception {
+	public boolean selectionnerDestination(Position destination){
 		if (currentState == State.SELECTIONNER_DESTINATION) {
-			if (this.joueurCourant().jouerCoup(this.plateau,selected,destination) < 0) {
+			try {
+				if (this.joueurCourant().jouerCoup(this.plateau,selected,destination) < 0) {
+					transition(Action.SELECTION_INVALIDE);
+					return false;
+				} else {
+					joueurSuivant();
+					transition(Action.SELECTION_VALIDE);
+					return true;
+				}
+			} catch (Exception e) {
 				transition(Action.SELECTION_INVALIDE);
 				return false;
-			} else {
-				joueurSuivant();
-				transition(Action.SELECTION_VALIDE);
-				return true;
 			}
 		} else {
 			transition(Action.MAUVAIS_ETAT);
@@ -240,5 +245,4 @@ public class Moteur {
 			return null;
 		}
 	}
-
 }
