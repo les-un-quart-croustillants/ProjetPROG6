@@ -131,9 +131,24 @@ public class Plateau {
 				currentCell = getCellule(current);
 				currentCell.destroy();
 				penguin.setPosition(target);
-				// targetCell.addPenguin(penguin);
+				targetCell.setPenguin(penguin);
 				res = targetCell.getFish();
 			}
+		}
+		return res;
+	}
+
+	/**
+	 * jouer : déplace un pingouin si possible
+	 * @param current : position du pingouin à déplacer
+	 * @param target : position cible
+	 * @return le nombre de poissons mangés si le déplacement est possible
+	 * -1 sinon.
+	 */
+	public int jouer(Position current, Position target) {
+		int res = -1;
+		if (tab[current.i()][current.j()].aPingouin()) {
+			res = jouer(tab[current.i()][current.j()].pingouin(), target);
 		}
 		return res;
 	}
