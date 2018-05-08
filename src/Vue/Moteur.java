@@ -117,7 +117,12 @@ public class Moteur {
 	}
 	
 	public void transition(Action action) {
-		this.currentState = this.transition.get(new Couple<State,Action>(this.currentState,action));
+		Couple<State,Action> newkey = new Couple<State,Action>(this.currentState,action);
+		for(Couple<State,Action> key: this.transition.keySet()) {
+			if(key.equals(newkey)) {
+				this.currentState = this.transition.get(key);
+			}
+		}
 	}
 
 	public State currentState() {
