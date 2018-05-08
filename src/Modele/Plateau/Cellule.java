@@ -47,6 +47,10 @@ public class Cellule {
 		return this.pingouin != null;
 	}
 
+	public boolean isObstacle() {
+		return this.isDestroyed() || this.aPingouin();
+	}
+
 	public Pingouin pingouin() {
 		return this.pingouin;
 	}
