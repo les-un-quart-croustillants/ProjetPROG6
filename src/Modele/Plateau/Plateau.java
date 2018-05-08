@@ -153,6 +153,7 @@ public class Plateau {
 		return res;
 	}
 
+	/* Implementation pour Plateau.redo() */
 	private int jouer(Move m) {
 		return jouer(m.getPenguin(), m.getTarget());
 	}
@@ -176,9 +177,7 @@ public class Plateau {
 		return fishAte;
 	}
 
-	public int redo() { // TODO : implementer redo
-		// System.err.println("Plateau.redo not implemented");
-		// return false;
+	public int redo() {
 		if (undoList.isEmpty())
 			return -1;
 		return jouer(undoList.removeFirst());
