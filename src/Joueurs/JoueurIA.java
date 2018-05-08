@@ -6,7 +6,7 @@ import Modele.Plateau.Plateau;
 import Utils.Position;
 
 public class JoueurIA extends Joueur {
-	ArrayList<Position> pingouinsPos;
+	private ArrayList<Position> pingouinsPos;
 
 	public JoueurIA(int id){
 		super(id);
