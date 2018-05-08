@@ -1,5 +1,6 @@
 package Joueurs;
 
+import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
@@ -11,6 +12,16 @@ public class JoueurPhysique extends Joueur {
 	
 	public JoueurPhysique(int id,int p){
 		super(id,p);
+	}
+	
+	@Override
+	public boolean posePingouin(Plateau plateau,Position position) {
+		boolean res;
+		res = plateau.poserPingouin(position, new Pingouin(this.id()));
+		if(res) {
+			super.addScoreFish(1);
+		}
+		return res;
 	}
 	
 	@Override

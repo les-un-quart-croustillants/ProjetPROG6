@@ -95,7 +95,7 @@ public abstract class Joueur {
 	 * @param position
 	 * @return
 	 */
-	public boolean poserPingouin(Plateau plateau,Position position) {
+	public boolean posePingouin(Plateau plateau,Position position) {
 		return false;
 	}
 
