@@ -1,21 +1,66 @@
 .menu {
 	-fx-alignment: center;
-	-fx-font-size: 38px;
 	-fx-font-family: "Luckiest Guy";
 	-fx-background-color: radial-gradient(radius 100%, #1cc6ea, #1a2baa);	
 }
 
-.button {
+.textbutton {
+	-fx-font-size: 38px;
 	-fx-background-color: white;
 	-fx-border-image-source: url("border_banquise.png");
 	-fx-border-image-slice: 20, 20, 25, 20;
 	-fx-border-image-repeat: stretch;
 	-fx-border-image-width: 20px 20px 25px 20px;
 	-fx-background-insets: 15px;
-	/*-fx-padding: 0px;*/
+	-fx-padding: 0px;
+}
+
+.mapselection {
+	-fx-spacing: 30px;
+}
+
+.iconbutton {
+	-fx-background-color: transparent;
+}
+
+.leftbutton {
+	-fx-background-image: url("leftarrow_ice.png");
+	-fx-pref-width: 71px;
+	-fx-pref-height: 77px;
+}
+
+.mapbutton {
+	-fx-background-image: url("banquise.png");
+	-fx-pref-width: 320px;
+	-fx-pref-height: 230px;
+	-fx-border-image-source: url("border_banquise.png");
+	-fx-border-image-slice: 20, 20, 25, 20;
+	-fx-border-image-repeat: stretch;
+	-fx-border-image-width: 20px 20px 25px 20px;
+	-fx-border-image-insets: -20px;
+}
+
+.rightbutton {
+	-fx-background-image: url("rightarrow_ice.png");
+	-fx-pref-width: 71px;
+	-fx-pref-height: 77px;
+}
+
+.config {
+	-fx-font-size: 24px;
+	-fx-border-image-width: 5px 5px 5px 5px;
+	-fx-background-insets: 4px;
 }
 
 .button:hover {
 	-fx-effect:  dropshadow(three-pass-box, rgba(255,255,255,1), 15, 0, 0, 0);
-	/*-fx-padding: 0px 10px 0px 10px;*/
+}
+
+.label {
+	-fx-text-fill: white;
+	-fx-font-size: 58px;
+}
+
+.menu {
+	-fx-spacing: 15px;
 }
