@@ -20,16 +20,18 @@ public class NewGameMenu extends VBox {
 		Font.loadFont(getClass().getResourceAsStream("LuckiestCuy.ttf"), 14);
 		this.getStyleClass().add("menu");
 		this.getStylesheets().add("banquise.css");
+		this.getStylesheets().add("menus.css");
 		create_elements();
 	}
 	
 private void create_elements() {
 		this.getStyleClass().add("menu");
 		// Allocations
+		VBox playAndBackButtons = new VBox();
 		Button config = new Button("Config.");
 		Button jouer = new Button("Jouer");
 		Button retour = new Button("Retour");
-		Label mapName = new Label("Banquise");
+		Label mapName = new Label("BANQUISE");
 		HBox mapSelection = new HBox();
 		Button leftMap = new Button();
 		Button rightMap = new Button();
@@ -45,21 +47,52 @@ private void create_elements() {
 		rightMap.getStyleClass().addAll("iconbutton", "rightbutton");
 		
 		config.getStyleClass().add("config");
-		mapSelection.setAlignment(Pos.CENTER);
 		
+		mapSelection.setAlignment(Pos.CENTER);
 		mapSelection.getStyleClass().add("mapselection");
-		mapSelection.getChildren().add(rightMap);
-		mapSelection.getChildren().add(mapButton);
 		mapSelection.getChildren().add(leftMap);
+		mapSelection.getChildren().add(mapButton);
+		mapSelection.getChildren().add(rightMap);
+		
+		playAndBackButtons.getStyleClass().add("playandback");
+		playAndBackButtons.getChildren().add(jouer);
+		playAndBackButtons.getChildren().add(retour);
 		
 		this.getChildren().add(mapName);
 		this.getChildren().add(config);
 		this.getChildren().add(mapSelection);
-		this.getChildren().add(jouer);
-		this.getChildren().add(retour);
+		this.getChildren().add(playAndBackButtons);
 		
 		retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
+			}
+		});
+		
+		leftMap.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				if(instance.getStylesheets().contains("enfer.css")) {
+					instance.getStylesheets().remove("enfer.css");
+					mapName.setText("BANQUISE");
+					instance.getStylesheets().add("banquise.css");
+				} else if(instance.getStylesheets().contains("banquise.css")) {
+					instance.getStylesheets().remove("banquise.css");
+					mapName.setText("ENFER");
+					instance.getStylesheets().add("enfer.css");
+				}
+			}
+		});
+		
+		rightMap.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				if(instance.getStylesheets().contains("enfer.css")) {
+					instance.getStylesheets().remove("enfer.css");
+					mapName.setText("BANQUISE");
+					instance.getStylesheets().add("banquise.css");
+				} else if(instance.getStylesheets().contains("banquise.css")) {
+					instance.getStylesheets().remove("banquise.css");
+					mapName.setText("ENFER");
+					instance.getStylesheets().add("enfer.css");
+				}
 			}
 		});
 	}
