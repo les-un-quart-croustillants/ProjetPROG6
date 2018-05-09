@@ -18,7 +18,7 @@ public class PlateauTest {
 	@Test
 	public void initTab() {
 		for (int i = 0; i < p.getSize(); i++) {
-			if (i % 2 == 1) {
+			if (i % 2 == 0) {
 				Assert.assertTrue("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
 			}
 			else {
