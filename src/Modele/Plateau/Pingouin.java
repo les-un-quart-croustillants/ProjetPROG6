@@ -43,7 +43,14 @@ public class Pingouin {
 	public void setPosition(Position p) {
 		this.position = p;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		return ((Pingouin) obj).employeur == this.employeur
+				&& ((Pingouin) obj).nbPoissonManges == this.nbPoissonManges
+				&& ((this.position != null) && this.position.equals(((Pingouin) obj).position));
+	}
+
 	@Override
 	public String toString() {
 		return "{Position:"+this.position.toString()+", Joueur:"+this.employeur+", Score:"+this.nbPoissonManges+"}";
