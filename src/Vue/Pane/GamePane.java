@@ -1,9 +1,9 @@
 package Vue.Pane;
 
+import Modele.Moteur.Moteur;
+import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Plateau;
-import Vue.Moteur;
 import Vue.Cadre.PlateauCadre;
-import Vue.Moteur.State;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 

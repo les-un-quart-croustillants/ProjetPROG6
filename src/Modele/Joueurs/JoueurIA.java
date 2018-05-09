@@ -1,4 +1,4 @@
-package Joueurs;
+package Modele.Joueurs;
 
 import java.util.ArrayList;
 

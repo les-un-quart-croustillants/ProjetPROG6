@@ -1,10 +1,10 @@
-package Vue;
+package Modele.Moteur;
 
 
 import java.util.HashMap;
 
-import Joueurs.Joueur;
-import Joueurs.JoueurPhysique;
+import Modele.Joueurs.Joueur;
+import Modele.Joueurs.JoueurPhysique;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;

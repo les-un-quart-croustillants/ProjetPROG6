@@ -3,10 +3,10 @@ package Controleur;
 import java.awt.Point;
 import java.util.LinkedList;
 
+import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Donnees;
-import Vue.Moteur.State;
 import Vue.Cadre.PlateauCadre;
 import Vue.GameObject.Case;
 import Vue.GameObject.PingouinGraphique;
