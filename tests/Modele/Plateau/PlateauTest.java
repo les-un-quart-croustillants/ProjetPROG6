@@ -41,19 +41,19 @@ public class PlateauTest {
 		Cellule expected;
 
 		pos = new Position(0,0);
-		expected = new Cellule(pos, false);
+		expected = new Cellule(pos, false, p.getTab()[pos.i()][pos.j()].getFish());
 		Assert.assertEquals("getCellule test #1/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(0,2);
-		expected = new Cellule(pos, true);
+		expected = new Cellule(pos, true,  p.getTab()[pos.i()][pos.j()].getFish());
 		Assert.assertEquals("getCellule test #2/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(1,2);
-		expected = new Cellule(pos, false);
+		expected = new Cellule(pos, false,  p.getTab()[pos.i()][pos.j()].getFish());
 		Assert.assertEquals("getCellule test #3/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(2,2);
-		expected = new Cellule(pos, true);
+		expected = new Cellule(pos, true,  p.getTab()[pos.i()][pos.j()].getFish());
 		Assert.assertEquals("getCellule test #4/4 failed", expected, p.getCellule(pos));
 	}
 

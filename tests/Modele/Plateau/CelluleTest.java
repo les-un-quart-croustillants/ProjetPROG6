@@ -74,8 +74,6 @@ public class CelluleTest {
 		Assert.assertFalse(c1.equals(c3));
 		Assert.assertFalse(c1.equals(c4));
 		Assert.assertFalse(c1.equals(c5));
-		System.out.println(c1);
-		System.out.println(c6);
 		Assert.assertFalse(c1.equals(c6));
 	}
 }
