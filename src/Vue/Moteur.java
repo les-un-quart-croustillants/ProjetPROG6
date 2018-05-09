@@ -276,7 +276,7 @@ public class Moteur {
 					if(selectionnerPingouin(calculated.gauche())) {
 						//Si choix de la destination effectuee
 						if(selectionnerDestination(calculated.droit())) {
-							
+							return null; // FIXME : placeholder
 						}
 					}
 				}
@@ -285,6 +285,7 @@ public class Moteur {
 			transition(Action.MAUVAIS_ETAT);
 			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		}
+		return null; // FIXME : placeholder
 	}
 	
 	/**
