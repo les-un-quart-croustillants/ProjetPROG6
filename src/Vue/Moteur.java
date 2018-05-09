@@ -11,14 +11,18 @@ import Utils.Couple;
 import Utils.Position;
 
 public class Moteur {
+	//DATA
 	private Joueur joueurs[];
 	private Plateau plateau;
+	
+	//ETAT MOTEUR
 	private int njoueurs;
 	private int nbPingouin;
 	private int indexJoueurCourant=0;
 	private Position selected;
-       	private State currentState;
-	private Position pingouinSelection;
+	
+	//AUTOMATE
+    private State currentState;
 	private HashMap<Couple<State, Action>, State> transition;
 	
 	/**
@@ -62,7 +66,8 @@ public class Moteur {
 		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
 		PINGOUINPOSES,		// La phase de pose de pingouin est terminee
-		POSEIA_VALIDE;		// L'IA a reussis sa pose de pingouin
+		POSEIA_VALIDE,		// L'IA a reussis sa pose de pingouin
+		COUPIA_VALIDE;		// L'IA a reussis a effectuer son coup
 		
 		static public String toString(Action s) {
 			switch(s) {
@@ -252,8 +257,8 @@ public class Moteur {
 				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
 				//Si le calcule de l'IA a reussis
 				if(!calculated.equals(new Position(-1,-1))) {
+					//Si la pose a reussi (Change de joueur)
 					if(poserPingouin(calculated)) {
-						transition(Action.POSEIA_VALIDE);
 						return calculated;
 					}
 				}
@@ -274,18 +279,19 @@ public class Moteur {
 				if(!calculated.equals(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)))) {
 					//Si choix du pingouin effectue
 					if(selectionnerPingouin(calculated.gauche())) {
-						//Si choix de la destination effectuee
+						//Si choix de la destination effectuee (change de joueur)
 						if(selectionnerDestination(calculated.droit())) {
-							return null; // FIXME : placeholder
+							return calculated;
 						}
 					}
 				}
 			}
+			transition(Action.SELECTION_INVALIDE);
+			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		} else {
 			transition(Action.MAUVAIS_ETAT);
 			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		}
-		return null; // FIXME : placeholder
 	}
 	
 	/**
