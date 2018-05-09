@@ -1,6 +1,7 @@
 package Joueurs;
 
 import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.Position;
 
 public abstract class Joueur {
@@ -80,12 +81,12 @@ public abstract class Joueur {
 
 	/**
 	 * Fonction appelee dans l'IA pour calculer le prochain coup
-	 * renvoie (-1,-1) si une erreur c'est produite
+	 * renvoie (PosPingouin,PosObjectif) si une erreur c'est produite
 	 * @param plateau
 	 * @return
 	 */
-	public Position prochainCoup(Plateau plateau) {
-		return new Position(-1,-1);
+	public Couple<Position,Position> prochainCoup(Plateau plateau) {
+		return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 	}
 	
 	public Position prochainePosePingouin(Plateau plateau) {
@@ -116,6 +117,10 @@ public abstract class Joueur {
 	 */
 	public int jouerCoup(Plateau plateau, Position start, Position goal) throws Exception {
 		return -1;
+	}
+	
+	public boolean estIA() {
+		return false;
 	}
 	
 	@Override

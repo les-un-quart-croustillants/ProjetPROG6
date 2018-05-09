@@ -61,7 +61,8 @@ public class Moteur {
 		MAUVAIS_ETAT,		// La machine a etat a deraillee
 		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
-		PINGOUINPOSES;		// La phase de pose de pingouin est terminee
+		PINGOUINPOSES,		// La phase de pose de pingouin est terminee
+		POSEIA_VALIDE;		// L'IA a reussis sa pose de pingouin
 		
 		static public String toString(Action s) {
 			switch(s) {
@@ -221,7 +222,7 @@ public class Moteur {
 	 * 
 	 * @param p : destination
 	 * @return true si le pingouin s�l�ctionn� a �t� d�plac�, false sinon
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public boolean selectionnerDestination(Position destination){
 		if (currentState == State.SELECTIONNER_DESTINATION) {
@@ -241,6 +242,48 @@ public class Moteur {
 		} else {
 			transition(Action.MAUVAIS_ETAT);
 			return false;
+		}
+	}
+	
+	public Position posePingouinIA() {
+		if(this.currentState == State.POSER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
+				//Si le calcule de l'IA a reussis
+				if(!calculated.equals(new Position(-1,-1))) {
+					if(poserPingouin(calculated)) {
+						transition(Action.POSEIA_VALIDE);
+						return calculated;
+					}
+				}
+			}
+			transition(Action.SELECTION_INVALIDE);
+			return new Position(-1,-1);
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Position(-1,-1);
+		}
+	}
+	
+	public Couple<Position,Position> coupIA(){
+		if(this.currentState == State.SELECTIONNER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Couple<Position,Position> calculated = this.joueurCourant().prochainCoup(plateau);
+				if(!calculated.equals(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)))) {
+					//Si choix du pingouin effectue
+					if(selectionnerPingouin(calculated.gauche())) {
+						//Si choix de la destination effectuee
+						if(selectionnerDestination(calculated.droit())) {
+							
+						}
+					}
+				}
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		}
 	}
 	

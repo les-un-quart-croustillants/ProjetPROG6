@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.Position;
 
 public class JoueurIA extends Joueur {
@@ -28,8 +29,8 @@ public class JoueurIA extends Joueur {
 	}
 	
 	@Override
-	public Position prochainCoup(Plateau plateau) {
-		return new Position(-1,-1);
+	public Couple<Position,Position> prochainCoup(Plateau plateau) {
+		return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 	}
 	
 	@Override
@@ -68,5 +69,10 @@ public class JoueurIA extends Joueur {
 		} else {
 			throw new Exception("La case en "+start+" ne contient pas de pingouin.");
 		}
+	}
+	
+	@Override
+	public boolean estIA() {
+		return true;
 	}
 }
