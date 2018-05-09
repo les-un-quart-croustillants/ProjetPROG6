@@ -87,8 +87,8 @@ public class Plateau {
 
 	private boolean safeAdd(LinkedList<Position> l, Position candidat) {
 		if (isInTab(candidat) && !getCellule(candidat).isObstacle()) {
-
-			l.add(candidat);
+			if (!l.contains(candidat))
+					l.add(candidat);
 			return true;
 		}
 		else {
@@ -110,39 +110,44 @@ public class Plateau {
 				fd = true, // diagonale avant basse continue
 				b = true, // ligne arrière continue
 				f = true; // ligne avant continue
+		int decalage_arriere, decalage_avant;
 
 		int borne = max(max(p.i(), this.size - p.i()), max(p.j(), this.size - p.j()));
-		for (int i = 0; i <= borne; i++) {
-			if (i != 0) {
-				if (bu) { // diagonale arrière haute
-					candidat = new Position(p.i() - i, p.j() - i);
-					bu = safeAdd(res, candidat);
-				}
-				if (fu) { // diagonale avant haute
-					candidat = new Position(p.i() - i, p.j() + i);
-					fu = safeAdd(res, candidat);
-				}
-				if (bd) { // digonale arrière basse
-					candidat = new Position(p.i() + i, p.j() - i);
-					bd = safeAdd(res, candidat);
-				}
-				if (fd) { // diagonale avant basse
-					candidat = new Position(p.i() + i, p.j() + i);
-					fd = safeAdd(res, candidat);
-				}
+		for (int i = 1; i <= borne && (bu || fu || bd || fd || b || f); i++) {
+			if (p.i() % 2 == 0)
+				decalage_arriere = i / 2;
+			else
+				decalage_arriere = (i + 1) / 2;
+			if (bu) { // diagonale arrière haute
+				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
+				bu = safeAdd(res, candidat);
 			}
-			if (i != 0) {
-				if(b) {
-					candidat = new Position(p.i(), p.j() - i); // ligne arrière
-					b = safeAdd(res, candidat);
-				}
-				if(f) {
-					candidat = new Position(p.i(), p.j() + i); // ligne avant
-					f = safeAdd(res, candidat);
-				}
+			if (bd) { // digonale arrière basse
+				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
+				bd = safeAdd(res, candidat);
+			}
+			if (p.i() % 2 == 0)
+				decalage_avant = (i + 1) / 2;
+			else
+				decalage_avant = i / 2;
+			if (fu) { // diagonale avant haute
+				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
+				fu = safeAdd(res, candidat);
+			}
+			if (fd) { // diagonale avant basse
+				candidat = new Position(p.i() + i, p.j() + decalage_avant);
+				fd = safeAdd(res, candidat);
+			}
+
+			if (b) {
+				candidat = new Position(p.i(), p.j() - i); // ligne arrière
+				b = safeAdd(res, candidat);
+			}
+			if (f) {
+				candidat = new Position(p.i(), p.j() + i); // ligne avant
+				f = safeAdd(res, candidat);
 			}
 		}
-
 		return res;
 	}
 
@@ -251,6 +256,10 @@ public class Plateau {
 			}
 		}
 		return false;
+	}
+
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
 	}
 
 	@Override

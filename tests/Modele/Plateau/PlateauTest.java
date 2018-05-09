@@ -97,28 +97,29 @@ public class PlateauTest {
 
 	@Test
 	public void accessible() {
+		int nb_tests = 4;
 		Plateau sujet = new Plateau(10);
 		Position pos = new Position(5,0);
 		LinkedList<Position> expected = new LinkedList<>();
 
 		// diff de 1
-		expected.add(new Position(4,1));
-		expected.add(new Position(6,1));
+		expected.add(new Position(4,0));
+		expected.add(new Position(6,0));
 		expected.add(new Position(5,1));
 		// diff de 2
-		expected.add(new Position(3,2));
-		expected.add(new Position(7,2));
+		expected.add(new Position(3,1));
+		expected.add(new Position(7,1));
 		expected.add(new Position(5,2));
 		// diff de 3
-		expected.add(new Position(2,3));
-		expected.add(new Position(8,3));
+		expected.add(new Position(2,1));
+		expected.add(new Position(8,1));
 		expected.add(new Position(5,3));
 		// diff de 4
-		expected.add(new Position(1,4));
-		expected.add(new Position(9,4));
+		expected.add(new Position(1,2));
+		expected.add(new Position(9,2));
 		expected.add(new Position(5,4));
 		// diff de 5
-		expected.add(new Position(0,5));
+		expected.add(new Position(0,2));
 		expected.add(new Position(5,5));
 		// diff de 6
 		expected.add(new Position(5,6));
@@ -126,82 +127,99 @@ public class PlateauTest {
 		expected.add(new Position(5,7));
 		// diff de 8
 		expected.add(new Position(5,8));
-
-		Assert.assertEquals("accessible test #1/4 failed", expected, sujet.accessible(pos));
+		// diff de 9
+		expected.add(new Position(5,9));
+		Assert.assertEquals("accessible test #1/"+ nb_tests + " failed", expected, sujet.accessible(pos));
 
 		pos = new Position(5,5);
 		expected = new LinkedList<>();
 
 		// diff de 1
 		expected.add(new Position(4,4));
-		expected.add(new Position(4,6));
 		expected.add(new Position(6,4));
-		expected.add(new Position(6,6));
+		expected.add(new Position(4,5));
+		expected.add(new Position(6,5));
 		expected.add(new Position(5,4));
 		expected.add(new Position(5,6));
 		// diff de 2
-		expected.add(new Position(3,3));
-		expected.add(new Position(3,7));
-		expected.add(new Position(7,3));
-		expected.add(new Position(7,7));
+		expected.add(new Position(3,4));
+		expected.add(new Position(7,4));
+		expected.add(new Position(3,6));
+		expected.add(new Position(7,6));
 		expected.add(new Position(5,3));
 		expected.add(new Position(5,7));
 		// diff de 3
-		expected.add(new Position(2,2));
-		expected.add(new Position(2,8));
-		expected.add(new Position(8,2));
-		expected.add(new Position(8,8));
+		expected.add(new Position(2,3));
+		expected.add(new Position(8,3));
+		expected.add(new Position(2,6));
+		expected.add(new Position(8,6));
 		expected.add(new Position(5,2));
 		expected.add(new Position(5,8));
 		// diff de 4
-		expected.add(new Position(1,1));
-		expected.add(new Position(9,1));
+		expected.add(new Position(1,3));
+		expected.add(new Position(9,3));
+		expected.add(new Position(1,7));
+		expected.add(new Position(9,7));
 		expected.add(new Position(5,1));
+		expected.add(new Position(5,9));
 		// diff de 5
-		expected.add(new Position(0,0));
+		expected.add(new Position(0,2));
+		expected.add(new Position(0,7));
 		expected.add(new Position(5,0));
-		Assert.assertEquals("accessible test #2/4 failed", expected, sujet.accessible(pos));
+		Assert.assertEquals("accessible test #2/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
 
 		pos = new Position(5,5);
 		expected = new LinkedList<>();
-		sujet.getTab()[3][7].destroy();
+		sujet.getTab()[3][6].destroy();
 		// diff de 1
 		expected.add(new Position(4,4));
-		expected.add(new Position(4,6));
 		expected.add(new Position(6,4));
-		expected.add(new Position(6,6));
+		expected.add(new Position(4,5));
+		expected.add(new Position(6,5));
 		expected.add(new Position(5,4));
 		expected.add(new Position(5,6));
 		// diff de 2
-		expected.add(new Position(3,3));
-		expected.add(new Position(7,3));
-		expected.add(new Position(7,7));
+		expected.add(new Position(3,4));
+		expected.add(new Position(7,4));
+		expected.add(new Position(7,6));
 		expected.add(new Position(5,3));
 		expected.add(new Position(5,7));
 		// diff de 3
-		expected.add(new Position(2,2));
-		expected.add(new Position(8,2));
-		expected.add(new Position(8,8));
+		expected.add(new Position(2,3));
+		expected.add(new Position(8,3));
+		expected.add(new Position(8,6));
 		expected.add(new Position(5,2));
 		expected.add(new Position(5,8));
 		// diff de 4
-		expected.add(new Position(1,1));
-		expected.add(new Position(9,1));
+		expected.add(new Position(1,3));
+		expected.add(new Position(9,3));
+		expected.add(new Position(9,7));
 		expected.add(new Position(5,1));
+		expected.add(new Position(5,9));
 		// diff de 5
-		expected.add(new Position(0,0));
+		expected.add(new Position(0,2));
 		expected.add(new Position(5,0));
-		Assert.assertEquals("accessible test #2/4 failed", expected, sujet.accessible(pos));
+		Assert.assertEquals("accessible test #3/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
 
-		pos = new Position(p.getSize() - 1,p.getSize() - 1);
+		sujet = new Plateau(8);
+		pos = new Position(4,0);
 		expected = new LinkedList<>();
-		// diff de 1
-		expected.add(new Position(1,1));
+
+		sujet.destroyCell(new Position(3,0));
+		sujet.destroyCell(new Position(4,2));
+
+		expected.add(new Position(5,0));
+		expected.add(new Position(3,1));
+		expected.add(new Position(5,1));
+		expected.add(new Position(4,1));
 		expected.add(new Position(2,1));
-		// diff de 2
-		expected.add(new Position(0,0));
-		expected.add(new Position(2,0));
-		Assert.assertEquals("accessible test #3/4 failed", expected, p.accessible(pos));
+		expected.add(new Position(6,1));
+		expected.add(new Position(1,2));
+		expected.add(new Position(7,2));
+		expected.add(new Position(0,2));
+
+		Assert.assertEquals("accessible test #4/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
+
 
 	}
 }
