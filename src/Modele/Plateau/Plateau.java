@@ -248,6 +248,16 @@ public class Plateau {
 		return false;
 	}
 
+	public String pretty() {
+		String res = "";
+		for (Cellule[] line: this.tab) {
+			for (Cellule c : line)
+				res += c.pretty();
+			res += "\n";
+		}
+		return res;
+	}
+
 	@Override
 	public String toString() {
 		return "{" + size + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
