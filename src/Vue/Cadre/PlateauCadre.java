@@ -10,7 +10,7 @@ public class PlateauCadre extends Cadre{
 	public Plateau plateau;
 	
 	/**
-	 * init : initialisation (appelée par les constructeurs)
+	 * init : initialisation (appelï¿½e par les constructeurs)
 	 * @param p :  un plateau
 	 */
 	private void init(Plateau p){
