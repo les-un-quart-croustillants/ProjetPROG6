@@ -219,7 +219,7 @@ public class PlateauTest {
 		expected.add(new Position(0,2));
 
 		Assert.assertEquals("accessible test #4/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
-
-
 	}
+
+
 }

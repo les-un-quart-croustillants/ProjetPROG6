@@ -78,7 +78,10 @@ public class Cellule {
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
-				&& ((Cellule) obj).destroyed == this.destroyed;
+				&& ((Cellule) obj).destroyed == this.destroyed
+				&& ((Cellule) obj).fish == this.fish
+				&& ((this.pingouin == null && ((Cellule) obj).pingouin == null)
+					|| ((this.pingouin != null) && this.pingouin.equals(((Cellule) obj).pingouin)));
 	}
 
 	@Override
