@@ -68,7 +68,11 @@ public class Cellule {
 	}
 
 	public Cellule clone() {
-		return new Cellule(this.position, this.destroyed, this.fish);
+		return new Cellule(this.position, this.destroyed, this.fish, this.pingouin);
+	}
+
+	public String pretty() {
+		return !destroyed ? Integer.toString(fish) + "," : "X,";
 	}
 
 	@Override
@@ -79,6 +83,6 @@ public class Cellule {
 
 	@Override
 	public String toString() {
-		return "[" + position + "," + destroyed + "," + fish + ']';
+		return "[" + position + "," + destroyed + "," + fish + "," + pingouin + ']';
 	}
 }

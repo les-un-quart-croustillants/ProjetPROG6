@@ -258,8 +258,19 @@ public class Plateau {
 		return false;
 	}
 
+
 	public void destroyCell(Position p) {
 		tab[p.i()][p.j()].destroy();
+	}
+
+	public String pretty(){
+		String res = "";
+		for (Cellule[] line: this.tab) {
+			for (Cellule c : line)
+				res += c.pretty();
+			res += "\n";
+		}
+		return res;
 	}
 
 	@Override
