@@ -12,11 +12,12 @@ import Vue.Moteur.State;
 public class TestMoteurConsole {
 	public static Moteur m;
 	private static char[] sym_joueurs = { 'M', 'A', 'B', 'C' };
+	private static Scanner sc;
 	public static void main(String[] args) {
 		Plateau p = new Plateau(8);
 		m = new Moteur(p, 2);
 		m.setCurrentState(State.POSER_PINGOUIN);
-		Scanner sc = new Scanner(System.in);
+		sc = new Scanner(System.in);
 		boolean fin = false;
 		while (!fin) {
 			afficher_etat();
@@ -26,14 +27,12 @@ public class TestMoteurConsole {
 				int a, b;
 				a = sc.nextInt();
 				b = sc.nextInt();
-				System.out.println(m.currentState());
 				if (m.poserPingouin(new Position(a, b))) {
 					System.out.println("Pingouin en ("+a+","+b+")");
 				}
 				else {
 					System.out.println("Position invalide.");
 				}
-				System.out.println(m.currentState());
 			}
 			else if(m.currentState()==State.SELECTIONNER_PINGOUIN) {
 				System.out.println("Selectionner un pingouin (ecrire 2 entier):");
@@ -81,16 +80,30 @@ public class TestMoteurConsole {
 					pingouins.get(m.plateau().getCellule(p).pingouin().employeur()).add(m.plateau().getCellule(p).pingouin());
 				}
 				if(m.plateau().getCellule(p).isDestroyed()){
-					System.out.print("    ");
+					if(j==0 && i%2==0)
+						System.out.print("   ");
+					else
+						System.out.print("    ");
 				}
-				else if(i%2==0){
-					System.out.print(m.plateau().getCellule(p).getFish()+"   ");
+				else if(i%2==1){
+					if(m.plateau().getCellule(p).aPingouin())
+						System.out.print(sym_joueurs[m.plateau().getCellule(p).pingouin().employeur()]+"   ");
+					else
+						System.out.print(m.plateau().getCellule(p).getFish()+"   ");
 				}
 				else{
-					if(j==0)
-						System.out.print("  "+m.plateau().getCellule(p).getFish());
-					else
-						System.out.print("   "+m.plateau().getCellule(p).getFish());
+					if(j==0){
+						if(m.plateau().getCellule(p).aPingouin())
+							System.out.print("  "+sym_joueurs[m.plateau().getCellule(p).pingouin().employeur()]);
+						else
+							System.out.print("  "+m.plateau().getCellule(p).getFish());
+					}
+					else{
+						if(m.plateau().getCellule(p).aPingouin())
+							System.out.print("   "+sym_joueurs[m.plateau().getCellule(p).pingouin().employeur()]);
+						else
+							System.out.print("   "+m.plateau().getCellule(p).getFish());
+					}
 				}
 			}
 			System.out.println();
