@@ -110,25 +110,35 @@ public class Plateau {
 				fd = true, // diagonale avant basse continue
 				b = true, // ligne arrière continue
 				f = true; // ligne avant continue
+		int decalage_arriere, decalage_avant;
 
 		int borne = max(max(p.i(), this.size - p.i()), max(p.j(), this.size - p.j()));
 		for (int i = 1; i <= borne && (bu || fu || bd || fd || b || f); i++) {
+			if (p.i() % 2 == 0)
+				decalage_arriere = i / 2;
+			else
+				decalage_arriere = (i + 1) / 2;
 			if (bu) { // diagonale arrière haute
-				candidat = new Position(p.i() - i, p.j() - (i/2) - (((i % 2) == 0) ? 0 : 1));
+				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
 				bu = safeAdd(res, candidat);
 			}
-			if (fu) { // diagonale avant haute
-				candidat = new Position(p.i() - i, p.j() + (i / 2));
-				fu = safeAdd(res, candidat);
-			}
 			if (bd) { // digonale arrière basse
-				candidat = new Position(p.i() + i, p.j()  - (i/2) - (((i % 2) == 0) ? 0 : 1));
+				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
 				bd = safeAdd(res, candidat);
 			}
+			if (p.i() % 2 == 0)
+				decalage_avant = (i + 1) / 2;
+			else
+				decalage_avant = i / 2;
+			if (fu) { // diagonale avant haute
+				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
+				fu = safeAdd(res, candidat);
+			}
 			if (fd) { // diagonale avant basse
-				candidat = new Position(p.i() + i, p.j() + (i / 2));
+				candidat = new Position(p.i() + i, p.j() + decalage_avant);
 				fd = safeAdd(res, candidat);
 			}
+
 			if (b) {
 				candidat = new Position(p.i(), p.j() - i); // ligne arrière
 				b = safeAdd(res, candidat);
@@ -246,6 +256,10 @@ public class Plateau {
 			}
 		}
 		return false;
+	}
+
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
 	}
 
 	public String pretty() {
