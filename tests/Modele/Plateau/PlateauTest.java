@@ -45,15 +45,15 @@ public class PlateauTest {
 		Assert.assertEquals("getCellule test #1/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(0,2);
-		expected = new Cellule(pos, false);
+		expected = new Cellule(pos, true);
 		Assert.assertEquals("getCellule test #2/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(1,2);
-		expected = new Cellule(pos, true);
+		expected = new Cellule(pos, false);
 		Assert.assertEquals("getCellule test #3/4 failed", expected, p.getCellule(pos));
 
 		pos = new Position(2,2);
-		expected = new Cellule(pos, false);
+		expected = new Cellule(pos, true);
 		Assert.assertEquals("getCellule test #4/4 failed", expected, p.getCellule(pos));
 	}
 
