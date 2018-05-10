@@ -117,6 +117,7 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_VALIDE),State.SELECTIONNER_DESTINATION);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.MAUVAIS_ETAT),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.FIN_PARTIE),State.RESULTATS);
 		
 		// SELECTIONNER_DESTINATION
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_VALIDE),State.SELECTIONNER_PINGOUIN);
@@ -263,9 +264,9 @@ public class Moteur {
 					if (joueurSuivant() == null) {
 						transition(Action.FIN_PARTIE);
 						System.out.println("FIN PARTIE");
-						return true;
+					} else {
+						transition(Action.SELECTION_VALIDE);
 					}
-					transition(Action.SELECTION_VALIDE);
 					return true;
 				}
 			} catch (Exception e) {
