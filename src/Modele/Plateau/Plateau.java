@@ -257,6 +257,15 @@ public class Plateau {
 		}
 		return false;
 	}
+	
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public void destroyCell(Position p) {
 		tab[p.i()][p.j()].destroy();
