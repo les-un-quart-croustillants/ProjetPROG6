@@ -5,7 +5,8 @@ import Utils.Couple;
 import Utils.Position;
 
 public class JoueurIA extends Joueur {
-
+	int id;
+	
 	public JoueurIA(int id){
 		super(id);
 	}
@@ -21,7 +22,7 @@ public class JoueurIA extends Joueur {
 	
 	@Override
 	public Position prochainePosePingouin(Plateau plateau) {
-		return new Position(-1,-1);
+		return UtilsIA.bestplace(plateau, super.id());
 	}
 	
 	@Override

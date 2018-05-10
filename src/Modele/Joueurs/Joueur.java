@@ -117,6 +117,7 @@ public abstract class Joueur {
 	public boolean posePingouin(Plateau plateau,Position position) {
 		boolean res;
 		Pingouin p = new Pingouin(this.id());
+		System.out.println("la pos de l'IA = :( " + UtilsIA.bestplace(plateau, this.id()));
 		res = plateau.poserPingouin(position, p);
 		if(res) {
 			this.addPingouins(p);
