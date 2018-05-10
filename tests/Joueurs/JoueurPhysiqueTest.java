@@ -1,4 +1,4 @@
-package Joueurs;
+package Modele.Joueurs;
 
 
 import Modele.Plateau.Plateau;
