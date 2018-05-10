@@ -1,6 +1,7 @@
 package Modele.Moteur;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import Modele.Joueurs.Joueur;
@@ -12,7 +13,8 @@ import Utils.Position;
 
 public class Moteur {
 	//DATA
-	private Joueur joueurs[];
+	private ArrayList<Joueur> joueurs;
+	private ArrayList<Joueur> eliminees;
 	private Plateau plateau;
 	
 	//ETAT MOTEUR
@@ -87,14 +89,15 @@ public class Moteur {
 	public Moteur(Plateau p, int njoueurs) {
 		this.plateau = p;
 		this.njoueurs = njoueurs;
-		joueurs = new Joueur[njoueurs];
+		this.joueurs = new ArrayList<Joueur>();
+		this.eliminees = new ArrayList<Joueur>();
 		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
 
 		// par defaut, on met que des joueurs physiques
 		for (int i = 0; i < njoueurs; i++) {
-			joueurs[i] = new JoueurPhysique(i);
+			this.joueurs.add(new JoueurPhysique(i));
 		}
 	}
 	
@@ -143,10 +146,10 @@ public class Moteur {
 	}
 
 	public Joueur joueur(int index) {
-		return joueurs[index];
+		return joueurs.get(index);
 	}
 
-	public Joueur[] joueurs() {
+	public ArrayList<Joueur> joueurs() {
 		return this.joueurs;
 	}
 
@@ -155,16 +158,37 @@ public class Moteur {
 	}
 
 	public Joueur joueurCourant() {
-		return joueurs[indexJoueurCourant];
+		return this.joueurs.get(indexJoueurCourant);
 	}
 
 	public int indexJoueurCourant() {
 		return this.indexJoueurCourant;
 	}
 
+	/**
+	 * Passe au joueur suivant. Si selui ci ne peut plus jouer, le supprime des joueurs
+	 * et passe au suivant. Si il n'y a plus de joueurs retourne null
+	 * @return
+	 */
 	public Joueur joueurSuivant() {
-		this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.njoueurs();
-		return joueurCourant();
+		this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
+		if(this.joueurCourant().pingouins().size() == 0) {
+			return joueurCourant();
+		}
+		for(Pingouin p: this.joueurCourant().pingouins()) {
+			if(!this.plateau.estIsolee(p.position())) {
+				System.out.println(joueurCourant() + " : " + p);
+				return joueurCourant();
+			}
+		}
+		Joueur j = this.joueurCourant();
+		this.eliminees.add(j);
+		this.joueurs.remove(j);
+		if(this.joueurs.size() < 0) {
+			return joueurCourant();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -206,15 +230,17 @@ public class Moteur {
 	 */
 	public boolean selectionnerPingouin(Position p) {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
-			//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
-			if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
-				this.selected = p;
-				transition(Action.SELECTION_VALIDE);
-				return true;
-			} else {
-				transition(Action.SELECTION_INVALIDE);
-				return false;
+			//Si le pingouin n'est pas isole
+			if(!plateau.estIsolee(p)) {
+				//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
+				if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
+					this.selected = p;
+					transition(Action.SELECTION_VALIDE);
+					return true;
+				}
 			}
+			transition(Action.SELECTION_INVALIDE);
+			return false;
 		} else {
 			transition(Action.MAUVAIS_ETAT);
 			return false;
@@ -235,7 +261,11 @@ public class Moteur {
 					transition(Action.SELECTION_INVALIDE);
 					return false;
 				} else {
-					joueurSuivant();
+					if (joueurSuivant() == null) {
+						transition(Action.FIN_PARTIE);
+						System.out.println("FIN PARTIE");
+						return true;
+					}
 					transition(Action.SELECTION_VALIDE);
 					return true;
 				}
