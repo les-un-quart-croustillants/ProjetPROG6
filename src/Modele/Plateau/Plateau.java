@@ -72,13 +72,16 @@ public class Plateau {
 	 */
 	public LinkedList<Position> getNeighbours(Position p) {
 		LinkedList<Position> r = new LinkedList<>();
+		int dec = (p.i() % 2 == 0) ? 0 : 1;
+
 		for (Position candidat: new Position[]{
-				new Position(p.i() - 1,p.j()),
-				new Position(p.i() - 1,p.j() + 1),
+
+				new Position(p.i() - 1,p.j() - dec),
+				new Position(p.i() - 1,p.j() + 1 - dec),
 				new Position(p.i(),p.j() - 1),
 				new Position(p.i(),p.j() + 1),
-				new Position(p.i() + 1,p.j()),
-				new Position(p.i() + 1,p.j() + 1)}) {
+				new Position(p.i() + 1,p.j() - dec),
+				new Position(p.i() + 1,p.j() + 1 - dec)}) {
 			if (isInTab(p) && (getCellule(candidat) != null))
 				r.add(candidat);
 		}
