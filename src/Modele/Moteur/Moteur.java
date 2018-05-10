@@ -1,24 +1,30 @@
-package Vue;
+package Modele.Moteur;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import Joueurs.Joueur;
-import Joueurs.JoueurPhysique;
+import Modele.Joueurs.Joueur;
+import Modele.Joueurs.JoueurPhysique;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
 
 public class Moteur {
-	private Joueur joueurs[];
+	//DATA
+	private ArrayList<Joueur> joueurs;
+	private ArrayList<Joueur> eliminees;
 	private Plateau plateau;
+	
+	//ETAT MOTEUR
 	private int njoueurs;
 	private int nbPingouin;
 	private int indexJoueurCourant=0;
 	private Position selected;
-       	private State currentState;
-	private Position pingouinSelection;
+	
+	//AUTOMATE
+    private State currentState;
 	private HashMap<Couple<State, Action>, State> transition;
 	
 	/**
@@ -61,7 +67,8 @@ public class Moteur {
 		MAUVAIS_ETAT,		// La machine a etat a deraillee
 		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
-		PINGOUINPOSES;		// La phase de pose de pingouin est terminee
+		PINGOUINPOSES,		// La phase de pose de pingouin est terminee
+		FIN_PARTIE;			// Tous les pingouins sont bloquees
 		
 		static public String toString(Action s) {
 			switch(s) {
@@ -82,14 +89,15 @@ public class Moteur {
 	public Moteur(Plateau p, int njoueurs) {
 		this.plateau = p;
 		this.njoueurs = njoueurs;
-		joueurs = new Joueur[njoueurs];
+		this.joueurs = new ArrayList<Joueur>();
+		this.eliminees = new ArrayList<Joueur>();
 		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
 
 		// par defaut, on met que des joueurs physiques
 		for (int i = 0; i < njoueurs; i++) {
-			joueurs[i] = new JoueurPhysique(i);
+			this.joueurs.add(new JoueurPhysique(i));
 		}
 	}
 	
@@ -109,15 +117,21 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_VALIDE),State.SELECTIONNER_DESTINATION);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.MAUVAIS_ETAT),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.FIN_PARTIE),State.RESULTATS);
 		
 		// SELECTIONNER_DESTINATION
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_VALIDE),State.SELECTIONNER_PINGOUIN);
-		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_INVALIDE),State.SELECTIONNER_DESTINATION);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
 	}
 	
 	public void transition(Action action) {
-		this.currentState = this.transition.get(new Couple<State,Action>(this.currentState,action));
+		Couple<State,Action> newkey = new Couple<State,Action>(this.currentState,action);
+		for(Couple<State,Action> key: this.transition.keySet()) {
+			if(key.equals(newkey)) {
+				this.currentState = this.transition.get(key);
+			}
+		}
 	}
 
 	public State currentState() {
@@ -133,10 +147,10 @@ public class Moteur {
 	}
 
 	public Joueur joueur(int index) {
-		return joueurs[index];
+		return joueurs.get(index);
 	}
 
-	public Joueur[] joueurs() {
+	public ArrayList<Joueur> joueurs() {
 		return this.joueurs;
 	}
 
@@ -145,16 +159,36 @@ public class Moteur {
 	}
 
 	public Joueur joueurCourant() {
-		return joueurs[indexJoueurCourant];
+		return this.joueurs.get(indexJoueurCourant);
 	}
 
 	public int indexJoueurCourant() {
 		return this.indexJoueurCourant;
 	}
 
+	/**
+	 * Passe au joueur suivant. Si selui ci ne peut plus jouer, le supprime des joueurs
+	 * et passe au suivant. Si il n'y a plus de joueurs retourne null
+	 * @return
+	 */
 	public Joueur joueurSuivant() {
-		this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.njoueurs();
-		return joueurCourant();
+		this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
+		if(this.joueurCourant().pingouins().size() == 0) {
+			return joueurCourant();
+		}
+		for(Pingouin p: this.joueurCourant().pingouins()) {
+			if(!this.plateau.estIsolee(p.position())) {
+				return joueurCourant();
+			}
+		}
+		Joueur j = this.joueurCourant();
+		this.eliminees.add(j);
+		this.joueurs.remove(j);
+		if(this.joueurs.size() < 0) {
+			return joueurCourant();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -196,15 +230,17 @@ public class Moteur {
 	 */
 	public boolean selectionnerPingouin(Position p) {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
-			//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
-			if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
-				this.selected = p;
-				transition(Action.SELECTION_VALIDE);
-				return true;
-			} else {
-				transition(Action.SELECTION_INVALIDE);
-				return false;
+			//Si le pingouin n'est pas isole
+			if(!plateau.estIsolee(p)) {
+				//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
+				if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
+					this.selected = p;
+					transition(Action.SELECTION_VALIDE);
+					return true;
+				}
 			}
+			transition(Action.SELECTION_INVALIDE);
+			return false;
 		} else {
 			transition(Action.MAUVAIS_ETAT);
 			return false;
@@ -216,7 +252,7 @@ public class Moteur {
 	 * 
 	 * @param p : destination
 	 * @return true si le pingouin s�l�ctionn� a �t� d�plac�, false sinon
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public boolean selectionnerDestination(Position destination){
 		if (currentState == State.SELECTIONNER_DESTINATION) {
@@ -225,8 +261,12 @@ public class Moteur {
 					transition(Action.SELECTION_INVALIDE);
 					return false;
 				} else {
-					joueurSuivant();
-					transition(Action.SELECTION_VALIDE);
+					if (joueurSuivant() == null) {
+						transition(Action.FIN_PARTIE);
+						System.out.println("FIN PARTIE");
+					} else {
+						transition(Action.SELECTION_VALIDE);
+					}
 					return true;
 				}
 			} catch (Exception e) {
@@ -236,6 +276,50 @@ public class Moteur {
 		} else {
 			transition(Action.MAUVAIS_ETAT);
 			return false;
+		}
+	}
+	
+	public Position posePingouinIA() {
+		if(this.currentState == State.POSER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
+				//Si le calcule de l'IA a reussis
+				if(!calculated.equals(new Position(-1,-1))) {
+					//Si la pose a reussi (Change de joueur)
+					if(poserPingouin(calculated)) {
+						return calculated;
+					}
+				}
+			}
+			transition(Action.SELECTION_INVALIDE);
+			return new Position(-1,-1);
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Position(-1,-1);
+		}
+	}
+	
+	public Couple<Position,Position> coupIA(){
+		if(this.currentState == State.SELECTIONNER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Couple<Position,Position> calculated = this.joueurCourant().prochainCoup(plateau);
+				if(!calculated.equals(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)))) {
+					//Si choix du pingouin effectue
+					if(selectionnerPingouin(calculated.gauche())) {
+						//Si choix de la destination effectuee (change de joueur)
+						if(selectionnerDestination(calculated.droit())) {
+							return calculated;
+						}
+					}
+				}
+			}
+			transition(Action.SELECTION_INVALIDE);
+			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		}
 	}
 	

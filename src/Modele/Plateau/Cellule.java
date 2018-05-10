@@ -68,17 +68,24 @@ public class Cellule {
 	}
 
 	public Cellule clone() {
-		return new Cellule(this.position, this.destroyed, this.fish);
+		return new Cellule(this.position, this.destroyed, this.fish, this.pingouin);
+	}
+
+	public String pretty() {
+		return !destroyed ? Integer.toString(fish) + "," : "X,";
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return ((Cellule) obj).position.equals(this.position)
-				&& ((Cellule) obj).destroyed == this.destroyed;
+				&& ((Cellule) obj).destroyed == this.destroyed
+				&& ((Cellule) obj).fish == this.fish
+				&& ((this.pingouin == null && ((Cellule) obj).pingouin == null)
+					|| ((this.pingouin != null) && this.pingouin.equals(((Cellule) obj).pingouin)));
 	}
 
 	@Override
 	public String toString() {
-		return "[" + position + "," + destroyed + "," + fish + ']';
+		return "[" + position + "," + destroyed + "," + fish + "," + pingouin + ']';
 	}
 }

@@ -29,7 +29,7 @@ public class Plateau {
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
-				if(i % 2 == 1 && j == this.size-1) {
+				if(i % 2 == 0 && j == this.size-1) { // ligne courte
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
@@ -72,13 +72,16 @@ public class Plateau {
 	 */
 	public LinkedList<Position> getNeighbours(Position p) {
 		LinkedList<Position> r = new LinkedList<>();
+		int dec = (p.i() % 2 == 0) ? 0 : 1;
+
 		for (Position candidat: new Position[]{
-				new Position(p.i() - 1,p.j()),
-				new Position(p.i() - 1,p.j() + 1),
+
+				new Position(p.i() - 1,p.j() - dec),
+				new Position(p.i() - 1,p.j() + 1 - dec),
 				new Position(p.i(),p.j() - 1),
 				new Position(p.i(),p.j() + 1),
-				new Position(p.i() + 1,p.j()),
-				new Position(p.i() + 1,p.j() + 1)}) {
+				new Position(p.i() + 1,p.j() - dec),
+				new Position(p.i() + 1,p.j() + 1 - dec)}) {
 			if (isInTab(p) && (getCellule(candidat) != null))
 				r.add(candidat);
 		}
@@ -87,8 +90,8 @@ public class Plateau {
 
 	private boolean safeAdd(LinkedList<Position> l, Position candidat) {
 		if (isInTab(candidat) && !getCellule(candidat).isObstacle()) {
-
-			l.add(candidat);
+			if (!l.contains(candidat))
+					l.add(candidat);
 			return true;
 		}
 		else {
@@ -110,39 +113,44 @@ public class Plateau {
 				fd = true, // diagonale avant basse continue
 				b = true, // ligne arrière continue
 				f = true; // ligne avant continue
+		int decalage_arriere, decalage_avant;
 
 		int borne = max(max(p.i(), this.size - p.i()), max(p.j(), this.size - p.j()));
-		for (int i = 0; i <= borne; i++) {
-			if (i != 0) {
-				if (bu) { // diagonale arrière haute
-					candidat = new Position(p.i() - i, p.j() - i);
-					bu = safeAdd(res, candidat);
-				}
-				if (fu) { // diagonale avant haute
-					candidat = new Position(p.i() - i, p.j() + i);
-					fu = safeAdd(res, candidat);
-				}
-				if (bd) { // digonale arrière basse
-					candidat = new Position(p.i() + i, p.j() - i);
-					bd = safeAdd(res, candidat);
-				}
-				if (fd) { // diagonale avant basse
-					candidat = new Position(p.i() + i, p.j() + i);
-					fd = safeAdd(res, candidat);
-				}
+		for (int i = 1; i <= borne && (bu || fu || bd || fd || b || f); i++) {
+			if (p.i() % 2 == 0)
+				decalage_arriere = i / 2;
+			else
+				decalage_arriere = (i + 1) / 2;
+			if (bu) { // diagonale arrière haute
+				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
+				bu = safeAdd(res, candidat);
 			}
-			if (i != 0) {
-				if(b) {
-					candidat = new Position(p.i(), p.j() - i); // ligne arrière
-					b = safeAdd(res, candidat);
-				}
-				if(f) {
-					candidat = new Position(p.i(), p.j() + i); // ligne avant
-					f = safeAdd(res, candidat);
-				}
+			if (bd) { // digonale arrière basse
+				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
+				bd = safeAdd(res, candidat);
+			}
+			if (p.i() % 2 == 0)
+				decalage_avant = (i + 1) / 2;
+			else
+				decalage_avant = i / 2;
+			if (fu) { // diagonale avant haute
+				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
+				fu = safeAdd(res, candidat);
+			}
+			if (fd) { // diagonale avant basse
+				candidat = new Position(p.i() + i, p.j() + decalage_avant);
+				fd = safeAdd(res, candidat);
+			}
+
+			if (b) {
+				candidat = new Position(p.i(), p.j() - i); // ligne arrière
+				b = safeAdd(res, candidat);
+			}
+			if (f) {
+				candidat = new Position(p.i(), p.j() + i); // ligne avant
+				f = safeAdd(res, candidat);
 			}
 		}
-
 		return res;
 	}
 
@@ -246,10 +254,34 @@ public class Plateau {
 			//Si la case en p a un seul poisson
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);
+				pingouin.setPosition(p);
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
+	}
+
+	public String pretty() {
+		String res = "";
+		for (Cellule[] line: this.tab) {
+			for (Cellule c : line)
+				res += c.pretty();
+			res += "\n";
+		}
+		return res;
 	}
 
 	@Override
