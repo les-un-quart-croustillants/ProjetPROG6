@@ -1,8 +1,5 @@
 package Modele.Joueurs;
 
-import java.util.ArrayList;
-
-import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;

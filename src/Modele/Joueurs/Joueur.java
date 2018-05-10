@@ -120,6 +120,7 @@ public abstract class Joueur {
 		res = plateau.poserPingouin(position, p);
 		if(res) {
 			this.addPingouins(p);
+			this.nbPingouins++;
 			this.addScoreFish(1);
 		}
 		return res;
