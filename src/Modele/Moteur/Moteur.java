@@ -177,7 +177,6 @@ public class Moteur {
 		}
 		for(Pingouin p: this.joueurCourant().pingouins()) {
 			if(!this.plateau.estIsolee(p.position())) {
-				System.out.println(joueurCourant() + " : " + p);
 				return joueurCourant();
 			}
 		}
