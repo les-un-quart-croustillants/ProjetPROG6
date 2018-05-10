@@ -66,8 +66,7 @@ public class Moteur {
 		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
 		PINGOUINPOSES,		// La phase de pose de pingouin est terminee
-		POSEIA_VALIDE,		// L'IA a reussis sa pose de pingouin
-		COUPIA_VALIDE;		// L'IA a reussis a effectuer son coup
+		FIN_PARTIE;			// Tous les pingouins sont bloquees
 		
 		static public String toString(Action s) {
 			switch(s) {
