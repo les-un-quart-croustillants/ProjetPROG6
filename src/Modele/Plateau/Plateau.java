@@ -225,22 +225,28 @@ public class Plateau {
 		return jouer(undoList.removeFirst());
 	}
 
-	public String tabToString() {
-		String res = "[ ";
-		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+	/**
+	 * estIsolee : si une position est entourée d'obstacles
+	 * @param p : la position
+	 * @return : vrai si tous les voisins de la position p sont des obstacles
+	 */
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
 		}
-		return res + "]";
+		return true;
 	}
 
-	public int getSize() {
-		return size;
+	/**
+	 * destroyCell : detruit une cellule
+	 * @param p : la position de la cellule
+	 */
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
 	}
 
-	public Cellule[][] getTab() {
-		return tab;
-	}
-	
 	/**
 	 * Pose un pingouin sur un case si les lunes sont alignées
 	 * @param p position ou ajouter le pingouin
@@ -260,18 +266,13 @@ public class Plateau {
 		}
 		return false;
 	}
-	
-	public boolean estIsolee(Position p) {
-		for(Position n : getNeighbours(p)) {
-			if(! getCellule(n).isObstacle()) {
-				return false;
-			}
-		}
-		return true;
+
+	public int getSize() {
+		return size;
 	}
 
-	public void destroyCell(Position p) {
-		tab[p.i()][p.j()].destroy();
+	public Cellule[][] getTab() {
+		return tab;
 	}
 
 	public String pretty() {
@@ -282,6 +283,14 @@ public class Plateau {
 			res += "\n";
 		}
 		return res;
+	}
+
+	public String tabToString() {
+		String res = "[ ";
+		for (Cellule[] line: this.tab) {
+			res += Arrays.toString(line) + " ";
+		}
+		return res + "]";
 	}
 
 	@Override
