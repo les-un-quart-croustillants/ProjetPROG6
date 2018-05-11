@@ -154,6 +154,51 @@ public class Plateau {
 		return res;
 	}
 
+	protected int diffDir(int a, int b) {
+		int res = 0;
+		if (a < b)
+			res = 1;
+		if (b < a)
+			res = -1;
+		return res;
+	}
+
+	/**
+	 * estAccessible : si une position est accessible depuis une autre
+	 * @param current : position de départ
+	 * @param target : position souhaitée
+	 * @return : vrai si la position est accessible (aucun obstacle sur la trajectoire)
+	 * faux sinon.
+	 */
+	public boolean estAccessible(Position current, Position target) {
+		int coeff_i = diffDir(current.i(), target.i()),
+			coeff_j = diffDir(current.j(), target.j()),
+			dec;
+		Position candidat = current.clone();
+		int borne = Math.max(Math.abs(current.i() - target.i()), Math.abs(current.j() - target.j()));
+		for (int d = 1; d <= borne; d++) {
+			if (coeff_i != 0) {
+				if (current.i() % 2 == 0)		// pair
+					if (coeff_j == 1)				// avant
+						dec = (d + 1) / 2;
+					else							// arriere
+						dec = d / 2;
+				else							// impair
+					if (coeff_j == 1)				// avant
+						dec = d / 2;
+					else							// arriere
+						dec = (d + 1) / 2;
+
+				candidat = new Position(current.i() + coeff_i * d, current.j() + coeff_j * dec);
+			}
+			else
+				candidat = new Position(current.i(), current.j() + coeff_j * d);
+			if (isInTab(candidat) && getCellule(candidat).isObstacle())
+					return false;
+			}
+		return candidat.equals(target);
+	}
+
 	/**
 	 * jouer : déplace un pinguoin si possible
 	 * @param penguin : le pinguoin à déplacer

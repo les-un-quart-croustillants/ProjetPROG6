@@ -237,6 +237,48 @@ public class PlateauTest {
 	}
 
 	@Test
+	public void diffDir() {
+		Assert.assertEquals(1, p.diffDir(0,1));
+		Assert.assertEquals(0, p.diffDir(0,0));
+		Assert.assertEquals(-1, p.diffDir(1,0));
+	}
+
+	@Test
+	public void estAccessible() {
+		Plateau sujet = new Plateau(10);
+		Position current = new Position(0,0),
+				target = new Position(1,2);
+
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		target = new Position(2,1);
+		Assert.assertTrue(p.estAccessible(current, target));
+		Assert.assertTrue(p.estAccessible(target, current));
+
+		p.destroyCell(new Position(1,1));
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		current = new Position(1,0);
+		target = new Position(2,0);
+		Assert.assertTrue(p.estAccessible(current, target));
+		Assert.assertTrue(p.estAccessible(target, current));
+
+		target = new Position(0,1);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		target = new Position(1,2);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		p.getCellule(new Position(1,1)).setDestroyed(false);
+		Assert.assertTrue(p.estAccessible(current, target));
+		Assert.assertTrue(p.estAccessible(target, current));
+	}
+
+	@Test
 	public void poserPingouin() {
 		boolean test = false;
 		Pingouin pingouin = new Pingouin(1);
