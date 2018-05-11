@@ -3,11 +3,11 @@ package Default;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Modele.Moteur.Moteur;
+import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
-import Vue.Moteur;
-import Vue.Moteur.State;
 
 public class TestMoteurConsole {
 	public static Moteur m;

@@ -74,25 +74,36 @@ public class PlateauTest {
 
 	@Test
 	public void getNeighbours() {
+		int nb_test = 4;
 		LinkedList<Position> expected = new LinkedList<>();
-		expected.add(new Position(0,1));
-		expected.add(new Position(0,2) );
+		expected.add(new Position(0,0));
+		expected.add(new Position(0,1) );
 
 		expected.add(new Position(1,0) );
 		expected.add(new Position(1,2));
 
+		expected.add(new Position(2,0));
 		expected.add(new Position(2,1));
-		expected.add(new Position(2,2));
-		Assert.assertEquals("getNeighbours test #1/3 failed", expected, p.getNeighbours(new Position(1,1)));
+		Assert.assertEquals("getNeighbours test #1/" + nb_test + " failed", expected, p.getNeighbours(new Position(1,1)));
 
 		expected = new LinkedList<>();
 		expected.add(new Position(0,1));
 		expected.add(new Position(1,0));
 		expected.add(new Position(1,1));
-		Assert.assertEquals("getNeighbours test #2/3 failed", expected, p.getNeighbours(new Position(0,0)));
+		Assert.assertEquals("getNeighbours test #2/" + nb_test + " failed", expected, p.getNeighbours(new Position(0,0)));
 
 		Plateau vide = new Plateau(1);
-		Assert.assertTrue("getNeighbours test #3/3 failed", vide.getNeighbours(new Position(0,0)).isEmpty());
+		Assert.assertTrue("getNeighbours test #3/" + nb_test + " failed", vide.getNeighbours(new Position(0,0)).isEmpty());
+
+		Plateau sujet = new Plateau(5);
+		expected = new LinkedList<>();
+		expected.add(new Position(1,1));
+		expected.add(new Position(1,2));
+		expected.add(new Position(2,0));
+		expected.add(new Position(2,2));
+		expected.add(new Position(3,1));
+		expected.add(new Position(3,2));
+		Assert.assertEquals("getNeighbours test #4/" + nb_test + " failed", expected, sujet.getNeighbours(new Position(2,1)));
 	}
 
 	@Test
