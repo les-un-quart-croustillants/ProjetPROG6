@@ -1,0 +1,34 @@
+.menu {
+	-fx-alignment: center;
+	-fx-font-family: "Luckiest Guy";
+	-fx-spacing: 35px;
+}
+
+.playandback {
+	-fx-alignment: center;
+	-fx-spacing: 15px;
+}
+
+.label {
+	-fx-text-fill: white;
+	-fx-font-size: 58px;
+}
+
+.iconbutton {
+	-fx-background-color: transparent;
+}
+
+.mapselection {
+	-fx-spacing: 50px;
+}
+
+.textbutton {
+	-fx-font-size: 38px;
+	-fx-padding: 0px;
+}
+
+.config {
+	-fx-font-size: 24px;
+	-fx-border-image-width: 5px 5px 5px 5px;
+	-fx-background-insets: 4px;
+}
