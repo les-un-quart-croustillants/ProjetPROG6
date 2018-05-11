@@ -55,6 +55,10 @@ public class PlateauTest {
 		pos = new Position(2,2);
 		expected = new Cellule(pos, true,  p.getTab()[pos.i()][pos.j()].getFish());
 		Assert.assertEquals("getCellule test #4/4 failed", expected, p.getCellule(pos));
+
+		Cellule c = p.getTab()[0][0];
+		Assert.assertEquals((Object) c, (Object) p.getCellule(new Position(0,0)));
+		Assert.assertEquals(c, p.getCellule(new Position(0,0)));
 	}
 
 	@Test
@@ -232,5 +236,30 @@ public class PlateauTest {
 		Assert.assertEquals("accessible test #4/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
 	}
 
-
+	@Test
+	public void poserPingouin() {
+		boolean test = false;
+		Pingouin pingouin = new Pingouin(1);
+		int i = 0,
+			j = 0;
+		Cellule c = p.getCellule(new Position(i,j));
+		while(!test) {
+			while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
+				j++;
+				if (j == p.getSize()) {
+					j = 0;
+					i++;
+				}
+				c = p.getCellule(new Position(i, j));
+			}
+			if (i < p.getSize() && j < p.getSize()) {
+				test = true;
+				Position pos = new Position(i, j);
+				p.poserPingouin(pos, pingouin);
+				pingouin.setPosition(pos);
+				Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
+				Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+			}
+		}
+	}
 }
