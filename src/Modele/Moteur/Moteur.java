@@ -301,7 +301,6 @@ public class Moteur {
 				} else {
 					if (joueurSuivant() == null) {
 						transition(Action.FIN_PARTIE);
-						System.out.println("FIN PARTIE");
 					} else {
 						transition(Action.SELECTION_VALIDE);
 					}
