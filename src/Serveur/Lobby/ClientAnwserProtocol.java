@@ -1,6 +1,6 @@
 package Serveur.Lobby;
 
-public class LobbyAnwserProtocol {
+public class ClientAnwserProtocol {
 	private State currentState;
 
 	private enum State {
@@ -16,7 +16,7 @@ public class LobbyAnwserProtocol {
 		}
 	}
 
-	public LobbyAnwserProtocol() {
+	public ClientAnwserProtocol() {
 		this.currentState = State.WAITING;
 	}
 
