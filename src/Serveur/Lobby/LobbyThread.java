@@ -26,6 +26,7 @@ public class LobbyThread implements Runnable {
 	/**
 	 * Gestion de la communication avec le client
 	 */
+	@Override
 	public void run() {
 		String inputLine, outputLine;
 		LobbyAnwserProtocol lep = new LobbyAnwserProtocol();

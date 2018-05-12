@@ -31,6 +31,7 @@ public class Client implements Runnable{
 	/**
 	 * Envois des demandes au lobby, gere le deroulement d'une partie une fois lancee
 	 */
+	@Override
 	public void run() {
 		String inputLine, outputLine;
 		ClientAnwserProtocol cap = new ClientAnwserProtocol();
