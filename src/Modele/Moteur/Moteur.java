@@ -127,6 +127,11 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
 	}
 	
+	/**
+	 * Change l'etat courant en appliquant la transition (etat courrant,action) sur
+	 * la machine a etat
+	 * @param action
+	 */
 	public void transition(Action action) {
 		Couple<State,Action> newkey = new Couple<State,Action>(this.currentState,action);
 		for(Couple<State,Action> key: this.transition.keySet()) {
@@ -168,6 +173,12 @@ public class Moteur {
 		return this.indexJoueurCourant;
 	}
 	
+	/**
+	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
+	 * représente un rang dans le podium (le gagnant est a l'indice 0), dans 
+	 * chaque ligne il y a: l'ID du joueur, son score de poissons et son score de cases.
+	 * @return
+	 */
 	public ArrayList<ArrayList<Integer>> podium() {
 		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 		for(Joueur j : this.eliminees) {
@@ -199,7 +210,7 @@ public class Moteur {
 		}
 		Joueur j = this.joueurCourant();
 		this.eliminees.add(j);
-		//Tri les joueurs elimine en vue du calcul du gagnant
+		//Tri les joueurs elimines en vue du calcul du podium
 		Collections.sort(this.eliminees, new Comparator<Joueur>() {
 			@Override
 		    public int compare(Joueur a, Joueur b) {
@@ -306,6 +317,11 @@ public class Moteur {
 		}
 	}
 	
+	/**
+	 * Demande a l'IA de calculer une position pour la pose du pingouin et tente
+	 * de le poser avec poserPingouin
+	 * @return
+	 */
 	public Position posePingouinIA() {
 		if(this.currentState == State.POSER_PINGOUIN) {
 			//Si le joueur est une IA
@@ -327,6 +343,11 @@ public class Moteur {
 		}
 	}
 	
+	/**
+	 * Demande a l'IA de calculer un coup et tente de le jouer
+	 * avec selectionnerPingouin et selectionnerDestination
+	 * @return
+	 */
 	public Couple<Position,Position> coupIA(){
 		if(this.currentState == State.SELECTIONNER_PINGOUIN) {
 			//Si le joueur est une IA
