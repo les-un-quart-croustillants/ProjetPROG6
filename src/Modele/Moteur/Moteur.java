@@ -3,6 +3,8 @@ package Modele.Moteur;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
 import Modele.Joueurs.JoueurPhysique;
@@ -165,6 +167,20 @@ public class Moteur {
 	public int indexJoueurCourant() {
 		return this.indexJoueurCourant;
 	}
+	
+	public ArrayList<ArrayList<Integer>> podium() {
+		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+		for(Joueur j : this.eliminees) {
+			res.add(			new ArrayList<Integer>() {
+			private static final long serialVersionUID = 1L;
+			{
+			    add(j.id());
+			    add(j.scoreFish());
+			    add(j.scoreDestroyed());
+			}});
+		}
+		return res;
+	}
 
 	/**
 	 * Passe au joueur suivant. Si selui ci ne peut plus jouer, le supprime des joueurs
@@ -183,6 +199,17 @@ public class Moteur {
 		}
 		Joueur j = this.joueurCourant();
 		this.eliminees.add(j);
+		//Tri les joueurs elimine en vue du calcul du gagnant
+		Collections.sort(this.eliminees, new Comparator<Joueur>() {
+			@Override
+		    public int compare(Joueur a, Joueur b) {
+		        if(a.scoreFish() == b.scoreFish()) {
+		        	return Math.max(a.scoreDestroyed(),b.scoreDestroyed());
+		        } else {
+		        	return Math.max(a.scoreFish(),b.scoreFish());
+		        }
+		    }
+		});
 		this.joueurs.remove(j);
 		if(this.joueurs.size() < 0) {
 			return joueurCourant();
@@ -321,8 +348,9 @@ public class Moteur {
 			transition(Action.MAUVAIS_ETAT);
 			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
 		}
-		// FIXME : placeholder
 	}
+	
+	
 	
 	/**
 	 * pingouinSelection : renvoie le pingouin actuellement selectionn�
@@ -336,4 +364,6 @@ public class Moteur {
 			return null;
 		}
 	}
+	
+	
 }
