@@ -7,14 +7,13 @@ public class Pingouin {
 	private int nbPoissonManges;
 	private Position position;
 
-
-	public Pingouin(int e){
+	public Pingouin(int e) {
 		this.employeur = e;
 		this.nbPoissonManges = 0;
-		this.position = new Position(0,0);
+		this.position = new Position(0, 0);
 	}
 
-	public Pingouin(int e, Position p){
+	public Pingouin(int e, Position p) {
 		this.employeur = e;
 		this.nbPoissonManges = 0;
 		this.position = p;
@@ -46,13 +45,13 @@ public class Pingouin {
 
 	@Override
 	public boolean equals(Object obj) {
-		return ((Pingouin) obj).employeur == this.employeur
-				&& ((Pingouin) obj).nbPoissonManges == this.nbPoissonManges
+		return ((Pingouin) obj).employeur == this.employeur && ((Pingouin) obj).nbPoissonManges == this.nbPoissonManges
 				&& ((this.position != null) && this.position.equals(((Pingouin) obj).position));
 	}
 
 	@Override
 	public String toString() {
-		return "{Position:"+this.position.toString()+", Joueur:"+this.employeur+", Score:"+this.nbPoissonManges+"}";
+		return "{Position:" + this.position.toString() + ", Joueur:" + this.employeur + ", Score:"
+				+ this.nbPoissonManges + "}";
 	}
 }

@@ -1,4 +1,5 @@
 package Default;
+
 import Vue.InterfaceGraphique;
 
 public class PremiereFenetre {

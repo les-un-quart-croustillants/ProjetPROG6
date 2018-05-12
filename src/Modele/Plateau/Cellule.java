@@ -9,17 +9,21 @@ public class Cellule {
 	private Pingouin pingouin;
 
 	public Cellule() {
-		this(new Position(0,0), false, 0, null);
+		this(new Position(0, 0), false, 0, null);
 	}
+
 	public Cellule(Position position, boolean destroyed) {
 		this(position, destroyed, 0, null);
 	}
+
 	public Cellule(Position position, int fish) {
 		this(position, false, fish, null);
 	}
+
 	public Cellule(Position position, boolean destroyed, int fish) {
 		this(position, destroyed, fish, null);
 	}
+
 	public Cellule(Position position, boolean destroyed, int fish, Pingouin pingouin) {
 		this.position = position;
 		this.destroyed = destroyed;
@@ -77,11 +81,9 @@ public class Cellule {
 
 	@Override
 	public boolean equals(Object obj) {
-		return ((Cellule) obj).position.equals(this.position)
-				&& ((Cellule) obj).destroyed == this.destroyed
-				&& ((Cellule) obj).fish == this.fish
-				&& ((this.pingouin == null && ((Cellule) obj).pingouin == null)
-					|| ((this.pingouin != null) && this.pingouin.equals(((Cellule) obj).pingouin)));
+		return ((Cellule) obj).position.equals(this.position) && ((Cellule) obj).destroyed == this.destroyed
+				&& ((Cellule) obj).fish == this.fish && ((this.pingouin == null && ((Cellule) obj).pingouin == null)
+						|| ((this.pingouin != null) && this.pingouin.equals(((Cellule) obj).pingouin)));
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class MiseEnEvidenceCase implements EventHandler<MouseEvent> {
 	public void handle(MouseEvent event) {
 		if (event.getEventType() == MouseEvent.MOUSE_MOVED) {
 			for (int i = 0; i < pc.plateau.getSize(); i++) {
-				for (int j = 0; j < pc.plateau.getSize()-(1-i%2); j++) {
+				for (int j = 0; j < pc.plateau.getSize() - (1 - i % 2); j++) {
 					Case c = pc.plateauGraphique.cases[i][j];
 					if (c.collision(new Point((int) event.getX(), (int) event.getY()))) {
 						c.mettreEnValeur();

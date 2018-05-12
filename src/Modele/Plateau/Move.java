@@ -8,7 +8,7 @@ public class Move {
 	private Position previous;
 	private int fishAte;
 
-	public Move(Pingouin penguin, Position target, Position previous, int fishAte ) {
+	public Move(Pingouin penguin, Position target, Position previous, int fishAte) {
 		this.penguin = penguin;
 		this.target = target;
 		this.previous = previous;
