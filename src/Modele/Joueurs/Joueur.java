@@ -117,7 +117,6 @@ public abstract class Joueur {
 	public boolean posePingouin(Plateau plateau,Position position) {
 		boolean res;
 		Pingouin p = new Pingouin(this.id());
-		System.out.println("la pos de l'IA = :( " + UtilsIA.bestplace(plateau, this.id()));
 		res = plateau.poserPingouin(position, p);
 		if(res) {
 			this.addPingouins(p);
@@ -140,7 +139,16 @@ public abstract class Joueur {
 	 */
 	public int jouerCoup(Plateau plateau,Position start, Position goal) throws Exception {
 		int res;
-		
+		/*
+		System.out.println("------------------------------------------------------");
+		for(int i= 0; i < UtilsIA.listConnexeComposante(plateau).size();i++)
+			System.out.println("La composante connexe "+i+" : " + UtilsIA.listConnexeComposante(plateau).get(i));
+		System.out.println("------------------------------------------------------");
+		*/
+		//System.out.println("------------------------------------------------------");
+		//System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
+		//System.out.println("------------------------------------------------------");
+
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
 				res = plateau.jouer(start,goal);
