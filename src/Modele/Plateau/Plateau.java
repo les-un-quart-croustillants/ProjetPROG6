@@ -154,6 +154,51 @@ public class Plateau {
 		return res;
 	}
 
+	protected int diffDir(int a, int b) {
+		int res = 0;
+		if (a < b)
+			res = 1;
+		if (b < a)
+			res = -1;
+		return res;
+	}
+
+	/**
+	 * estAccessible : si une position est accessible depuis une autre
+	 * @param current : position de départ
+	 * @param target : position souhaitée
+	 * @return : vrai si la position est accessible (aucun obstacle sur la trajectoire)
+	 * faux sinon.
+	 */
+	public boolean estAccessible(Position current, Position target) {
+		int coeff_i = diffDir(current.i(), target.i()),
+			coeff_j = diffDir(current.j(), target.j()),
+			dec;
+		Position candidat = current.clone();
+		int borne = Math.max(Math.abs(current.i() - target.i()), Math.abs(current.j() - target.j()));
+		for (int d = 1; d <= borne; d++) {
+			if (coeff_i != 0) {
+				if (current.i() % 2 == 0)		// pair
+					if (coeff_j == 1)				// avant
+						dec = (d + 1) / 2;
+					else							// arriere
+						dec = d / 2;
+				else							// impair
+					if (coeff_j == 1)				// avant
+						dec = d / 2;
+					else							// arriere
+						dec = (d + 1) / 2;
+
+				candidat = new Position(current.i() + coeff_i * d, current.j() + coeff_j * dec);
+			}
+			else
+				candidat = new Position(current.i(), current.j() + coeff_j * d);
+			if (isInTab(candidat) && getCellule(candidat).isObstacle())
+					return false;
+			}
+		return candidat.equals(target);
+	}
+
 	/**
 	 * jouer : déplace un pinguoin si possible
 	 * @param penguin : le pinguoin à déplacer
@@ -225,22 +270,28 @@ public class Plateau {
 		return jouer(undoList.removeFirst());
 	}
 
-	public String tabToString() {
-		String res = "[ ";
-		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+	/**
+	 * estIsolee : si une position est entourée d'obstacles
+	 * @param p : la position
+	 * @return : vrai si tous les voisins de la position p sont des obstacles
+	 */
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
 		}
-		return res + "]";
+		return true;
 	}
 
-	public int getSize() {
-		return size;
+	/**
+	 * destroyCell : detruit une cellule
+	 * @param p : la position de la cellule
+	 */
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
 	}
 
-	public Cellule[][] getTab() {
-		return tab;
-	}
-	
 	/**
 	 * Pose un pingouin sur un case si les lunes sont alignées
 	 * @param p position ou ajouter le pingouin
@@ -260,18 +311,13 @@ public class Plateau {
 		}
 		return false;
 	}
-	
-	public boolean estIsolee(Position p) {
-		for(Position n : getNeighbours(p)) {
-			if(! getCellule(n).isObstacle()) {
-				return false;
-			}
-		}
-		return true;
+
+	public int getSize() {
+		return size;
 	}
 
-	public void destroyCell(Position p) {
-		tab[p.i()][p.j()].destroy();
+	public Cellule[][] getTab() {
+		return tab;
 	}
 
 	public String pretty() {
@@ -282,6 +328,14 @@ public class Plateau {
 			res += "\n";
 		}
 		return res;
+	}
+
+	public String tabToString() {
+		String res = "[ ";
+		for (Cellule[] line: this.tab) {
+			res += Arrays.toString(line) + " ";
+		}
+		return res + "]";
 	}
 
 	@Override
