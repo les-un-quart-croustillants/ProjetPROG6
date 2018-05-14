@@ -144,11 +144,9 @@ public abstract class Joueur {
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
 				res = plateau.jouer(start,goal);
-				if(res > 0) {
-					this.addScoreFish(res);	
-				}
 				if(res >= 0) {
-					this.addScoreDestroyed(1);	
+					this.addScoreFish(res);	
+					this.addScoreDestroyed(1);
 				}
 				return res;
 			} else {

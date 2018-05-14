@@ -16,6 +16,10 @@ public class Position {
         return j;
     }
 
+	public Position clone() {
+		return new Position(this.i,this.j);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return ((Position) obj).i() == this.i
