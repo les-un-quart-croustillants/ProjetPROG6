@@ -304,4 +304,20 @@ public class PlateauTest {
 			}
 		}
 	}
+
+	@Test
+	public void clonetest() {
+		Plateau sujet = p.clone();
+		Assert.assertEquals(p, p.clone());
+		Assert.assertEquals(p,sujet);
+		sujet = new Plateau(4);
+		Assert.assertFalse(p.clone().equals(sujet.clone()));
+	}
+
+	@Test
+	public void equals() {
+		Plateau sujet = new Plateau(p.getSize());
+		Assert.assertEquals(p,p);
+		Assert.assertFalse(p.equals(sujet));
+	}
 }

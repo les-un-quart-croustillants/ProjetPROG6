@@ -22,6 +22,16 @@ public class Plateau {
 		initTab();
 	}
 
+	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
+		this.size = tab.length;
+		this.tab = new Cellule[this.size][this.size];
+		for (int i = 0; i < this.size; i++) {
+			System.arraycopy(tab[i], 0, this.tab[i], 0, this.size);
+		}
+		this.history = history;
+		this.undoList = undoList;
+	}
+
 	/**
 	 * initTab : initialise le tableau selon une configuration attendue.
 	 */
@@ -336,6 +346,30 @@ public class Plateau {
 			res += Arrays.toString(line) + " ";
 		}
 		return res + "]";
+	}
+
+	@Override
+	public Plateau clone() {
+		return new Plateau(this.tab, this.history, this.undoList);
+	}
+
+	public boolean tabEquals(Cellule[][] tab) {
+		boolean b = tab.length == this.size;
+		if (b)
+			for (int i = 0; i < this.size; i++) {
+				for (int j = 0; j < this.size; j++) {
+					b = b && tab[i][j].equals(this.tab[i][j]);
+				}
+			}
+		return b;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this.size == ((Plateau) obj).getSize()
+				&& this.history.equals(((Plateau) obj).history)
+				&& this.undoList.equals(((Plateau) obj).undoList)
+				&& tabEquals(((Plateau) obj).getTab());
 	}
 
 	@Override
