@@ -5,6 +5,7 @@ import java.util.Random;
 
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
+import Modele.Plateau.Pingouin;
 import Utils.Position;
 
 public class UtilsIA {
@@ -53,6 +54,15 @@ public class UtilsIA {
 		return compteur;
 	}
 	
+	/**
+	 * 
+	 * @param i : coordonee i de la case a calculer
+	 * @param j : coordonee j de la case a calculer
+	 * @param P : plateau sur lequel calculer
+	 * @param id: id du joueur IA
+	 * @return l'heuristique d'une case donnee dans une configuration
+	 */
+	
 	public static int heuristiqueCase(int i, int j, Plateau P,int id) {
 		LinkedList<Position> voisincase = new LinkedList<Position>();
 		LinkedList<Position> visitey = new LinkedList<Position>();
@@ -88,7 +98,13 @@ public class UtilsIA {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param P : plateau sur lequel calculer les heuristiques
+	 * @param taille : taille de ce dernier
+	 * @param id: id du joueur IA
+	 * @return un tableau de int, representant les heuristiques du plateau
+	 */
 	public static int[][] heuristiqueTab(Plateau P,int taille,int id){
 		int[][] res = new int[taille][taille];
 		for(int i = 0; i < taille; i++) {
@@ -98,6 +114,12 @@ public class UtilsIA {
 		}
 		return res;
 	}
+	
+	/**
+	 * @param T : le plateau de jeu 
+	 * @param id : l'id du joueur IA
+	 * @return La meilleure position pour placer un pingouin dans la configuration actuelle du plateau de jeu
+	 */
 	
 	public static Position bestplace(Plateau T,int id) {
 		LinkedList<Position> bestmatch = new LinkedList<Position>();
@@ -128,5 +150,22 @@ public class UtilsIA {
 		else 
 			return new Position(0,0);
 	}
+	/*
+	public static void calculFils(Plateau p, int id) {
+		Cellule [][] tab = p.getTab();
+		int size = p.getSize();
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				if(tab[i][j].aPingouin() && tab[i][j].pingouin().employeur() == id) {
+					Pingouin current  = tab[i][j].pingouin();
+					
+				}
+			}
+		}
+		
+		
+		
+		
+	}*/
 	
 }
