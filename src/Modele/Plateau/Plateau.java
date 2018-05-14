@@ -305,7 +305,6 @@ public class Plateau {
 	/**
 	 * Pose un pingouin sur un case si les lunes sont alignées
 	 * @param p position ou ajouter le pingouin
-	 * @param joueurID employeur du pingouin
 	 * @return true si tout c'est bien passe false sinon
 	 * @author Louka Soret
 	 */
