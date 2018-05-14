@@ -222,7 +222,9 @@ public class Moteur {
 		    }
 		});
 		this.joueurs.remove(j);
-		if(this.joueurs.size() < 0) {
+		if(joueurs.size()==this.indexJoueurCourant)
+			this.indexJoueurCourant--;
+		if(this.joueurs.size() > 0) {
 			return joueurCourant();
 		} else {
 			return null;
