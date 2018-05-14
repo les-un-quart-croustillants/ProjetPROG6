@@ -3,6 +3,8 @@ package Modele.Moteur;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
 import Modele.Joueurs.JoueurPhysique;
@@ -125,6 +127,11 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
 	}
 	
+	/**
+	 * Change l'etat courant en appliquant la transition (etat courrant,action) sur
+	 * la machine a etat
+	 * @param action
+	 */
 	public void transition(Action action) {
 		Couple<State,Action> newkey = new Couple<State,Action>(this.currentState,action);
 		for(Couple<State,Action> key: this.transition.keySet()) {
@@ -165,6 +172,26 @@ public class Moteur {
 	public int indexJoueurCourant() {
 		return this.indexJoueurCourant;
 	}
+	
+	/**
+	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
+	 * représente un rang dans le podium (le gagnant est a l'indice 0), dans 
+	 * chaque ligne il y a: l'ID du joueur, son score de poissons et son score de cases.
+	 * @return
+	 */
+	public ArrayList<ArrayList<Integer>> podium() {
+		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+		for(Joueur j : this.eliminees) {
+			res.add(			new ArrayList<Integer>() {
+			private static final long serialVersionUID = 1L;
+			{
+			    add(j.id());
+			    add(j.scoreFish());
+			    add(j.scoreDestroyed());
+			}});
+		}
+		return res;
+	}
 
 	/**
 	 * Passe au joueur suivant. Si selui ci ne peut plus jouer, le supprime des joueurs
@@ -183,8 +210,21 @@ public class Moteur {
 		}
 		Joueur j = this.joueurCourant();
 		this.eliminees.add(j);
+		//Tri les joueurs elimines en vue du calcul du podium
+		Collections.sort(this.eliminees, new Comparator<Joueur>() {
+			@Override
+		    public int compare(Joueur a, Joueur b) {
+		        if(a.scoreFish() == b.scoreFish()) {
+		        	return Math.max(a.scoreDestroyed(),b.scoreDestroyed());
+		        } else {
+		        	return Math.max(a.scoreFish(),b.scoreFish());
+		        }
+		    }
+		});
 		this.joueurs.remove(j);
-		if(this.joueurs.size() < 0) {
+		if(joueurs.size()==this.indexJoueurCourant)
+			this.indexJoueurCourant--;
+		if(this.joueurs.size() > 0) {
 			return joueurCourant();
 		} else {
 			return null;
@@ -263,7 +303,6 @@ public class Moteur {
 				} else {
 					if (joueurSuivant() == null) {
 						transition(Action.FIN_PARTIE);
-						System.out.println("FIN PARTIE");
 					} else {
 						transition(Action.SELECTION_VALIDE);
 					}
@@ -279,6 +318,11 @@ public class Moteur {
 		}
 	}
 	
+	/**
+	 * Demande a l'IA de calculer une position pour la pose du pingouin et tente
+	 * de le poser avec poserPingouin
+	 * @return
+	 */
 	public Position posePingouinIA() {
 		if(this.currentState == State.POSER_PINGOUIN) {
 			//Si le joueur est une IA
@@ -300,6 +344,11 @@ public class Moteur {
 		}
 	}
 	
+	/**
+	 * Demande a l'IA de calculer un coup et tente de le jouer
+	 * avec selectionnerPingouin et selectionnerDestination
+	 * @return
+	 */
 	public Couple<Position,Position> coupIA(){
 		if(this.currentState == State.SELECTIONNER_PINGOUIN) {
 			//Si le joueur est une IA
@@ -323,6 +372,8 @@ public class Moteur {
 		}
 	}
 	
+	
+	
 	/**
 	 * pingouinSelection : renvoie le pingouin actuellement selectionn�
 	 * 
@@ -335,4 +386,6 @@ public class Moteur {
 			return null;
 		}
 	}
+	
+	
 }

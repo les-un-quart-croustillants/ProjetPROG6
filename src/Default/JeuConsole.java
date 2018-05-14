@@ -9,7 +9,7 @@ import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 
-public class TestMoteurConsole {
+public class JeuConsole {
 	public static Moteur m;
 	private static char[] sym_joueurs = { 'M', 'A', 'B', 'C' };
 	private static Scanner sc;
@@ -57,8 +57,17 @@ public class TestMoteurConsole {
 				else {
 					System.out.println("Deplacement impossible.");
 				}
-			}
-			else {
+			} else if(m.currentState() == State.RESULTATS) {
+				int i = 0;
+				System.out.println("|rang |joueur |poissons |cases detruites |");
+				System.out.println("------------------------------------------");
+				for(ArrayList<Integer> j : m.podium()) {
+					i++;
+					System.out.println("|"+i+"    |"+j.get(0)+"     |"+j.get(1)+"       |"+j.get(2)+"              |");
+				}
+				System.out.println("------------------------------------------");
+				return;
+			} else {
 				System.out.println(m.currentState());
 				return;
 			}
