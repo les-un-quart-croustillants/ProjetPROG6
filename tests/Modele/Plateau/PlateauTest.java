@@ -310,8 +310,11 @@ public class PlateauTest {
 		Plateau sujet = p.clone();
 		Assert.assertEquals(p, p.clone());
 		Assert.assertEquals(p,sujet);
+		sujet.getCellule(new Position(0,0)).destroy();
+		Assert.assertFalse(p.equals(sujet));
 		sujet = new Plateau(4);
 		Assert.assertFalse(p.clone().equals(sujet.clone()));
+
 	}
 
 	@Test
