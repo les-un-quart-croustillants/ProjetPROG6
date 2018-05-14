@@ -26,10 +26,12 @@ public class Plateau {
 		this.size = tab.length;
 		this.tab = new Cellule[this.size][this.size];
 		for (int i = 0; i < this.size; i++) {
-			System.arraycopy(tab[i], 0, this.tab[i], 0, this.size);
+			for (int j = 0; j < this.size; j++) {
+				this.tab[i][j] = tab[i][j].clone();
+			}
 		}
-		this.history = history;
-		this.undoList = undoList;
+		this.history = (LinkedList<Move>) history.clone();
+		this.undoList = (LinkedList<Move>) undoList.clone();
 	}
 
 	/**
