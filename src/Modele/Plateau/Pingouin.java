@@ -52,6 +52,11 @@ public class Pingouin {
 	}
 
 	@Override
+	protected Object clone() {
+		return new Pingouin(this.employeur, this.position.clone());
+	}
+
+	@Override
 	public String toString() {
 		return "{Position:"+this.position.toString()+", Joueur:"+this.employeur+", Score:"+this.nbPoissonManges+"}";
 	}
