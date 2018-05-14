@@ -65,7 +65,7 @@ public class UtilsIA {
 				heuristiquecase = heuristiquecase-5;
 			}
 			
-			//on ajoute le nombre de case a 3 poissons accessible
+			//on ajoute le nombre de case a 3 poissons accessible en n pas de 1 deplacement (c'est un peu cavalier de prendre plus que 1 deplacement, d'autant que je sais pas ce que ca veut dire)
 			heuristiquecase = heuristiquecase + nb3fishaccesible(i,j,P,0,visitey);
 			
 			//c'est pas mal de commencer a coter d'un ennemi
@@ -75,7 +75,12 @@ public class UtilsIA {
 					heuristiquecase = heuristiquecase+3;
 				}
 			}
-			
+			//c'est pas fou de commencer a coter d'un allie
+			for(int k = 0; k < voisincase.size(); k++) {
+				if(P.getCellule(voisincase.get(k)).aPingouin() && P.getCellule(voisincase.get(k)).pingouin().employeur() == id) {
+					heuristiquecase = heuristiquecase-1;
+				}
+			}
 		}
 		else
 			return -1000;
@@ -103,12 +108,12 @@ public class UtilsIA {
 		int best = -1000;
 		for(int i = 0; i< T.getSize();i++){
 			for(int j = 0; j< T.getSize();j++){
-				if(tab[i][j] > best && !T.getCellule(new Position(i,j)).aPingouin()) {
+				if(tab[i][j] > best && !T.getCellule(new Position(i,j)).aPingouin() && !T.getCellule(new Position(i,j)).isDestroyed()) {
 					bestmatch.clear();
 					best = tab[i][j];
 					bestmatch.addFirst(new Position(i,j));
 				}
-				else if(tab[i][j] == best && !T.getCellule(new Position(i,j)).aPingouin()) {
+				else if(tab[i][j] == best && !T.getCellule(new Position(i,j)).aPingouin() && !T.getCellule(new Position(i,j)).isDestroyed()) {
 					bestmatch.addFirst(new Position(i,j));
 				}
 				
@@ -123,5 +128,7 @@ public class UtilsIA {
 		else 
 			return new Position(0,0);
 	}
+	
+	public static void listeComposantesConnexes()
 
 }
