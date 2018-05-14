@@ -68,7 +68,7 @@ public class Cellule {
 	}
 
 	public Cellule clone() {
-		return new Cellule(this.position.clone(), this.destroyed, this.fish, this.pingouin.clone());
+		return new Cellule(this.position.clone(), this.destroyed, this.fish, (this.aPingouin()) ? this.pingouin.clone() : null);
 	}
 
 	public String pretty() {
