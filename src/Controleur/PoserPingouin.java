@@ -74,6 +74,8 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					}
 				}
 			}
+			pc.joueurCourantGraphique.setText("Joueur "+(1+GamePane.moteur().indexJoueurCourant()));
+			pc.joueurCourantGraphique.setCouleur(Donnees.COULEURS_JOUEURS[GamePane.moteur().indexJoueurCourant()]);
 		}
 
 	}
