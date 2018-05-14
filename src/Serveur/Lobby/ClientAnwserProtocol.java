@@ -1,23 +1,12 @@
 package Serveur.Lobby;
 
 public class ClientAnwserProtocol {
-	private State currentState;
-
-	private enum State {
-		WAITING;
-
-		public String toString(State s) {
-			switch (s) {
-			case WAITING:
-				return "WAITING";
-			default:
-				return "UNKNOWN";
-			}
-		}
-	}
+	private String ihmMessage;
+	private String serverMessage;
 
 	public ClientAnwserProtocol() {
-		this.currentState = State.WAITING;
+		this.ihmMessage = null;
+		this.serverMessage = null;
 	}
 
 	/**
@@ -26,7 +15,38 @@ public class ClientAnwserProtocol {
 	 * @param input
 	 * @return
 	 */
-	public String processInput(String input) {
-		return "Bye";
+	synchronized public String processInput(String input) {
+		while(this.ihmMessage == null) {
+			try {wait();} catch (InterruptedException e) {}
+		}
+		String res = this.ihmMessage;
+		this.serverMessage = input;
+		this.ihmMessage = null;
+		notifyAll();
+		return res;
+	}
+	
+	synchronized public String reponseServeur() {
+		while(this.serverMessage == null) {
+			try {wait();} catch (InterruptedException e) {}
+		}
+		String res = this.serverMessage;
+		this.serverMessage = null;
+		return res;
+	}
+	
+	synchronized public void instances() {
+		this.ihmMessage = "I";
+		notifyAll();
+	}
+	
+	synchronized public void connecte(String hostName, int port) {
+		this.ihmMessage = "C "+hostName+":"+port;
+		notifyAll();
+	}
+	
+	synchronized public void heberger() {
+		this.ihmMessage = "H";
+		notifyAll();
 	}
 }
