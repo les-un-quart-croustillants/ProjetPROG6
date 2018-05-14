@@ -52,7 +52,7 @@ public class Pingouin {
 	}
 
 	@Override
-	protected Object clone() {
+	public Pingouin clone() {
 		return new Pingouin(this.employeur, this.position.clone());
 	}
 
