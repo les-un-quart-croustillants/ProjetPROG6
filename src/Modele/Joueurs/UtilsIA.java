@@ -129,6 +129,4 @@ public class UtilsIA {
 			return new Position(0,0);
 	}
 	
-	public static void listeComposantesConnexes()
-
 }
