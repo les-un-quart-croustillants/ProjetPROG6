@@ -2,11 +2,12 @@ package Modele.Joueurs;
 
 import java.util.LinkedList;
 import java.util.Random;
-
+import java.util.Stack;
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
 import Modele.Plateau.Pingouin;
 import Utils.Position;
+import Utils.Couple;
 
 public class UtilsIA {
 	/**
@@ -150,22 +151,156 @@ public class UtilsIA {
 		else 
 			return new Position(0,0);
 	}
-	/*
-	public static void calculFils(Plateau p, int id) {
+	/**
+	 * Calcule les configurations filles d'une configuration
+	 * @param n : le noeud dont il faut calculer les fils 
+	 * @param id : l'id du joueur courant
+	 */
+	public static void calculFils(Noeud n,int id) {
+		Plateau p = n.plateau();
 		Cellule [][] tab = p.getTab();
 		int size = p.getSize();
+		Noeud cur = new Noeud();
+		
+		LinkedList<Position> accessible = new LinkedList<Position>();
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
-				if(tab[i][j].aPingouin() && tab[i][j].pingouin().employeur() == id) {
-					Pingouin current  = tab[i][j].pingouin();
-					
+				if(tab[i][j].aPingouin() && tab[i][j].pingouin().employeur() == id) { // si il y a un pingouin allie sur la case courante
+					Pingouin current  = tab[i][j].pingouin(); // on le recupere
+					accessible = p.accessible(new Position(i,j)); // on calcule ses cases directement accessible
+					for(int k = 0; k < accessible.size() ; k++) { // et pour toutes ces cases
+						Plateau pclone = p.clone(); // on copie le plateau
+						pclone.jouer(current, accessible.get(k)); // on simule le coup depuis la position du pingouin vers la case accessible courante 
+						cur = new Noeud(pclone , n); // on cree un nouveau noeud avec ce coup simule, avec comme pere le noeud de base
+						n.addFils(cur); //et on ajoute ce nouveau noeud comme fils du noeud de base.
+					}
 				}
 			}
 		}
+	}
+	
+	//ajoute le contenu de b qui n'a pas deja été vu dans a
+	public static void mergeStacks(Stack<Position> a,LinkedList<Position> b,LinkedList<Position> c) {
+		for(int i = 0; i < b.size(); i++) {
+			if(!c.contains(b.get(i))) {
+				a.push(b.get(i));
+				c.push(b.get(i));
+			}
+		}
+	}
+	
+	/**
+	 * Calcule et liste le nombre de composante connexes et leur contenu 
+	 * @param p Le tableau a gerer
+	 * @return une linked list comportant une linked list par composante detectee, chaque linked list comporte les positions des cases qui la compose.
+	 */
+	public static LinkedList<LinkedList<Position>> listeConnexeComposante(Plateau p) {
+		LinkedList<LinkedList<Position>> res = new LinkedList<LinkedList<Position>>();
+		LinkedList<Position> current = new LinkedList<Position>();
+		LinkedList<Position> checked = new LinkedList<Position>();
+		Stack<Position> stack = new Stack<Position>();
 		
+		for(int i = 0; i < p.getSize(); i++) {
+			for(int j = 0; j < p.getSize(); j++) {
+				if( !checked.contains(new Position(i,j)) && !p.getCellule(new Position(i,j)).isDestroyed() && !p.getCellule(new Position(i,j)).aPingouin()) {
+					stack.push(new Position(i,j));
+					while(!stack.isEmpty()) {
+						Position cur = stack.pop();
+						checked.add(cur);
+						current.add(cur);
+						mergeStacks(stack,p.accessible(cur),checked);
+					}
+					res.add((LinkedList<Position>)current.clone());
+					current.clear();
+				}
+			}
+		}
+		return res;
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public static int calculHeuristiqueFacile(Noeud n,int id) {
+		Noeud pere  = n.pere();
+		Plateau ppere = pere.plateau();
+		Cellule [][] tabpere = ppere.getTab();
 		
+		int heur = 50;
+		Plateau p = n.plateau();
+		Cellule [][] tab = p.getTab();
+		int size = p.getSize();
+		Pingouin ping = new Pingouin(id);
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				if( tab[i][j].aPingouin() && !tabpere[i][j].aPingouin()) {
+					ping = tab[i][j].pingouin();
+				}
+			}
+		}
+		if( p.estIsolee( ping.position() ) )
+			return 0;
 		
+		if(tab[ping.position().i()][ping.position().j()].getFish() == 3)
+			heur = heur + 18;
 		
-	}*/
+		if(tab[ping.position().i()][ping.position().j()].getFish() == 2)
+			heur = heur + 12;
+		
+		return heur;
+	}
+	
+	public static  Couple<Position,Position> jouerCoupFacile(Plateau p,int id){
+		Noeud n = new Noeud(p.clone());
+		calculFils(n,id);
+		LinkedList<Noeud> fils = n.fils();
+		for(int i = 0; i < fils.size(); i++) {
+			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i),id));
+		}
+		int max = -1;
+		for(int i = 0; i < fils.size(); i++) {
+			if( fils.get(i).heuristique() > max){
+				max = i;
+			}
+		}
+		return coupCalcule(n,fils.get(max));
+	}
+	
+	public static Couple<Position,Position> coupCalcule(Noeud pere, Noeud fils){
+		
+		Position newp = new Position(0,0);
+		Position oldp = new Position(0,0);
+		Plateau ppere = pere.plateau();
+		Cellule [][] tabpere = ppere.getTab();
+		Plateau pfils = fils.plateau();
+		Cellule [][] tabfils = pfils.getTab();
+		int size = pfils.getSize();
+		
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				if(tabfils[i][j].aPingouin() && !tabpere[i][j].aPingouin()) {
+					newp = new Position(i,j);
+				}
+				if(!tabfils[i][j].aPingouin() && tabpere[i][j].aPingouin()) {
+					oldp = new Position(i,j);
+				}
+			}
+		}
+		return new Couple<Position,Position>(oldp,newp);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

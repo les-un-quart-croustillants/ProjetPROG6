@@ -40,14 +40,14 @@ public class Noeud {
 		/**
 		 * @return l'heuristique du noeud
 		 */
-		public int heuristic() {
+		public int heuristique() {
 			return this.heuristique;
 		}
 		
 		/**
 		 * @return valeur du noeud
 		 */
-		public Plateau valeur() {
+		public Plateau plateau() {
 			return this.plat;
 		}
 		
@@ -76,7 +76,7 @@ public class Noeud {
 		public LinkedList<Noeud> filsTaggue(){
 			LinkedList<Noeud> res = new LinkedList<Noeud>();
 			for(Noeud n : this.fils) {
-				if (n.heuristic() == this.heuristic()) {
+				if (n.heuristique() == this.heuristique()) {
 					res.add(n);
 				}
 			}
