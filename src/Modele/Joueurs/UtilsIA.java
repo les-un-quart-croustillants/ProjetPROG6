@@ -251,14 +251,14 @@ public class UtilsIA {
 	
 	public static void afficher_plat(Plateau p) {
 		Cellule [][] tab = p.getTab();
-		System.out.println(p.tabToString());
-		/*
+		//System.out.println(p.tabToString());
+		
 		for(int i = 0; i < p.getSize() ; i++) {
 			for(int j = 0; j < p.getSize() ; j++) {
 				System.out.print(tab[i][j] + "   ;   " );
 			} 
 			System.out.println(" ");
-		}*/
+		}
 	}
 	
 	public static  Couple<Position,Position> jouerCoupFacile(Plateau p,int id){
@@ -269,7 +269,7 @@ public class UtilsIA {
 		for(int i = 0; i < fils.size(); i++) {
 			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i),id));
 			System.out.println("----------------");
-			afficher_plat(fils.get(i).plateau());
+			System.out.println(fils.get(i).plateau().pretty()) ;
 			System.out.println("----------------");
 		}
 		int max = -1;

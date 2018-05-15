@@ -146,7 +146,7 @@ public abstract class Joueur {
 		System.out.println("------------------------------------------------------");
 		*/
 		//System.out.println("------------------------------------------------------");
-		//System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
+		System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
 		//System.out.println("------------------------------------------------------");
 
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
