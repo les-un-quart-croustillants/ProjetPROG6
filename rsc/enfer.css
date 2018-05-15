@@ -30,9 +30,21 @@
 }
 
 .rightbutton {
-	-fx-background-image: url("rightarrow_hell.png");
+	-fx-graphic:  url("rightarrow_hell.png");
 	-fx-pref-width: 71px;
 	-fx-pref-height: 77px;
+}
+
+.leftbuttonsmall {
+	-fx-graphic: url("leftarrow_small_hell.png");
+	-fx-pref-width: 15px;
+	-fx-pref-height: 16px;
+}
+
+.rightbuttonsmall {
+	-fx-graphic: url("rightarrow_small_hell.png");
+	-fx-max-width: 15px;
+	-fx-pref-height: 16px;
 }
 
 .button:hover {

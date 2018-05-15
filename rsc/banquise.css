@@ -12,7 +12,7 @@
 }
 
 .leftbutton {
-	-fx-background-image: url("leftarrow_ice.png");
+	-fx-graphic:  url("leftarrow_ice.png");
 	-fx-pref-width: 71px;
 	-fx-pref-height: 77px;
 }
@@ -29,9 +29,21 @@
 }
 
 .rightbutton {
-	-fx-background-image: url("rightarrow_ice.png");
+	-fx-graphic:  url("rightarrow_ice.png");
 	-fx-pref-width: 71px;
 	-fx-pref-height: 77px;
+}
+
+.leftbuttonsmall {
+	-fx-graphic:  url("leftarrow_small_ice.png");
+	-fx-pref-width: 15px;
+	-fx-pref-height: 16px;
+}
+
+.rightbuttonsmall {
+	-fx-graphic:  url("rightarrow_small_ice.png");
+	-fx-pref-width: 15px;
+	-fx-pref-height: 16px;
 }
 
 .button:hover {

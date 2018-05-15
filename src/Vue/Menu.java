@@ -35,6 +35,15 @@ public class Menu extends StackPane {
 	private void button_behaviour() {
 		mainMenuBehaviour();
 		newGameBehaviour();
+		configMenuBehaviour();
+	}
+	
+	private void configMenuBehaviour() {
+		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().remove(ConfigMenu.getInstance());
+			}
+		});
 	}
 	
 	private void mainMenuBehaviour() {
@@ -84,6 +93,19 @@ public class Menu extends StackPane {
 					NewGameMenu.getInstance().mapName.setText("ENFER");
 					instance.getStylesheets().add("enfer.css");
 				}
+			}
+		});
+		
+		NewGameMenu.getInstance().config.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().add(ConfigMenu.getInstance());
+			}
+		});
+		
+		NewGameMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				mApp.transition(Action.NOUVELLE_PARTIE);
+				ig.graphic_state();
 			}
 		});
 		

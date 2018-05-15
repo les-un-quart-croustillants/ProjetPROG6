@@ -22,7 +22,7 @@ public class InterfaceGraphique extends Application {
 		stage = primaryStage;
 		Menu.setInterfaceGraphique(this);
 		Menu.setMoteurApp(m);
-		Scene menu = new Scene(GamePane.getInstance(), 1000, 800);
+		Scene menu = new Scene(Menu.getInstance(), 1000, 800);
         stage.setScene(menu);
 		stage.show();
 		stage.setMinHeight(400);
@@ -35,7 +35,7 @@ public class InterfaceGraphique extends Application {
 			stage.setScene(new Scene(Menu.getInstance(), 1000, 800));
 			break;
 		case JEU:
-			stage.setScene(new Scene(GamePane.getInstance(), 1000, 800));
+			stage.setScene(new Scene(GamePane.getInstance()));
 			break;
 		case QUITTER:
 			stage.close();
