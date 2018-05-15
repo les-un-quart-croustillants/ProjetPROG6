@@ -100,10 +100,10 @@ public class Case extends GameObject {
 	 */
 	public boolean collision(Point p) {
 		Vec2f p2 = new Vec2f(polygon.xpoints[0], polygon.ypoints[0]);
-		Vec2f p1 = new Vec2f(polygon.xpoints[5], polygon.ypoints[5]);
+		Vec2f p1 = new Vec2f(polygon.xpoints[7], polygon.ypoints[7]);
 		Vec2f vpoly = new Vec2f();
 		Vec2f vpoint = new Vec2f();
-		for (int i = 1; i < 6; i++) {
+		for (int i = 1; i < 8; i++) {
 			vpoly.x = p2.x - p1.x;
 			vpoly.y = p2.y - p1.y;
 			vpoint.x = p.x - p1.x;
