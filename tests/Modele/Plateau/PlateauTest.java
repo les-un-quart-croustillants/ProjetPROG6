@@ -1,8 +1,10 @@
 package Modele.Plateau;
 
+import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -323,4 +325,31 @@ public class PlateauTest {
 		Assert.assertEquals(p,p);
 		Assert.assertFalse(p.equals(sujet));
 	}
+
+	@Test
+	public void undo() {
+		Position from= new Position(0,0),
+				to = new Position(0,1);
+		Pingouin pingouin = new Pingouin(0, from);
+		p.getCellule(from).setPenguin(pingouin);
+		Plateau sujet = p.clone();
+		try {
+			sujet.jouer(from, to);
+		} catch (PlateauException e) {
+			e.printStackTrace();
+		}
+		Assert.assertNotEquals(p, sujet);
+		Assert.assertFalse(sujet.getHistory().isEmpty());
+		Assert.assertTrue(sujet.getUndoList().isEmpty());
+		sujet.undo();
+		Assert.assertFalse(sujet.getUndoList().isEmpty());
+		Assert.assertTrue(sujet.getHistory().isEmpty());
+		Assert.assertEquals(1, sujet.getUndoList().size());
+		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish())));
+		Assert.assertTrue(p.tabEquals(sujet.getTab()));
+		Assert.assertFalse(p.getCellule(to).aPingouin());
+		Assert.assertTrue(p.getCellule(from).aPingouin());
+		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
+	}
+
 }
