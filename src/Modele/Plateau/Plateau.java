@@ -331,7 +331,7 @@ public class Plateau {
 		return tab;
 	}
 
-	public String pretty() {
+	public String pretty(){
 		String res = "";
 		for (Cellule[] line: this.tab) {
 			for (Cellule c : line)
