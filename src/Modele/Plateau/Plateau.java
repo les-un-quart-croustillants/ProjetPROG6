@@ -221,14 +221,23 @@ public class Plateau {
 	 * @return le nombre de poissons mangés si le déplacement est possible
 	 * -1 sinon.
 	 */
-	public int jouer(Position current, Position target) throws PlateauException {
+	public int jouer(Position current, Position target) {
+		try {
+			return jouer_exp(current,target);
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
+	}
+
+	private int jouer_exp(Position current, Position target) throws PlateauException {
 		int res = -1;
 		Cellule currentCell, targetCell;
 		Pingouin pingouin;
 		if (!isInTab(current) || !isInTab(target))
 			throw new BewareOfOrcasException();
 		if (!getCellule(current).aPingouin())
-			throw new ItsOnlyYouException();
+			throw new ItsOnlyYouException(current);
 
 		pingouin = getCellule(current).pingouin();
 		targetCell = getCellule(target);
@@ -255,7 +264,7 @@ public class Plateau {
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
 		try {
-			return jouer(current, target);
+			return jouer_exp(current, target);
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
@@ -265,7 +274,7 @@ public class Plateau {
 	/* Implementation pour Plateau.redo() */
 	private int jouer(Move m) {
 		try {
-			return jouer(m.getFrom(), m.getTo());
+			return jouer_exp(m.getFrom(), m.getTo());
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
@@ -275,8 +284,6 @@ public class Plateau {
 	public int undo() {
 		if(history.isEmpty())
 			return -1;
-
-
 		Move lastMove = history.removeLast();
 		Position from = lastMove.getFrom(),
 				to = lastMove.getTo();
@@ -298,7 +305,7 @@ public class Plateau {
 	public int redo() {
 		if (undoList.isEmpty())
 			return -1;
-		return jouer(undoList.removeFirst());
+		return jouer(undoList.removeLast());
 	}
 
 	/**
