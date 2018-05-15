@@ -1,35 +1,41 @@
 package Modele.Joueurs;
 
 import java.util.LinkedList;
-import Modele.Plateau.Plateau;
+import Utils.Position;
+import Utils.Couple;
 
 public class Noeud {
 
-		private Plateau plat;
+		private LinkedList<Couple<Position,Position>> listcoup;
 		private int heuristique;
 		private Noeud pere ;
 		private LinkedList<Noeud> fils;
 		
 		public Noeud() {
-			this.plat = new Plateau(0);
+			this.listcoup = new LinkedList<Couple<Position,Position>>() ;
 			this.heuristique = 0;
 			this.pere = null;
 			this.fils = new LinkedList<Noeud>();
 		}
 		
-		public Noeud(Plateau p) {
-			this.plat = p;
+		public Noeud(LinkedList<Couple<Position,Position>> l) {
+			this.listcoup = l;
 			this.pere = null;
 			this.fils = new LinkedList<Noeud>();
 		}
 		
-		public Noeud(Plateau p, Noeud pere) {
-			this.plat = p;
+		public Noeud(LinkedList<Couple<Position,Position>> l, Noeud pere) {
+			this.listcoup = l;
 			this.heuristique = 0;
 			this.pere = pere;
 			this.fils = new LinkedList<Noeud>();
 		}
-		
+		public Noeud(LinkedList<Couple<Position,Position>> l, Noeud pere,int heur, LinkedList<Noeud> lfils) {
+			this.listcoup = l;
+			this.heuristique = heur;
+			this.pere = pere;
+			this.fils = lfils;
+		}
 		/**
 		 * @return si le neoud est une feuille
 		 */
@@ -47,8 +53,8 @@ public class Noeud {
 		/**
 		 * @return valeur du noeud
 		 */
-		public Plateau plateau() {
-			return this.plat;
+		public LinkedList<Couple<Position,Position>> listcoup() {
+			return this.listcoup;
 		}
 		
 		/**
@@ -86,8 +92,8 @@ public class Noeud {
 		/**
 		 * @param v nouvelle valeur pour le noeud
 		 */
-		public void setValeur(Plateau p) {
-			this.plat = p;
+		public void setValeur(LinkedList<Couple<Position,Position>> l) {
+			this.listcoup = l;
 		}
 		
 		/**
@@ -126,5 +132,9 @@ public class Noeud {
 		 */
 		public void removeFils(int i) {
 			this.fils.remove(i);
+		}
+		
+		public Noeud clone() {
+			return new Noeud((LinkedList<Couple<Position,Position>>) this.listcoup.clone(),this.pere,this.heuristique,this.fils);
 		}
 }

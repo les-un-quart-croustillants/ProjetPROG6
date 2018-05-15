@@ -156,23 +156,27 @@ public class UtilsIA {
 	 * @param n : le noeud dont il faut calculer les fils 
 	 * @param id : l'id du joueur courant
 	 */
-	public static void calculFils(Noeud n,int id) {
-		Plateau p = n.plateau();
+	public static void calculFils(Noeud n,int id,Plateau plateau) {
+		Plateau plat = plateau.clone();
+		
+		LinkedList<Couple<Position,Position>> list = n.listcoup();
+		Plateau p = plateaucoup(  list,  plat );
 		Cellule [][] tab = p.getTab();
 		int size = p.getSize();
 		Noeud cur = new Noeud();
-		
 		LinkedList<Position> accessible = new LinkedList<Position>();
+		LinkedList<Couple<Position,Position>> add = new LinkedList<Couple<Position,Position>>();
+		
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
 				if(tab[i][j].aPingouin() && tab[i][j].pingouin().employeur() == id) { // si il y a un pingouin allie sur la case courante
 					Pingouin current  = tab[i][j].pingouin(); // on le recupere
 					accessible = p.accessible(new Position(i,j)); // on calcule ses cases directement accessible
 					for(int k = 0; k < accessible.size() ; k++) { // et pour toutes ces cases
-						Plateau pclone = p.clone(); // on copie le plateau
-						pclone.jouer(current, accessible.get(k)); // on simule le coup depuis la position du pingouin vers la case accessible courante 
-						cur = new Noeud(pclone , n); // on cree un nouveau noeud avec ce coup simule, avec comme pere le noeud de base
+						add.add(new Couple<Position,Position>(current.position(), accessible.get(k)));
+						cur = new Noeud( (LinkedList<Couple<Position,Position>>) add.clone() ,n); // on cree un nouveau noeud avec ce coup simule, avec comme pere le noeud de base
 						n.addFils(cur); //et on ajoute ce nouveau noeud comme fils du noeud de base.
+						add.clear();
 					}
 				}
 			}
@@ -217,16 +221,29 @@ public class UtilsIA {
 		}
 		return res;
 	}
+	
+	public static Plateau plateaucoup(LinkedList<Couple<Position,Position>> l, Plateau p) {
+		Plateau pclone = p.clone();
+		while(l.size() != 0) {
+			Couple<Position,Position> current = l.pollFirst();
+			pclone.jouer(current.gauche(), current.droit());
+		}
+		
+		return pclone;
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	public static int calculHeuristiqueFacile(Noeud n,int id) {
-		Noeud pere  = n.pere();
-		Plateau ppere = pere.plateau();
+	public static int calculHeuristiqueFacile(Noeud n,int id, Plateau plat) {
+		LinkedList<Couple<Position,Position>> listpere = n.pere().listcoup();
+		Plateau ppere = plateaucoup(  listpere ,  plat );
 		Cellule [][] tabpere = ppere.getTab();
 		
 		int heur = 50;
-		Plateau p = n.plateau();
+		LinkedList<Couple<Position,Position>> listcur = n.listcoup();
+		Plateau p = plateaucoup(  listcur,  plat );
 		Cellule [][] tab = p.getTab();
 		int size = p.getSize();
 		Pingouin ping = new Pingouin(id);
@@ -246,56 +263,63 @@ public class UtilsIA {
 		if(tab[ping.position().i()][ping.position().j()].getFish() == 2)
 			heur = heur + 12;
 		
+		if(ping.position().i() == 0 || ping.position().j() == 0 || ping.position().i() == plat.getSize()-1 || (ping.position().j() == plat.getSize()-1 && ping.position().i()%2 == 1) || ( ping.position().j() == plat.getSize()-2 && ping.position().i()%2 == 0 ))
+			heur = heur - 7;
+		
+			
 		return heur;
 	}
-	
-	public static void afficher_plat(Plateau p) {
-		Cellule [][] tab = p.getTab();
-		//System.out.println(p.tabToString());
-		
-		for(int i = 0; i < p.getSize() ; i++) {
-			for(int j = 0; j < p.getSize() ; j++) {
-				System.out.print(tab[i][j] + "   ;   " );
-			} 
-			System.out.println(" ");
-		}
-	}
+
 	
 	public static  Couple<Position,Position> jouerCoupFacile(Plateau p,int id){
-		Noeud n = new Noeud(p.clone());
-		calculFils(n,id);
+		Noeud n = new Noeud();
+		calculFils(n,id,p);
 		LinkedList<Noeud> fils = n.fils();
-
+		
 		for(int i = 0; i < fils.size(); i++) {
-			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i),id));
-			System.out.println("----------------");
-			System.out.println(fils.get(i).plateau().pretty()) ;
-			System.out.println("----------------");
+			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i).clone(),id,p.clone()));
 		}
-		int max = -1;
-		for(int i = 0; i < fils.size(); i++) {
-			if( fils.get(i).heuristique() > max){
+		LinkedList<Noeud> res = new LinkedList<Noeud>();
+		int max = 0;
+		res.add(fils.get(0));
+		for(int i = 1; i < fils.size(); i++) {
+			System.out.println(" fils "+i+" heuristique : "+fils.get(i).heuristique());
+			if( fils.get(i).heuristique() > fils.get(max).heuristique()){
 				max = i;
+				res.clear();
+				res.add(fils.get(i));
 			}
+			else if(fils.get(i).heuristique() == fils.get(max).heuristique())
+				res.add(fils.get(i));
 		}
+		if(res.size() != 0) {
+			Random r = new Random();
+			int rand = r.nextInt(res.size());
+			return fils.get(rand).listcoup().get(0);
+		}
+		else 
+			return new Couple<Position,Position>(new Position(0,0),new Position(0,0));
 
-		return coupCalcule(new Noeud(p),fils.get(max));
+
 	}
 	
-	public static Couple<Position,Position> coupCalcule(Noeud pere, Noeud fils){
+	
+	//probablement useless
+	/*
+	 
+	 	public static Couple<Position,Position> coupCalcule(Noeud pere, Noeud fils,Plateau plat){
+
 		
 		Position newp = new Position(0,0);
 		Position oldp = new Position(0,0);
 		
-		Plateau ppere = pere.plateau();
+		LinkedList<Couple<Position,Position>> listpere = pere.listcoup();
+		Plateau ppere = plateaucoup(  listpere ,  plat );
 		Cellule [][] tabpere = ppere.getTab();
-		Plateau pfils = fils.plateau();
+		LinkedList<Couple<Position,Position>> listfils = fils.listcoup();
+		Plateau pfils = plateaucoup(  listfils ,  plat );
 		Cellule [][] tabfils = pfils.getTab();
 		int size = pfils.getSize();
-		
-		afficher_plat(ppere);
-		System.out.println("------------------");
-		afficher_plat(pfils);
 		
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
@@ -310,7 +334,7 @@ public class UtilsIA {
 		}
 		return new Couple<Position,Position>(oldp,newp);
 	}
-	
+	*/
 	
 	
 	
