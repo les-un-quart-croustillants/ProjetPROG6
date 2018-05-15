@@ -38,5 +38,11 @@ public class Couple<G,D> {
 	public String toString() {
 		return "(" + i.toString() + "," + j.toString() + ')';
 	}
-	
+
+	@Override
+	public int hashCode() {
+	    int hash = this.i.hashCode();
+	    hash = hash * 31 + this.j.hashCode();
+	    return hash;
+	}
 }

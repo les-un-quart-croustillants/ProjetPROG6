@@ -32,3 +32,38 @@
 	-fx-border-image-width: 5px 5px 5px 5px;
 	-fx-background-insets: 4px;
 }
+
+.title {
+	-fx-font-size: 72px;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane .label {
+	-fx-font-size: 25px;
+}
+
+.scroll-pane .button {
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+	-fx-padding: 0px;
+	-fx-font-size: 25px;
+}
+
+.hbox {
+	-fx-alignment: center;
+	-fx-spacing: 15px;
+}
+
+.scroll-pane {
+	-fx-background-color: transparent;
+	-fx-pref-height: 200px;
+	-fx-max-width: 400px;
+	-fx-fit-to-height: true;
+}
+
+.joueurconfig {
+	-fx-spacing: 15px;
+}
