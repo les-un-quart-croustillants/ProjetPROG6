@@ -278,16 +278,19 @@ public class Plateau {
 
 
 		Move lastMove = history.removeLast();
-		Pingouin penguin = lastMove.getPenguin();
-		Position currentPosition = penguin.position();
-		Position targetPosition = lastMove.getPrevious();
+		Position from = lastMove.getFrom(),
+				to = lastMove.getTo();
+
+		Pingouin pingouin = getCellule(to).pingouin();
 		int fishAte = lastMove.getFishAte();
 
 		this.undoList.addLast(lastMove);
 
-		tab[targetPosition.i()][targetPosition.j()].setDestroyed(false);
-		tab[currentPosition.i()][currentPosition.j()].setFish(fishAte);
-		penguin.setPosition(targetPosition);
+		tab[from.i()][from.j()].setDestroyed(false); // Restore old cell
+		getCellule(to).setPenguin(null); // remove pingouin from its current cell
+		tab[to.i()][to.j()].setFish(fishAte); // restore fish on left cell
+		pingouin.setPosition(from); // set pingouin to old position
+		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 
 		return fishAte;
 	}
@@ -347,7 +350,15 @@ public class Plateau {
 		return tab;
 	}
 
-	public String pretty(){
+	public LinkedList<Move> getHistory() {
+		return history;
+	}
+
+	public LinkedList<Move> getUndoList() {
+		return undoList;
+	}
+
+	public String pretty() {
 		String res = "";
 		for (Cellule[] line: this.tab) {
 			for (Cellule c : line)
