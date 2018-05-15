@@ -103,6 +103,15 @@ public class Plateau {
 		return r;
 	}
 
+	int diffDir(int a, int b) {
+		int res = 0;
+		if (a < b)
+			res = 1;
+		if (b < a)
+			res = -1;
+		return res;
+	}
+
 	private boolean safeAdd(LinkedList<Position> l, Position candidat) {
 		if (isInTab(candidat) && !getCellule(candidat).isObstacle()) {
 			if (!l.contains(candidat))
@@ -169,15 +178,6 @@ public class Plateau {
 		return res;
 	}
 
-	protected int diffDir(int a, int b) {
-		int res = 0;
-		if (a < b)
-			res = 1;
-		if (b < a)
-			res = -1;
-		return res;
-	}
-
 	/**
 	 * estAccessible : si une position est accessible depuis une autre
 	 * @param current : position de départ
@@ -229,31 +229,6 @@ public class Plateau {
 			return -1;
 		}
 	}
-
-	private int jouer_exp(Position current, Position target) throws PlateauException {
-		int res = -1;
-		Cellule currentCell, targetCell;
-		Pingouin pingouin;
-		if (!isInTab(current) || !isInTab(target))
-			throw new BewareOfOrcasException();
-		if (!getCellule(current).aPingouin())
-			throw new ItsOnlyYouException(current);
-
-		pingouin = getCellule(current).pingouin();
-		targetCell = getCellule(target);
-
-		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
-			history.addLast(new Move(target, current, targetCell.getFish()));
-			currentCell = getCellule(current);
-			currentCell.destroy();
-			currentCell.setPenguin(null);
-			pingouin.setPosition(target);
-			targetCell.setPenguin(pingouin);
-			res = targetCell.getFish();
-		}
-		return res;
-	}
-
 	/**
 	 * jouer : déplace un pinguoin si possible
 	 * @param penguin : le pinguoin à déplacer
@@ -279,6 +254,30 @@ public class Plateau {
 			System.err.println(e.getMessage());
 			return -1;
 		}
+	}
+
+	private int jouer_exp(Position current, Position target) throws PlateauException {
+		int res = -1;
+		Cellule currentCell, targetCell;
+		Pingouin pingouin;
+		if (!isInTab(current) || !isInTab(target))
+			throw new BewareOfOrcasException();
+		if (!getCellule(current).aPingouin())
+			throw new ItsOnlyYouException(current);
+
+		pingouin = getCellule(current).pingouin();
+		targetCell = getCellule(target);
+
+		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
+			history.addLast(new Move(target, current, targetCell.getFish()));
+			currentCell = getCellule(current);
+			currentCell.destroy();
+			currentCell.setPenguin(null);
+			pingouin.setPosition(target);
+			targetCell.setPenguin(pingouin);
+			res = targetCell.getFish();
+		}
+		return res;
 	}
 
 	public int undo() {
