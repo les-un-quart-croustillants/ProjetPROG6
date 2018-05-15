@@ -326,6 +326,11 @@ public class PlateauTest {
 		Assert.assertFalse(p.equals(sujet));
 	}
 
+	@Ignore
+	@Test
+	public void jouer() { // TODO
+	}
+
 	@Test
 	public void undo() {
 		Position from= new Position(0,0),
@@ -352,4 +357,44 @@ public class PlateauTest {
 		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
 	}
 
+	@Ignore
+	@Test
+	public void redo() {
+		Position from1 = new Position(0,1),
+				to1 = new Position(0,0),
+				from2 = to1,
+				to2 = new Position(1,2);
+		Move m1 = new Move(to1, from1, p.getCellule(to1).getFish()),
+			m2 = new Move(to2, from2, p.getCellule(to2).getFish());
+		Pingouin pingouin = new Pingouin(0,from1);
+		p.getCellule(from1).setPenguin(pingouin);
+		Plateau sujet = p.clone();
+		try {
+			sujet.jouer(from1,to1);
+			sujet.jouer(from2,to2);
+		} catch (PlateauException e) {
+			e.printStackTrace();
+		}
+		sujet.undo();
+		Assert.assertFalse(sujet.getUndoList().isEmpty());
+		Assert.assertTrue(sujet.getHistory().isEmpty());
+		Assert.assertEquals(1, sujet.getUndoList().size());
+		Assert.assertTrue(sujet.getUndoList().contains(m1));
+		Assert.assertTrue(p.tabEquals(sujet.getTab()));
+		Assert.assertFalse(p.getCellule(to1).aPingouin());
+		Assert.assertTrue(p.getCellule(from1).aPingouin());
+		Assert.assertEquals(pingouin, p.getCellule(from1).pingouin());
+		/* TODO : finish tests
+		sujet.undo();
+		Assert.assertFalse(sujet.getUndoList().isEmpty());
+		Assert.assertTrue(sujet.getHistory().isEmpty());
+		Assert.assertEquals(1, sujet.getUndoList().size());
+		Assert.assertTrue(sujet.getUndoList().contains(m1));
+		Assert.assertTrue(p.tabEquals(sujet.getTab()));
+		Assert.assertFalse(p.getCellule(to1).aPingouin());
+		Assert.assertTrue(p.getCellule(from1).aPingouin());
+		Assert.assertEquals(pingouin, p.getCellule(from1).pingouin());
+		sujet.redo()
+		*/
+	}
 }
