@@ -1,5 +1,8 @@
 package Modele.Plateau;
 
+import Modele.Plateau.Exception.BewareOfOrcasException;
+import Modele.Plateau.Exception.ItsOnlyYouException;
+import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 
 import java.util.Arrays;
@@ -212,6 +215,37 @@ public class Plateau {
 	}
 
 	/**
+	 * jouer : déplace un pingouin si possible
+	 * @param current : position du pingouin à déplacer
+	 * @param target : position cible
+	 * @return le nombre de poissons mangés si le déplacement est possible
+	 * -1 sinon.
+	 */
+	public int jouer(Position current, Position target) throws PlateauException {
+		int res = -1;
+		Cellule currentCell, targetCell;
+		Pingouin pingouin;
+		if (!isInTab(current) || !isInTab(target))
+			throw new BewareOfOrcasException();
+		if (!getCellule(current).aPingouin())
+			throw new ItsOnlyYouException();
+
+		pingouin = getCellule(current).pingouin();
+		targetCell = getCellule(target);
+
+		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
+			history.addLast(new Move(target, current, targetCell.getFish()));
+			currentCell = getCellule(current);
+			currentCell.destroy();
+			currentCell.setPenguin(null);
+			pingouin.setPosition(target);
+			targetCell.setPenguin(pingouin);
+			res = targetCell.getFish();
+		}
+		return res;
+	}
+
+	/**
 	 * jouer : déplace un pinguoin si possible
 	 * @param penguin : le pinguoin à déplacer
 	 * @param target : la position cible
@@ -219,47 +253,29 @@ public class Plateau {
 	 * -1 sinon.
 	 */
 	public int jouer(Pingouin penguin, Position target) {
-		int res = -1;
-		Cellule currentCell, targetCell;
 		Position current = penguin.position();
-
-		if (isInTab(target)) {
-			targetCell = getCellule(target);
-			if (accessible(current).contains(target) && !targetCell.isDestroyed()) {
-				history.addLast(new Move(penguin, target, current, targetCell.getFish()));
-				currentCell = getCellule(current);
-				currentCell.destroy();
-				penguin.setPosition(target);
-				targetCell.setPenguin(penguin);
-				res = targetCell.getFish();
-			}
+		try {
+			return jouer(current, target);
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
 		}
-		return res;
-	}
-
-	/**
-	 * jouer : déplace un pingouin si possible
-	 * @param current : position du pingouin à déplacer
-	 * @param target : position cible
-	 * @return le nombre de poissons mangés si le déplacement est possible
-	 * -1 sinon.
-	 */
-	public int jouer(Position current, Position target) {
-		int res = -1;
-		if (tab[current.i()][current.j()].aPingouin()) {
-			res = jouer(tab[current.i()][current.j()].pingouin(), target);
-		}
-		return res;
 	}
 
 	/* Implementation pour Plateau.redo() */
 	private int jouer(Move m) {
-		return jouer(m.getPenguin(), m.getTarget());
+		try {
+			return jouer(m.getFrom(), m.getTo());
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
 	}
 
 	public int undo() {
 		if(history.isEmpty())
 			return -1;
+
 
 		Move lastMove = history.removeLast();
 		Pingouin penguin = lastMove.getPenguin();
