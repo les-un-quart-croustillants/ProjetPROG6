@@ -249,12 +249,28 @@ public class UtilsIA {
 		return heur;
 	}
 	
+	public static void afficher_plat(Plateau p) {
+		Cellule [][] tab = p.getTab();
+		System.out.println(p.tabToString());
+		/*
+		for(int i = 0; i < p.getSize() ; i++) {
+			for(int j = 0; j < p.getSize() ; j++) {
+				System.out.print(tab[i][j] + "   ;   " );
+			} 
+			System.out.println(" ");
+		}*/
+	}
+	
 	public static  Couple<Position,Position> jouerCoupFacile(Plateau p,int id){
 		Noeud n = new Noeud(p.clone());
 		calculFils(n,id);
 		LinkedList<Noeud> fils = n.fils();
+
 		for(int i = 0; i < fils.size(); i++) {
 			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i),id));
+			System.out.println("----------------");
+			afficher_plat(fils.get(i).plateau());
+			System.out.println("----------------");
 		}
 		int max = -1;
 		for(int i = 0; i < fils.size(); i++) {
@@ -262,25 +278,32 @@ public class UtilsIA {
 				max = i;
 			}
 		}
-		return coupCalcule(n,fils.get(max));
+
+		return coupCalcule(new Noeud(p),fils.get(max));
 	}
 	
 	public static Couple<Position,Position> coupCalcule(Noeud pere, Noeud fils){
 		
 		Position newp = new Position(0,0);
 		Position oldp = new Position(0,0);
+		
 		Plateau ppere = pere.plateau();
 		Cellule [][] tabpere = ppere.getTab();
 		Plateau pfils = fils.plateau();
 		Cellule [][] tabfils = pfils.getTab();
 		int size = pfils.getSize();
 		
+		afficher_plat(ppere);
+		System.out.println("------------------");
+		afficher_plat(pfils);
+		
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
+
 				if(tabfils[i][j].aPingouin() && !tabpere[i][j].aPingouin()) {
 					newp = new Position(i,j);
 				}
-				if(!tabfils[i][j].aPingouin() && tabpere[i][j].aPingouin()) {
+				if(tabfils[i][j].isDestroyed() && tabpere[i][j].aPingouin()) {
 					oldp = new Position(i,j);
 				}
 			}
