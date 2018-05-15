@@ -3,6 +3,7 @@ package Modele.Plateau;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -322,5 +323,90 @@ public class PlateauTest {
 		Plateau sujet = new Plateau(p.getSize());
 		Assert.assertEquals(p,p);
 		Assert.assertFalse(p.equals(sujet));
+	}
+
+	@Ignore
+	@Test
+	public void jouer() { // TODO
+	}
+
+	@Test
+	public void undo() {
+		Position from= new Position(0,0),
+				to = new Position(0,1);
+		Pingouin pingouin = new Pingouin(0, from);
+		p.getCellule(from).setPenguin(pingouin);
+		Plateau sujet = p.clone();
+		sujet.jouer(from, to);
+		Assert.assertNotEquals(p, sujet);
+		Assert.assertFalse(sujet.getHistory().isEmpty());
+		Assert.assertTrue(sujet.getUndoList().isEmpty());
+		sujet.undo();
+		Assert.assertFalse(sujet.getUndoList().isEmpty());
+		Assert.assertTrue(sujet.getHistory().isEmpty());
+		Assert.assertEquals(1, sujet.getUndoList().size());
+		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish())));
+		Assert.assertTrue(p.tabEquals(sujet.getTab()));
+		Assert.assertFalse(p.getCellule(to).aPingouin());
+		Assert.assertTrue(p.getCellule(from).aPingouin());
+		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
+	}
+
+	@Test
+	public void redo() {
+		Position from1 = new Position(0,0),
+				to1 = new Position(0,1),
+				from2 = to1.clone(),
+				to2 = new Position(1,2);
+		Move m1 = new Move(to1, from1, p.getCellule(to1).getFish()),
+			m2 = new Move(to2, from2, p.getCellule(to2).getFish());
+		Pingouin pingouin1 = new Pingouin(0,from1),
+				pingouin2 = new Pingouin(0, from2),
+				pingouin3 = new Pingouin(0, to2);
+		p.getCellule(from1).setPenguin(pingouin1);
+		Plateau sujet1 = p.clone(),
+				sujet2;
+		sujet1.jouer(from1,to1);
+		sujet2 = sujet1.clone();
+		sujet2.jouer(from2,to2);
+		sujet2.undo();
+		Assert.assertFalse(sujet2.getUndoList().isEmpty());
+		Assert.assertEquals(1, sujet2.getUndoList().size());
+		Assert.assertTrue(sujet2.getUndoList().contains(m2));
+		Assert.assertTrue(sujet1.tabEquals(sujet2.getTab()));
+		Assert.assertFalse(sujet2.getCellule(to2).aPingouin());
+		Assert.assertTrue(sujet2.getCellule(from2).aPingouin());
+		Assert.assertEquals(pingouin2, sujet2.getCellule(from2).pingouin());
+		sujet2.undo();
+		Assert.assertFalse(sujet2.getUndoList().isEmpty());
+		Assert.assertEquals(2, sujet2.getUndoList().size());
+		Assert.assertTrue(sujet2.getHistory().isEmpty());
+		Assert.assertTrue(sujet2.getUndoList().contains(m2));
+		Assert.assertTrue(sujet2.getUndoList().contains(m1));
+		Assert.assertTrue(sujet2.tabEquals(sujet2.getTab()));
+		Assert.assertFalse(sujet2.getCellule(to2).aPingouin());
+		Assert.assertTrue(sujet2.getCellule(from1).aPingouin());
+		Assert.assertEquals(pingouin1, p.getCellule(from1).pingouin());
+		sujet2.redo();
+		Assert.assertFalse(sujet2.getUndoList().isEmpty());
+		Assert.assertEquals(1, sujet2.getUndoList().size());
+		Assert.assertEquals(1,sujet2.getHistory().size());
+		Assert.assertTrue(sujet2.getHistory().contains(m1));
+		Assert.assertTrue(sujet2.getUndoList().contains(m2));
+		Assert.assertTrue(sujet1.tabEquals(sujet2.getTab()));
+		Assert.assertFalse(sujet2.getCellule(to2).aPingouin());
+		Assert.assertTrue(sujet2.getCellule(from2).aPingouin());
+		Assert.assertEquals(pingouin2, sujet2.getCellule(from2).pingouin());
+		sujet2.redo();
+		Assert.assertTrue(sujet2.getUndoList().isEmpty());
+		Assert.assertFalse(sujet2.getHistory().isEmpty());
+		Assert.assertEquals(2, sujet2.getHistory().size());
+		Assert.assertTrue(sujet2.getHistory().contains(m2));
+		Assert.assertTrue(sujet2.getHistory().contains(m1));
+		Assert.assertFalse(sujet2.getCellule(from1).aPingouin());
+		Assert.assertFalse(sujet2.getCellule(from2).aPingouin());
+		Assert.assertFalse(sujet2.getCellule(to1).aPingouin());
+		Assert.assertTrue(sujet2.getCellule(to2).aPingouin());
+		Assert.assertEquals(pingouin3, sujet2.getCellule(to2).pingouin());
 	}
 }
