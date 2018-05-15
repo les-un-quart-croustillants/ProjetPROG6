@@ -1,5 +1,8 @@
 package Modele.Plateau;
 
+import Modele.Plateau.Exception.BewareOfOrcasException;
+import Modele.Plateau.Exception.ItsOnlyYouException;
+import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 
 import java.util.Arrays;
@@ -20,6 +23,18 @@ public class Plateau {
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
 		initTab();
+	}
+
+	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
+		this.size = tab.length;
+		this.tab = new Cellule[this.size][this.size];
+		for (int i = 0; i < this.size; i++) {
+			for (int j = 0; j < this.size; j++) {
+				this.tab[i][j] = tab[i][j].clone();
+			}
+		}
+		this.history = (LinkedList<Move>) history.clone();
+		this.undoList = (LinkedList<Move>) undoList.clone();
 	}
 
 	/**
@@ -154,30 +169,49 @@ public class Plateau {
 		return res;
 	}
 
-	/**
-	 * jouer : déplace un pinguoin si possible
-	 * @param penguin : le pinguoin à déplacer
-	 * @param target : la position cible
-	 * @return le nombre de poissons mangés si le déplacement est possible
-	 * -1 sinon.
-	 */
-	public int jouer(Pingouin penguin, Position target) {
-		int res = -1;
-		Cellule currentCell, targetCell;
-		Position current = penguin.position();
-
-		if (isInTab(target)) {
-			targetCell = getCellule(target);
-			if (accessible(current).contains(target) && !targetCell.isDestroyed()) {
-				history.addLast(new Move(penguin, target, current, targetCell.getFish()));
-				currentCell = getCellule(current);
-				currentCell.destroy();
-				penguin.setPosition(target);
-				targetCell.setPenguin(penguin);
-				res = targetCell.getFish();
-			}
-		}
+	protected int diffDir(int a, int b) {
+		int res = 0;
+		if (a < b)
+			res = 1;
+		if (b < a)
+			res = -1;
 		return res;
+	}
+
+	/**
+	 * estAccessible : si une position est accessible depuis une autre
+	 * @param current : position de départ
+	 * @param target : position souhaitée
+	 * @return : vrai si la position est accessible (aucun obstacle sur la trajectoire)
+	 * faux sinon.
+	 */
+	public boolean estAccessible(Position current, Position target) {
+		int coeff_i = diffDir(current.i(), target.i()),
+			coeff_j = diffDir(current.j(), target.j()),
+			dec;
+		Position candidat = current.clone();
+		int borne = Math.max(Math.abs(current.i() - target.i()), Math.abs(current.j() - target.j()));
+		for (int d = 1; d <= borne; d++) {
+			if (coeff_i != 0) {
+				if (current.i() % 2 == 0)		// pair
+					if (coeff_j == 1)				// avant
+						dec = (d + 1) / 2;
+					else							// arriere
+						dec = d / 2;
+				else							// impair
+					if (coeff_j == 1)				// avant
+						dec = d / 2;
+					else							// arriere
+						dec = (d + 1) / 2;
+
+				candidat = new Position(current.i() + coeff_i * d, current.j() + coeff_j * dec);
+			}
+			else
+				candidat = new Position(current.i(), current.j() + coeff_j * d);
+			if (isInTab(candidat) && getCellule(candidat).isObstacle())
+					return false;
+			}
+		return candidat.equals(target);
 	}
 
 	/**
@@ -188,33 +222,82 @@ public class Plateau {
 	 * -1 sinon.
 	 */
 	public int jouer(Position current, Position target) {
+		try {
+			return jouer_exp(current,target);
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
+	}
+
+	private int jouer_exp(Position current, Position target) throws PlateauException {
 		int res = -1;
-		if (tab[current.i()][current.j()].aPingouin()) {
-			res = jouer(tab[current.i()][current.j()].pingouin(), target);
+		Cellule currentCell, targetCell;
+		Pingouin pingouin;
+		if (!isInTab(current) || !isInTab(target))
+			throw new BewareOfOrcasException();
+		if (!getCellule(current).aPingouin())
+			throw new ItsOnlyYouException(current);
+
+		pingouin = getCellule(current).pingouin();
+		targetCell = getCellule(target);
+
+		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
+			history.addLast(new Move(target, current, targetCell.getFish()));
+			currentCell = getCellule(current);
+			currentCell.destroy();
+			currentCell.setPenguin(null);
+			pingouin.setPosition(target);
+			targetCell.setPenguin(pingouin);
+			res = targetCell.getFish();
 		}
 		return res;
 	}
 
+	/**
+	 * jouer : déplace un pinguoin si possible
+	 * @param penguin : le pinguoin à déplacer
+	 * @param target : la position cible
+	 * @return le nombre de poissons mangés si le déplacement est possible
+	 * -1 sinon.
+	 */
+	public int jouer(Pingouin penguin, Position target) {
+		Position current = penguin.position();
+		try {
+			return jouer_exp(current, target);
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
+	}
+
 	/* Implementation pour Plateau.redo() */
 	private int jouer(Move m) {
-		return jouer(m.getPenguin(), m.getTarget());
+		try {
+			return jouer_exp(m.getFrom(), m.getTo());
+		} catch (PlateauException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
 	}
 
 	public int undo() {
 		if(history.isEmpty())
 			return -1;
-
 		Move lastMove = history.removeLast();
-		Pingouin penguin = lastMove.getPenguin();
-		Position currentPosition = penguin.position();
-		Position targetPosition = lastMove.getPrevious();
+		Position from = lastMove.getFrom(),
+				to = lastMove.getTo();
+
+		Pingouin pingouin = getCellule(to).pingouin();
 		int fishAte = lastMove.getFishAte();
 
 		this.undoList.addLast(lastMove);
 
-		tab[targetPosition.i()][targetPosition.j()].setDestroyed(false);
-		tab[currentPosition.i()][currentPosition.j()].setFish(fishAte);
-		penguin.setPosition(targetPosition);
+		tab[from.i()][from.j()].setDestroyed(false); // Restore old cell
+		getCellule(to).setPenguin(null); // remove pingouin from its current cell
+		tab[to.i()][to.j()].setFish(fishAte); // restore fish on left cell
+		pingouin.setPosition(from); // set pingouin to old position
+		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 
 		return fishAte;
 	}
@@ -222,29 +305,34 @@ public class Plateau {
 	public int redo() {
 		if (undoList.isEmpty())
 			return -1;
-		return jouer(undoList.removeFirst());
+		return jouer(undoList.removeLast());
 	}
 
-	public String tabToString() {
-		String res = "[ ";
-		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+	/**
+	 * estIsolee : si une position est entourée d'obstacles
+	 * @param p : la position
+	 * @return : vrai si tous les voisins de la position p sont des obstacles
+	 */
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
 		}
-		return res + "]";
+		return true;
 	}
 
-	public int getSize() {
-		return size;
+	/**
+	 * destroyCell : detruit une cellule
+	 * @param p : la position de la cellule
+	 */
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
 	}
 
-	public Cellule[][] getTab() {
-		return tab;
-	}
-	
 	/**
 	 * Pose un pingouin sur un case si les lunes sont alignées
 	 * @param p position ou ajouter le pingouin
-	 * @param joueurID employeur du pingouin
 	 * @return true si tout c'est bien passe false sinon
 	 * @author Louka Soret
 	 */
@@ -260,21 +348,24 @@ public class Plateau {
 		}
 		return false;
 	}
-	
-	public boolean estIsolee(Position p) {
-		for(Position n : getNeighbours(p)) {
-			if(! getCellule(n).isObstacle()) {
-				return false;
-			}
-		}
-		return true;
+
+	public int getSize() {
+		return size;
 	}
 
-	public void destroyCell(Position p) {
-		tab[p.i()][p.j()].destroy();
+	public Cellule[][] getTab() {
+		return tab;
 	}
 
-	public String pretty(){
+	public LinkedList<Move> getHistory() {
+		return history;
+	}
+
+	public LinkedList<Move> getUndoList() {
+		return undoList;
+	}
+
+	public String pretty() {
 		String res = "";
 		for (Cellule[] line: this.tab) {
 			for (Cellule c : line)
@@ -282,6 +373,38 @@ public class Plateau {
 			res += "\n";
 		}
 		return res;
+	}
+
+	public String tabToString() {
+		String res = "[ ";
+		for (Cellule[] line: this.tab) {
+			res += Arrays.toString(line) + " ";
+		}
+		return res + "]";
+	}
+
+	@Override
+	public Plateau clone() {
+		return new Plateau(this.tab, this.history, this.undoList);
+	}
+
+	public boolean tabEquals(Cellule[][] tab) {
+		boolean b = tab.length == this.size;
+		if (b)
+			for (int i = 0; i < this.size; i++) {
+				for (int j = 0; j < this.size; j++) {
+					b = b && tab[i][j].equals(this.tab[i][j]);
+				}
+			}
+		return b;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this.size == ((Plateau) obj).getSize()
+				&& this.history.equals(((Plateau) obj).history)
+				&& this.undoList.equals(((Plateau) obj).undoList)
+				&& tabEquals(((Plateau) obj).getTab());
 	}
 
 	@Override
