@@ -177,7 +177,66 @@ public class Plateau {
 		}
 		return res;
 	}
+	
+	private boolean safeAddsanspingouin(LinkedList<Position> l, Position candidat) {
+		if (isInTab(candidat) && !getCellule(candidat).isDestroyed()) {
+			if (!l.contains(candidat))
+					l.add(candidat);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public LinkedList<Position> accessiblesanspingouin(Position p) {
+		Position candidat;
+		LinkedList<Position> res = new LinkedList<>();
+		boolean bu = true, // diagonale arrière haute continue
+				fu = true, // diagonale avant haute continue
+				bd = true, // diagonale arrière basse continue
+				fd = true, // diagonale avant basse continue
+				b = true, // ligne arrière continue
+				f = true; // ligne avant continue
+		int decalage_arriere, decalage_avant;
 
+		int borne = max(max(p.i(), this.size - p.i()), max(p.j(), this.size - p.j()));
+		for (int i = 1; i <= borne && (bu || fu || bd || fd || b || f); i++) {
+			if (p.i() % 2 == 0)
+				decalage_arriere = i / 2;
+			else
+				decalage_arriere = (i + 1) / 2;
+			if (bu) { // diagonale arrière haute
+				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
+				bu = safeAddsanspingouin(res, candidat);
+			}
+			if (bd) { // digonale arrière basse
+				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
+				bd = safeAddsanspingouin(res, candidat);
+			}
+			if (p.i() % 2 == 0)
+				decalage_avant = (i + 1) / 2;
+			else
+				decalage_avant = i / 2;
+			if (fu) { // diagonale avant haute
+				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
+				fu = safeAddsanspingouin(res, candidat);
+			}
+			if (fd) { // diagonale avant basse
+				candidat = new Position(p.i() + i, p.j() + decalage_avant);
+				fd = safeAddsanspingouin(res, candidat);
+			}
+
+			if (b) {
+				candidat = new Position(p.i(), p.j() - i); // ligne arrière
+				b = safeAddsanspingouin(res, candidat);
+			}
+			if (f) {
+				candidat = new Position(p.i(), p.j() + i); // ligne avant
+				f = safeAddsanspingouin(res, candidat);
+			}
+		}
+		return res;
+	}
 	/**
 	 * estAccessible : si une position est accessible depuis une autre
 	 * @param current : position de départ
