@@ -272,7 +272,7 @@ public class Plateau {
 		pingouin = getCellule(current).pingouin();
 		targetCell = getCellule(target);
 
-		if (accessible(current).contains(target) && !targetCell.isDestroyed()) {
+		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
 			history.addLast(new Move(target, current, targetCell.getFish()));
 			currentCell = getCellule(current);
 			currentCell.destroy();

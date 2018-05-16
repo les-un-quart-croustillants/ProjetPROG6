@@ -3,7 +3,6 @@ package Modele.Plateau;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -334,9 +333,24 @@ public class PlateauTest {
 		Assert.assertFalse(p.equals(sujet));
 	}
 
-	@Ignore
 	@Test
-	public void jouer() { // TODO
+	public void jouer() {
+		Random r = new Random();
+		int expected;
+		Plateau sujet = p.clone();
+		Position current,
+				target;
+
+		for (int i = 0; i < 100; i++) {
+			expected = -1;
+			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
+			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
+			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
+			if (sujet.isInTab(target) && sujet.estAccessible(current, target))
+				expected = sujet.getCellule(target).getFish();
+			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
+			sujet = p.clone();
+		}
 	}
 
 	@Test
