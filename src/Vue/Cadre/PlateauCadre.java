@@ -8,7 +8,6 @@ import Vue.Donnees;
 import Vue.GameObject.JoueurCourantGraphique;
 import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.PlateauGraphique;
-import Vue.Pane.GamePane;
 import javafx.animation.AnimationTimer;
 
 public class PlateauCadre extends Cadre{	

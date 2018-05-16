@@ -1,13 +1,10 @@
 package Vue.GameObject;
 
-import java.util.LinkedList;
 
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Utils.Couple;
 import Utils.Position;
 import Vue.Donnees;
-import Vue.GameObject.MoteurGraphique.StateGraph;
 import Vue.Pane.GamePane;
 
 public class MoteurGraphique extends GameObject {

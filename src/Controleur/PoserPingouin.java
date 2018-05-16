@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.LinkedList;
 
 import Modele.Moteur.Moteur.State;
-import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.Cadre.PlateauCadre;
@@ -54,7 +53,6 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 			else if(GamePane.moteur().currentState() == State.SELECTIONNER_DESTINATION) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				Position lastSelection = GamePane.moteur().pingouinSelection().position();
-				Pingouin ping = GamePane.moteur().pingouinSelection();
 				LinkedList<Position> lastaccessibles = pc.plateau.accessible(lastSelection);
 				if (c != null && GamePane.moteur().selectionnerDestination(c.posPlateau)) {
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(c.posPlateau);
