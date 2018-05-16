@@ -248,8 +248,12 @@ public class PlateauTest {
 	public void estAccessible() {
 		Plateau sujet = new Plateau(10);
 		Position current = new Position(0,0),
-				target = new Position(1,2);
+				target = new Position(0,0);
 
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		target = new Position(1,2);
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
 
@@ -270,9 +274,14 @@ public class PlateauTest {
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
 
+		target = new Position(2,3);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
 		target = new Position(1,2);
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
+
 
 		p.getCellule(new Position(1,1)).setDestroyed(false);
 		Assert.assertTrue(p.estAccessible(current, target));

@@ -186,31 +186,35 @@ public class Plateau {
 	 * faux sinon.
 	 */
 	public boolean estAccessible(Position current, Position target) {
-		int coeff_i = diffDir(current.i(), target.i()),
-			coeff_j = diffDir(current.j(), target.j()),
-			dec;
-		Position candidat = current.clone();
+		int coeff_i, coeff_j, dec;
+		Position candidat;
+
+		if (current.equals(target))
+			return false;
+
+		coeff_i = diffDir(current.i(), target.i());
+		coeff_j = diffDir(current.j(), target.j());
+		candidat = current.clone();
 		int borne = Math.max(Math.abs(current.i() - target.i()), Math.abs(current.j() - target.j()));
 		for (int d = 1; d <= borne; d++) {
 			if (coeff_i != 0) {
-				if (current.i() % 2 == 0)		// pair
-					if (coeff_j == 1)				// avant
+				if (current.i() % 2 == 0)        // pair
+					if (coeff_j == 1)                // avant
 						dec = (d + 1) / 2;
-					else							// arriere
+					else                            // arriere
 						dec = d / 2;
-				else							// impair
-					if (coeff_j == 1)				// avant
+				else                            // impair
+					if (coeff_j == 1)                // avant
 						dec = d / 2;
-					else							// arriere
+					else                            // arriere
 						dec = (d + 1) / 2;
 
 				candidat = new Position(current.i() + coeff_i * d, current.j() + coeff_j * dec);
-			}
-			else
+			} else
 				candidat = new Position(current.i(), current.j() + coeff_j * d);
-			if (isInTab(candidat) && getCellule(candidat).isObstacle())
-					return false;
-			}
+			if (!isInTab(candidat) || (isInTab(candidat) && getCellule(candidat).isObstacle()))
+				return false;
+		}
 		return candidat.equals(target);
 	}
 
