@@ -141,12 +141,14 @@ public abstract class Joueur {
 		int res;
 		/*
 		System.out.println("------------------------------------------------------");
-		for(int i= 0; i < UtilsIA.listConnexeComposante(plateau).size();i++)
-			System.out.println("La composante connexe "+i+" : " + UtilsIA.listConnexeComposante(plateau).get(i));
+		for(int i= 0; i < UtilsIA.listeConnexeComposante(plateau).size();i++)
+			System.out.println("La composante connexe "+i+" : " + UtilsIA.listeConnexeComposante(plateau).get(i));
 		System.out.println("------------------------------------------------------");
 		*/
 		//System.out.println("------------------------------------------------------");
 		//System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
+		//ystem.out.println("Le coup joue par l'IA dure : " + UtilsIA.jouerCoupDifficile(plateau,this.id));
+
 		//System.out.println("------------------------------------------------------");
 
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe

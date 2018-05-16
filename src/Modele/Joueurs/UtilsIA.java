@@ -8,6 +8,7 @@ import Modele.Plateau.Plateau;
 import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Utils.Couple;
+import java.util.HashMap;
 
 public class UtilsIA {
 	/**
@@ -206,13 +207,13 @@ public class UtilsIA {
 		
 		for(int i = 0; i < p.getSize(); i++) {
 			for(int j = 0; j < p.getSize(); j++) {
-				if( !checked.contains(new Position(i,j)) && !p.getCellule(new Position(i,j)).isDestroyed() && !p.getCellule(new Position(i,j)).aPingouin()) {
+				if( !checked.contains(new Position(i,j)) && !p.getCellule(new Position(i,j)).isDestroyed() ) {
 					stack.push(new Position(i,j));
 					while(!stack.isEmpty()) {
 						Position cur = stack.pop();
 						checked.add(cur);
 						current.add(cur);
-						mergeStacks(stack,p.accessible(cur),checked);
+						mergeStacks(stack,p.accessiblesanspingouin(cur),checked);
 					}
 					res.add((LinkedList<Position>)current.clone());
 					current.clear();
@@ -283,7 +284,6 @@ public class UtilsIA {
 		int max = 0;
 		res.add(fils.get(0));
 		for(int i = 1; i < fils.size(); i++) {
-			System.out.println(" fils "+i+" heuristique : "+fils.get(i).heuristique());
 			if( fils.get(i).heuristique() > fils.get(max).heuristique()){
 				max = i;
 				res.clear();
@@ -335,9 +335,136 @@ public class UtilsIA {
 		return new Couple<Position,Position>(oldp,newp);
 	}
 	*/
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Heuristique quand c'est au tour du joueur A
+	 * 
+	 * @param valeur
+	 * @return
+	 */
+	public static int evaluerA(Noeud N) {
+		return 5;
+	}
 	
+	/**
+	 * Heuristique quand c'est au tour du joueur B
+	 * 
+	 * @param valeur
+	 * @return
+	 */
+	public static int evaluerB(Noeud N) {
+		return 5;
+	}
 	
+	/**
+	 * Calcule si la configuration a la racine de l'arbre des configurations
+	 * est gagnante pour le joueur A en sachant que c'est au joeur A de jouer
+	 * 
+	 * @param n racine de l'arbre des configurations
+	 * @return true si la configuration est gagnante pour le joueur A false sinon
+	 */
+	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id) {
+		calculFils(n,id,plateau);	//calcul des fils
+		int heuristique;
+		if (n.estFeuille() || profondeur == 0) {
+			// la configuration ne permet pas de jouer,
+			// le joueur B gagne
+			heuristique = evaluerA(n); 
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+			return heuristique;
+		} else {
+			// Le joueur A doit jouer
+			heuristique = 0;
+			// On parcours l'ensemble des coups jouables par A
+			for(Noeud fils : n.fils()) {
+				Noeud filsclone = fils.clone();
+				int curr = minimaxB(filsclone, r, profondeur-1,plateau,id);
+				fils.setHeuristic(filsclone.heuristique());
+				// Si fils n'as pas encore ete calcule, le faire et mettre a jour r
+				if(!r.containsKey(fils.listcoup())) {
+					r.put(fils.listcoup(), curr);
+				}
+				heuristique = Math.max(heuristique,r.get(fils.listcoup()));
+			}
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+			return heuristique;
+		}
+	}
+	
+	/**
+	 * Calcule si la configuration a la racine de l'arbre des configurations
+	 * est gagnante pour le joueur A en sachant que c'est au joeur B de jouer
+	 * 
+	 * @param n racine de l'arbre des configurations
+	 * @return true si la configuration est gagnante pour le joueur A false sinon
+	 */
+	public static int minimaxB(Noeud n,HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id) {
+		calculFils(n,id,plateau);	//calcul des fils
+		int heuristique;
+		if (n.estFeuille() || profondeur == 0) {
+			// la configuration ne permet pas de jouer
+			// le joueur A gagne
+			heuristique = evaluerB(n);
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+			return heuristique;
+		} else {
+			// Le joueur B doit jouer
+			heuristique = 1000; // + infini
+			// On parcours l'ensemble des coups jouables par B
+			for(Noeud fils : n.fils()) {
+				Noeud filsclone = fils.clone();
+
+				int curr = minimaxA(fils, r, profondeur-1,plateau,id);
+				fils.setHeuristic(filsclone.heuristique());
+
+				// Si fils n'as pas encore ete calcule , le faire et mettre a jour r
+				if(! r.containsKey(fils.listcoup())) {
+					r.put(fils.listcoup(), curr);
+				}
+				heuristique = Math.min(heuristique,r.get(fils.listcoup()));
+			}
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+
+			return heuristique;
+		}
+	}
+
+	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id) {
+		Plateau plateauclone = plateau.clone();
+		Random r = new Random();
+		Noeud a = new Noeud(); // construction de l'arbre des configurations
+		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>();
+		int profondeur = 2;
+		if(minimaxA(a,memo,profondeur,plateauclone,id) > 0) {
+			LinkedList<Noeud> cp;
+			System.out.println("taille fils racine : "+a.fils().size());
+			System.out.println("heuristique de la racine : "+a.heuristique());
+			for(int i = 0;i < a.fils().size();i++)
+				System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
+			
+			if(( a.filsTaggue().size()) != 0) {
+				cp = a.clone().filsTaggue(); //recuperations des solutions
+			}
+			else {
+				System.out.println("coup facile1 :(");
+				return jouerCoupFacile(plateau,id);
+			}
+			System.out.println("taille fils racine apres : "+cp.size());
+
+			int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
+			System.out.println("et la ? "+ cp.get(rand).listcoup());
+			return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
+		} else {
+			System.out.println("coup facile2 :(");
+			return jouerCoupFacile(plateau,id);
+		}
+
+	}
 	
 	
 	
