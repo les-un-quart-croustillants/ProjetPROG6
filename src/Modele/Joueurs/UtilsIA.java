@@ -295,7 +295,7 @@ public class UtilsIA {
 		if(res.size() != 0) {
 			Random r = new Random();
 			int rand = r.nextInt(res.size());
-			return fils.get(rand).listcoup().get(0);
+			return res.get(rand).listcoup().get(0);
 		}
 		else 
 			return new Couple<Position,Position>(new Position(0,0),new Position(0,0));
