@@ -3,7 +3,6 @@ package Modele.Plateau;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -248,8 +247,12 @@ public class PlateauTest {
 	public void estAccessible() {
 		Plateau sujet = new Plateau(10);
 		Position current = new Position(0,0),
-				target = new Position(1,2);
+				target = new Position(0,0);
 
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
+		target = new Position(1,2);
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
 
@@ -270,9 +273,14 @@ public class PlateauTest {
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
 
+		target = new Position(2,3);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
 		target = new Position(1,2);
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
+
 
 		p.getCellule(new Position(1,1)).setDestroyed(false);
 		Assert.assertTrue(p.estAccessible(current, target));
@@ -325,9 +333,24 @@ public class PlateauTest {
 		Assert.assertFalse(p.equals(sujet));
 	}
 
-	@Ignore
 	@Test
-	public void jouer() { // TODO
+	public void jouer() {
+		Random r = new Random();
+		int expected;
+		Plateau sujet = p.clone();
+		Position current,
+				target;
+
+		for (int i = 0; i < 100; i++) {
+			expected = -1;
+			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
+			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
+			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
+			if (sujet.isInTab(target) && sujet.estAccessible(current, target))
+				expected = sujet.getCellule(target).getFish();
+			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
+			sujet = p.clone();
+		}
 	}
 
 	@Test
