@@ -1,6 +1,10 @@
 package Utils;
 
-public class Couple<G, D> {
+import java.io.Serializable;
+
+public class Couple<G, D> implements Serializable {
+
+	private static final long serialVersionUID = -8245293818793786446L;
 	private G i;
 	private D j;
 
