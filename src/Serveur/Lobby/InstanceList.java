@@ -25,10 +25,10 @@ public class InstanceList implements Serializable {
 	synchronized public ArrayList<Couple<String, Integer>> getInstances() {
 		return this.instances;
 	}
-	
+
 	synchronized public boolean exists(String name, Integer port) {
-		for(Couple<String,Integer> c: this.instances) {
-			if(c.equals(new Couple<String,Integer>(name,port))) {
+		for (Couple<String, Integer> c : this.instances) {
+			if (c.equals(new Couple<String, Integer>(name, port))) {
 				return true;
 			}
 		}

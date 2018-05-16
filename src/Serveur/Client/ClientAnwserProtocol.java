@@ -101,7 +101,7 @@ public class ClientAnwserProtocol {
 	}
 
 	synchronized public void heberger(String name) {
-		this.ihmMessage = "H "+name;
+		this.ihmMessage = "H " + name;
 		notifyAll();
 	}
 
