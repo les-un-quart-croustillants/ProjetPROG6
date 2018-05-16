@@ -98,9 +98,10 @@ public class Moteur {
 		initTransitions();
 		this.joueurs.add(new JoueurPhysique(0));
 		this.joueurs.add(new JoueurIA(1));
+		System.out.println("njoueurs:" + njoueurs);
 		// par defaut, on met que des joueurs physiques
 		for (int i = 2; i < njoueurs; i++) {
-			this.joueurs.add(new JoueurPhysique(i));
+			this.joueurs.add(new JoueurIA(i));
 		}
 	}
 	

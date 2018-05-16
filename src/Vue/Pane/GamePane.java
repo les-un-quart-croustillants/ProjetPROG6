@@ -30,13 +30,12 @@ public class GamePane extends Pane{
 		this.plateauCadre.prefWidthProperty().bind(this.widthProperty());
 		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
-		this.moteur = new Moteur(plateauCadre.plateau,2);
 		this.moteur.setCurrentState(State.POSER_PINGOUIN);
 		plateauCadre.start();
 	}
 	
 	private GamePane(){
-		this.moteur = new Moteur(new Plateau(8),2);
+		this.moteur = new Moteur(new Plateau(8),4);
 		init();
 	}
 	private GamePane(Moteur m){
