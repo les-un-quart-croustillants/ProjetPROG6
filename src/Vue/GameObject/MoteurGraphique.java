@@ -1,13 +1,10 @@
 package Vue.GameObject;
 
-import java.util.LinkedList;
 
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Utils.Couple;
 import Utils.Position;
 import Vue.Donnees;
-import Vue.GameObject.MoteurGraphique.StateGraph;
 import Vue.Pane.GamePane;
 
 public class MoteurGraphique extends GameObject {
@@ -126,10 +123,10 @@ public class MoteurGraphique extends GameObject {
 
 	private void onStateCHANGER_JOUEUR_GRAPH() {
 		GamePane.getPlateauCadre().joueurCourantGraphique
-				.setText("Joueur " + (1 + GamePane.moteur().indexJoueurCourant()) + "("
+				.setText("Joueur " + (1 + GamePane.moteur().joueurCourant().id()) + "("
 						+ GamePane.moteur().joueurCourant().scoreFish() + ")");
 		GamePane.getPlateauCadre().joueurCourantGraphique
-				.setCouleur(Donnees.COULEURS_JOUEURS[GamePane.moteur().indexJoueurCourant()]);
+				.setCouleur(Donnees.COULEURS_JOUEURS[GamePane.moteur().joueurCourant().id()]);
 		currentState = StateGraph.ATTENDRE_MOTEUR;
 	}
 
