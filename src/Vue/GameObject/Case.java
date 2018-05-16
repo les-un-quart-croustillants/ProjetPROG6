@@ -18,6 +18,7 @@ public class Case extends GameObject {
 	private boolean miseEnValeur;
 	private PlateauGraphique pg;
 
+	public PingouinGraphique pingouinGraphique;
 	public Color couleur;
 	public Position posPlateau;
 
@@ -125,16 +126,16 @@ public class Case extends GameObject {
 	}
 
 	/**
-	 * select : met à true la variable selected de la case (son visuel peu changer
-	 * si elle est selectionné ou non).
+	 * select : met ï¿½ true la variable selected de la case (son visuel peu changer
+	 * si elle est selectionnï¿½ ou non).
 	 */
 	public void select() {
 		selected = true;
 	}
 
 	/**
-	 * deselect : met à false la variable selected de la case (son visuel peu
-	 * changer si elle est selectionné ou non).
+	 * deselect : met ï¿½ false la variable selected de la case (son visuel peu
+	 * changer si elle est selectionnï¿½ ou non).
 	 */
 	public void deselect() {
 		selected = false;

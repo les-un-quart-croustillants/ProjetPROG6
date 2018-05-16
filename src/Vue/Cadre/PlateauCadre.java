@@ -6,7 +6,9 @@ import Modele.Moteur.Moteur;
 import Modele.Plateau.Plateau;
 import Vue.Donnees;
 import Vue.GameObject.JoueurCourantGraphique;
+import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.PlateauGraphique;
+import Vue.Pane.GamePane;
 import javafx.animation.AnimationTimer;
 
 public class PlateauCadre extends Cadre{	
@@ -14,6 +16,7 @@ public class PlateauCadre extends Cadre{
 	public Plateau plateau;
 	public JoueurCourantGraphique joueurCourantGraphique;
 	
+	public MoteurGraphique moteurGraphique;
 	private Moteur moteur;
 	
 	/**
@@ -27,6 +30,8 @@ public class PlateauCadre extends Cadre{
 		this.gameObjects.add(plateauGraphique);
 		this.joueurCourantGraphique = new JoueurCourantGraphique("Joueur");
 		this.gameObjects.add(joueurCourantGraphique);
+		this.moteurGraphique = new MoteurGraphique();
+		this.gameObjects.add(moteurGraphique);
 		this.setOnMouseMoved(new MiseEnEvidenceCase(this));
 		this.setOnMousePressed(new PoserPingouin(this));
 		this.setStyle(
@@ -48,7 +53,8 @@ public class PlateauCadre extends Cadre{
 	}
 	
 	public void start() {
-		this.joueurCourantGraphique.setText("Joueur "+(1+moteur.indexJoueurCourant()));
+		this.joueurCourantGraphique.setText("Joueur " + (1 + moteur.indexJoueurCourant()) + "("
+				+ moteur.joueurCourant().scoreFish() + ")");
 		this.joueurCourantGraphique.setCouleur(Donnees.COULEURS_JOUEURS[moteur.indexJoueurCourant()]);
 		new AnimationTimer() {
 			@Override

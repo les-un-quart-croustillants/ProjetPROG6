@@ -33,7 +33,7 @@ public class Cadre extends Pane {
      * update : Appelle la fonction update de tous ses gameobjects.
      */
 	public void update() {
-		Iterator<GameObject> it = gameObjects.iterator();
+		/*Iterator<GameObject> it = gameObjects.iterator();
 		while(it.hasNext()) {
 			GameObject go = it.next();
 			go.update();
@@ -43,6 +43,20 @@ public class Cadre extends Pane {
 				go.onDestroy();
 			}
 
+		}*/
+		//TODO : à améliorer
+		//update
+		for(int i=0;i<gameObjects.size();i++){
+			gameObjects.get(i).update();
+		}
+		//detruire
+		Iterator<GameObject> it = gameObjects.iterator();
+		while(it.hasNext()) {
+			GameObject go = it.next();
+			if(go.estDetruit()) {
+				it.remove();
+				go.onDestroy();
+			}
 		}
 	}
 	

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
+import Modele.Joueurs.JoueurIA;
 import Modele.Joueurs.JoueurPhysique;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
@@ -95,9 +96,10 @@ public class Moteur {
 		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
-
+		this.joueurs.add(new JoueurPhysique(0));
+		this.joueurs.add(new JoueurIA(1));
 		// par defaut, on met que des joueurs physiques
-		for (int i = 0; i < njoueurs; i++) {
+		for (int i = 2; i < njoueurs; i++) {
 			this.joueurs.add(new JoueurPhysique(i));
 		}
 	}
