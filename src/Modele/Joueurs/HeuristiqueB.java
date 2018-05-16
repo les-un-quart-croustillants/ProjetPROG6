@@ -49,13 +49,16 @@ public class HeuristiqueB {
 							heuristique = heuristique +10;
 						}
 						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
-							heuristique = heuristique -50;
+							heuristique = heuristique -10050;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
 							heuristique = heuristique +2;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
 							heuristique = heuristique +10;
+						}
+						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
+							heuristique = heuristique -1000;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
 							heuristique = heuristique -10;
@@ -65,6 +68,8 @@ public class HeuristiqueB {
 						}
 					}
 				}	
+				System.out.println("PAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSSSSSEEEEEEEEEEEEE222222222222222222");
+
 			}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {

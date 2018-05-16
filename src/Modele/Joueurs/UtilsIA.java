@@ -302,7 +302,8 @@ public class UtilsIA {
 		LinkedList<Noeud> fils = n.fils();
 		
 		for(int i = 0; i < fils.size(); i++) {
-			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i).clone(),id,p.clone()));
+			fils.get(i).setHeuristic(calculHeuristiqueFacile(fils.get(i).clone(),id,p.clone())/*HeuristiqueA.calcul(p.clone(), fils.get(i).clone().listcoup(), id)*/ );
+			//System.out.println("heuristique du fils "+i+" : "+fils.get(i).heuristique());
 		}
 		LinkedList<Noeud> res = new LinkedList<Noeud>();
 		int max = 0;
@@ -482,6 +483,8 @@ public class UtilsIA {
 
 			int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
 			System.out.println("et la ? "+ cp.get(rand).listcoup());
+			System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
+
 			return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
 		} else {
 			System.out.println("coup facile2 :(");
