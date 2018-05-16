@@ -223,6 +223,30 @@ public class UtilsIA {
 		return res;
 	}
 	
+	/**
+	 * calcule les cases accessibles par un pingouin en n coups
+	 * @param p Le tableau a gerer
+	 * @param ping le pingouin
+	 * @return une linked list de position accessible par le pingouin en n coups
+	 */
+	public static LinkedList<Position> composanteConnexePingouin(Plateau p,Pingouin ping) {
+		LinkedList<LinkedList<Position>> res = new LinkedList<LinkedList<Position>>();
+		LinkedList<Position> current = new LinkedList<Position>();
+		LinkedList<Position> checked = new LinkedList<Position>();
+		Stack<Position> stack = new Stack<Position>();
+		
+		stack.push(ping.position());
+		while(!stack.isEmpty()) {
+			Position cur = stack.pop();
+			checked.add(cur);
+			current.add(cur);						
+			mergeStacks(stack,p.accessiblesanspingouin(cur),checked);
+
+		}
+		return current;
+	}
+	
+	
 	public static Plateau plateaucoup(LinkedList<Couple<Position,Position>> l, Plateau p) {
 		Plateau pclone = p.clone();
 		while(l.size() != 0) {
@@ -343,8 +367,8 @@ public class UtilsIA {
 	 * @param valeur
 	 * @return
 	 */
-	public static int evaluerA(Noeud N) {
-		return 5;
+	public static int evaluerA(Noeud n,Plateau p, int id) {
+		return HeuristiqueB.calcul(p, n.listcoup(), id);
 	}
 	
 	/**
@@ -353,8 +377,8 @@ public class UtilsIA {
 	 * @param valeur
 	 * @return
 	 */
-	public static int evaluerB(Noeud N) {
-		return 5;
+	public static int evaluerB(Noeud n,Plateau p, int id) {
+		return HeuristiqueA.calcul(p, n.listcoup(), id);
 	}
 	
 	/**
@@ -370,7 +394,7 @@ public class UtilsIA {
 		if (n.estFeuille() || profondeur == 0) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
-			heuristique = evaluerA(n); 
+			heuristique = evaluerA(n,plateau,id); 
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			return heuristique;
@@ -407,7 +431,7 @@ public class UtilsIA {
 		if (n.estFeuille() || profondeur == 0) {
 			// la configuration ne permet pas de jouer
 			// le joueur A gagne
-			heuristique = evaluerB(n);
+			heuristique = evaluerB(n,plateau,id);
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			return heuristique;
@@ -439,7 +463,7 @@ public class UtilsIA {
 		Random r = new Random();
 		Noeud a = new Noeud(); // construction de l'arbre des configurations
 		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>();
-		int profondeur = 2;
+		int profondeur = 3;
 		if(minimaxA(a,memo,profondeur,plateauclone,id) > 0) {
 			LinkedList<Noeud> cp;
 			System.out.println("taille fils racine : "+a.fils().size());
