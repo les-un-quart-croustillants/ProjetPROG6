@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -431,5 +432,33 @@ public class PlateauTest {
 		Assert.assertFalse(sujet2.getCellule(to1).aPingouin());
 		Assert.assertTrue(sujet2.getCellule(to2).aPingouin());
 		Assert.assertEquals(pingouin3, sujet2.getCellule(to2).pingouin());
+	}
+
+	@Test
+	public void serial() {
+		String filename = "test_serial.bin";
+
+		try {
+			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
+			os.writeObject(p);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			Assert.fail();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+
+		try {
+			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
+			Plateau p_lecture = (Plateau) is.readObject();
+			Assert.assertEquals(p, p_lecture);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			Assert.fail();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 	}
 }
