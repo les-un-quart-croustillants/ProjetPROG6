@@ -29,18 +29,21 @@ public class Client implements Runnable {
 		this.joueursIDs = new ArrayList<Integer>();
 		try {
 			this.clientSocket = new Socket(hostName, port);
+			System.out.println("YES");
 			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+			System.out.println("YES");
 			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			this.inObj = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+			System.out.println("YES");
+			//this.inObj = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+			System.out.println("YES");
 			this.cap = cap;
-			System.out.println("Connection etablie avec le serveur " + hostName + ":" + port);
+			System.out.println("YES");
+			(new Thread(this)).start();
 		} catch (UnknownHostException e) {
 			System.err.println("impossible d'atteindre le lobby " + hostName);
 		} catch (IOException e) {
 			System.err.println("Connection a " + hostName + ":" + port + " a echouee");
 		}
-
-		(new Thread(this)).start();
 	}
 
 	/**
@@ -51,6 +54,8 @@ public class Client implements Runnable {
 	public void run() {
 		String inputLine = null, outputLine = null;
 		Object inputObj;
+		
+		System.out.println("Connection etablie avec le serveur");
 
 		try {
 			// out.print(this.joueursIDs); //Envois des identifiants des joueurs geres par
@@ -58,7 +63,7 @@ public class Client implements Runnable {
 			// Lecture du flus de donnees provenant du serveur
 			while (inputLine != "Bye") {
 				if (cap.currentState() == State.DEFAULT) { // Si le client est en attente d'un message
-					inputLine = in.readLine();
+					inputLine = "none"; //in.readLine();
 					outputLine = cap.processInputString(inputLine);
 				} else { // Si le client est en attente de donnees
 					inputObj = inObj.readObject();
