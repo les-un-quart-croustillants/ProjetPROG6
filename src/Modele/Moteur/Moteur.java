@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
+import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Joueurs.JoueurIA;
 import Modele.Joueurs.JoueurPhysique;
 import Modele.Plateau.Pingouin;
@@ -28,6 +29,9 @@ public class Moteur {
 	//AUTOMATE
     private State currentState;
 	private HashMap<Couple<State, Action>, State> transition;
+	
+	//AUTRE
+	private Position prochainCLicIA;
 	
 	/**
 	 * Enum des etats de l'automate
@@ -88,20 +92,20 @@ public class Moteur {
 		}
 	}
 	
-	public Moteur(Plateau p, int njoueurs) {
+	public Moteur(Plateau p, ArrayList<Couple<Integer,Difficulte>> joueurs) {
 		this.plateau = p;
-		this.njoueurs = njoueurs;
+		this.njoueurs = joueurs.size();
 		this.joueurs = new ArrayList<Joueur>();
 		this.eliminees = new ArrayList<Joueur>();
 		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
-		this.joueurs.add(new JoueurPhysique(0));
-		this.joueurs.add(new JoueurIA(1));
-		System.out.println("njoueurs:" + njoueurs);
-		// par defaut, on met que des joueurs physiques
-		for (int i = 2; i < njoueurs; i++) {
-			this.joueurs.add(new JoueurIA(i));
+		for(Couple<Integer,Difficulte> j : joueurs) {
+			if(j.droit().equals(Difficulte.PHYSIQUE)) {
+				this.joueurs.add(new JoueurPhysique(j.gauche(),j.droit()));
+			} else {
+				this.joueurs.add(new JoueurIA(j.gauche(),j.droit()));
+			}
 		}
 	}
 	
@@ -232,149 +236,6 @@ public class Moteur {
 			return null;
 		}
 	}
-
-	/**
-	 * poserPingouin : pose un pingouin � la position donn�e en param�tre et change
-	 * l'�tat du moteur (joueur courant + �tat courant)
-	 * 
-	 * @param p
-	 *            : position o� poser le pingouin
-	 * @return true si le pingouin a �t� pos�, false sinon
-	 */
-	public boolean poserPingouin(Position position) {
-		if (currentState == State.POSER_PINGOUIN) {
-			//Si la pose reussis
-			if (this.joueurCourant().posePingouin(this.plateau, position)) {
-				this.nbPingouin++;
-				this.joueurSuivant();
-				// Si tout les pingouins ont ete poses
-				if(this.njoueurs == 3 && this.nbPingouin==9 || this.njoueurs != 3 && this.nbPingouin==8 ) {
-					transition(Action.PINGOUINPOSES);
-				} else {
-					transition(Action.SELECTION_VALIDE);
-				}
-				return true;
-			} else {
-				transition(Action.SELECTION_INVALIDE);
-				return false;
-			}
-		} else {
-			transition(Action.MAUVAIS_ETAT);
-			return false;
-		}
-	}
-
-	/**
-	 * selectionnerPingouin : le moteur retiendra le pingouin selectionn� (et change son �tat en cons�quence)
-	 * 
-	 * @param p : position du pingouin � selectionner
-	 * @return true si le pingouin a �t� s�l�ctionn�, false sinon
-	 */
-	public boolean selectionnerPingouin(Position p) {
-		if (currentState == State.SELECTIONNER_PINGOUIN) {
-			//Si le pingouin n'est pas isole
-			if(!plateau.estIsolee(p)) {
-				//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
-				if(plateau.getCellule(p).aPingouin() && (plateau.getCellule(p).pingouin().employeur() == joueurCourant().id())) {
-					this.selected = p;
-					transition(Action.SELECTION_VALIDE);
-					return true;
-				}
-			}
-			transition(Action.SELECTION_INVALIDE);
-			return false;
-		} else {
-			transition(Action.MAUVAIS_ETAT);
-			return false;
-		}
-	}
-	
-	/**
-	 * selectionnerDestinnation : si possible, d�place le pingouin actuellement selectionn� � la destination
-	 * 
-	 * @param p : destination
-	 * @return true si le pingouin s�l�ctionn� a �t� d�plac�, false sinon
-	 * @throws Exception
-	 */
-	public boolean selectionnerDestination(Position destination){
-		if (currentState == State.SELECTIONNER_DESTINATION) {
-			try {
-				if (this.joueurCourant().jouerCoup(this.plateau,selected,destination) < 0) {
-					transition(Action.SELECTION_INVALIDE);
-					return false;
-				} else {
-					if (joueurSuivant() == null) {
-						transition(Action.FIN_PARTIE);
-					} else {
-						transition(Action.SELECTION_VALIDE);
-					}
-					return true;
-				}
-			} catch (Exception e) {
-				transition(Action.SELECTION_INVALIDE);
-				return false;
-			}
-		} else {
-			transition(Action.MAUVAIS_ETAT);
-			return false;
-		}
-	}
-	
-	/**
-	 * Demande a l'IA de calculer une position pour la pose du pingouin et tente
-	 * de le poser avec poserPingouin
-	 * @return
-	 */
-	public Position posePingouinIA() {
-		if(this.currentState == State.POSER_PINGOUIN) {
-			//Si le joueur est une IA
-			if(this.joueurCourant().estIA()) {
-				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
-				//Si le calcule de l'IA a reussis
-				if(!calculated.equals(new Position(-1,-1))) {
-					//Si la pose a reussi (Change de joueur)
-					if(poserPingouin(calculated)) {
-						return calculated;
-					}
-				}
-			}
-			transition(Action.SELECTION_INVALIDE);
-			return new Position(-1,-1);
-		} else {
-			transition(Action.MAUVAIS_ETAT);
-			return new Position(-1,-1);
-		}
-	}
-	
-	/**
-	 * Demande a l'IA de calculer un coup et tente de le jouer
-	 * avec selectionnerPingouin et selectionnerDestination
-	 * @return
-	 */
-	public Couple<Position,Position> coupIA(){
-		if(this.currentState == State.SELECTIONNER_PINGOUIN) {
-			//Si le joueur est une IA
-			if(this.joueurCourant().estIA()) {
-				Couple<Position,Position> calculated = this.joueurCourant().prochainCoup(plateau);
-				if(!calculated.equals(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)))) {
-					//Si choix du pingouin effectue
-					if(selectionnerPingouin(calculated.gauche())) {
-						//Si choix de la destination effectuee (change de joueur)
-						if(selectionnerDestination(calculated.droit())) {
-							return calculated;
-						}
-					}
-				}
-			}
-			transition(Action.SELECTION_INVALIDE);
-			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
-		} else {
-			transition(Action.MAUVAIS_ETAT);
-			return new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1));
-		}
-	}
-	
-	
 	
 	/**
 	 * pingouinSelection : renvoie le pingouin actuellement selectionn�
@@ -388,6 +249,120 @@ public class Moteur {
 			return null;
 		}
 	}
+
+	/**
+	 * poserPingouin : pose un pingouin � la position donn�e en param�tre et change
+	 * l'�tat du moteur (joueur courant + �tat courant)
+	 * 
+	 * @param p position ou poser le pingouin
+	 * @return p si le pingouin a �t� pos�, (-1,-1) sinon
+	 */
+	public Position poserPingouin(Position position) {
+		if (currentState == State.POSER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
+				//Si le calcule de l'IA a reussis
+				if(!calculated.equals(new Position(-1,-1))) {
+					position = calculated;
+				}else {
+					transition(Action.SELECTION_INVALIDE);
+					return new Position(-1,-1);	
+				}
+			}
+			//Si la pose reussis
+			if (this.joueurCourant().posePingouin(this.plateau, position)) {
+				this.nbPingouin++;
+				this.joueurSuivant();
+				// Si tout les pingouins ont ete poses
+				if(this.njoueurs == 3 && this.nbPingouin==9 || this.njoueurs != 3 && this.nbPingouin==8 ) {
+					transition(Action.PINGOUINPOSES);
+				} else {
+					transition(Action.SELECTION_VALIDE);
+				}
+				return position;
+			} else {
+				transition(Action.SELECTION_INVALIDE);
+				return new Position(-1,-1);
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Position(-1,-1);
+		}
+	}
+
+	/**
+	 * selectionnerPingouin : le moteur retiendra le pingouin selectionn� (et change son �tat en cons�quence)
+	 * 
+	 * @param p : position du pingouin � selectionner
+	 * @return true si le pingouin a �t� s�l�ctionn�, false sinon
+	 */
+	public Position selectionnerPingouin(Position p) {
+		Position tmp = p;
+		
+		if (currentState == State.SELECTIONNER_PINGOUIN) {
+			//Si le joueur est une IA
+			if(this.joueurCourant().estIA()) {
+				Couple<Position,Position> calculated = this.joueurCourant().prochainCoup(plateau);
+				if(!calculated.equals(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)))) {
+					//Si choix du pingouin effectue
+					tmp = calculated.gauche();
+					this.prochainCLicIA = calculated.droit();
+				} else {
+					transition(Action.SELECTION_INVALIDE);
+					return new Position(-1,-1);
+				}
+			}
+			//Si le pingouin n'est pas isole
+			if(!plateau.estIsolee(tmp)) {
+				//Si La cellule en p a un pingouin et que ce pingouin appartient au joueur courrant
+				if(plateau.getCellule(tmp).aPingouin() && (plateau.getCellule(tmp).pingouin().employeur() == joueurCourant().id())) {
+					this.selected = tmp;
+					transition(Action.SELECTION_VALIDE);
+					return tmp;
+				}
+			}
+			transition(Action.SELECTION_INVALIDE);
+			return new Position(-1,-1);
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Position(-1,-1);
+		}
+	}
 	
-	
+	/**
+	 * selectionnerDestinnation : si possible, d�place le pingouin actuellement selectionn� � la destination
+	 * 
+	 * @param p : destination
+	 * @return true si le pingouin s�l�ctionn� a �t� d�plac�, false sinon
+	 * @throws Exception
+	 */
+	public Position selectionnerDestination(Position destination){
+		Position tmp = destination;
+		
+		if (currentState == State.SELECTIONNER_DESTINATION) {
+			if(this.joueurCourant().estIA()) {
+				tmp = this.prochainCLicIA;
+			}
+			try {
+				if (this.joueurCourant().jouerCoup(this.plateau,selected,tmp) < 0) {
+					transition(Action.SELECTION_INVALIDE);
+					return new Position(-1,-1);
+				} else {
+					if (joueurSuivant() == null) {
+						transition(Action.FIN_PARTIE);
+					} else {
+						transition(Action.SELECTION_VALIDE);
+					}
+					return tmp;
+				}
+			} catch (Exception e) {
+				transition(Action.SELECTION_INVALIDE);
+				return new Position(-1,-1);
+			}
+		} else {
+			transition(Action.MAUVAIS_ETAT);
+			return new Position(-1,-1);
+		}
+	}
 }
