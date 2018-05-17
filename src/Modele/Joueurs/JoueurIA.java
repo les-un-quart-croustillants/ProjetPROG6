@@ -10,14 +10,23 @@ import Utils.Position;
 //import java.util.Random;
 
 public class JoueurIA extends Joueur {
-	int id;
 	
-	public JoueurIA(int id){
-		super(id);
+	public JoueurIA(int id,String n,Difficulte d){
+		super(id,n,d);
 	}
-	
-	public JoueurIA(int id,int p){
-		super(id,p);
+
+	@Override
+	public int delay() {
+		switch(this.difficulte) {
+			case FACILE:
+				return 1000;
+			case MOYEN:
+				return 500;
+			case DIFFICILE:
+				return 0;
+			default:
+				return 0;
+		}
 	}
 	
 	public Couple<Position,Position> coupDifficile(Plateau plateau) {

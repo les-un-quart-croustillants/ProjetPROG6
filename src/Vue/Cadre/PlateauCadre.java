@@ -8,6 +8,7 @@ import Vue.Donnees;
 import Vue.GameObject.JoueurCourantGraphique;
 import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.PlateauGraphique;
+import Vue.GameObject.ScoresGraphique;
 import javafx.animation.AnimationTimer;
 
 public class PlateauCadre extends Cadre{	
@@ -31,6 +32,7 @@ public class PlateauCadre extends Cadre{
 		this.gameObjects.add(joueurCourantGraphique);
 		this.moteurGraphique = new MoteurGraphique();
 		this.gameObjects.add(moteurGraphique);
+		this.gameObjects.add(new ScoresGraphique());
 		this.setOnMouseMoved(new MiseEnEvidenceCase(this));
 		this.setOnMousePressed(new PoserPingouin(this));
 		this.setStyle(

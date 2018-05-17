@@ -12,7 +12,7 @@ public class JoueurPhysiqueTest {
 
 	@Before
 	public void setUp() {
-		j = new JoueurPhysique(0,2);
+		j = new JoueurPhysique(0,"2");
 	}
 
 	@Ignore

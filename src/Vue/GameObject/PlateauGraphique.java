@@ -9,6 +9,7 @@ public class PlateauGraphique extends GameObject {
 	public Plateau plateau;
 	public Case[][] cases;
 	public int tailleCase = 60; // taille d'une case en pixel
+	public int espacement = 10;
 
 	private PlateauCadre plateauCadre;
 	private float tailleRelative = 0.8f; // facteur de taille relative au cadre PlateauCadre(de 0 à 1)
@@ -21,14 +22,23 @@ public class PlateauGraphique extends GameObject {
 
 	@Override
 	public void update() {
-		if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize()*0.75)) {
+		/*if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize()*0.75)) {
 			tailleCase = (int) (plateauCadre.getWidth() * tailleRelative / (plateau.getSize()*1.5));
 		}
 		else {
 			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize()*0.75*1.5));
 		}
 		position.x = plateauCadre.getWidth() / 2 - plateau.getSize() * tailleCase*0.75;
-		position.y = plateauCadre.getHeight() *0.45 - plateau.getSize() * tailleCase * 0;
+		position.y = plateauCadre.getHeight() *0.45 - plateau.getSize() * tailleCase * 0;*/
+		
+		if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize()*0.75)) {
+			tailleCase = (int) (plateauCadre.getWidth() * tailleRelative / plateau.getSize());
+		}
+		else {
+			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize()*0.75));
+		}
+		position.x = plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase+espacement) / 2;
+		position.y = plateauCadre.getHeight() / 2 - plateau.getSize() * (tailleCase+espacement) *0.25;
 	}
 
 	/**
