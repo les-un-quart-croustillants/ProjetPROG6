@@ -3,6 +3,8 @@ package Utils;
 import java.io.Serializable;
 
 public class Couple<G,D> implements Serializable {
+
+	private static final long serialVersionUID = 68420662405752506L;
 	private G i;
 	private D j;
 	
