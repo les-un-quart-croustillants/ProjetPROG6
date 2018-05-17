@@ -1,6 +1,8 @@
 package Utils;
 
-public class Couple<G,D> {
+import java.io.Serializable;
+
+public class Couple<G,D> implements Serializable {
 	private G i;
 	private D j;
 	

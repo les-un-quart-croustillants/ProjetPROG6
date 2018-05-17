@@ -5,7 +5,11 @@ import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -19,14 +23,18 @@ public class Plateau implements Serializable {
 	private LinkedList<Move> undoList;
 
 	public Plateau() {
-		this(8);
+		this(3, 1);
 	}
 	public Plateau(int size) {
+		this(size, (size < 8)?size:8);
+	}
+
+	public Plateau(int size, int nb_pingouin) {
 		this.size = size;
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
-		initTab();
+		initTab(nb_pingouin);
 	}
 
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
@@ -44,7 +52,9 @@ public class Plateau implements Serializable {
 	/**
 	 * initTab : initialise le tableau selon une configuration attendue.
 	 */
-	private void initTab() {
+	private void initTab(int borne) {
+		int tmp, nb_1 = 0;
+		Position p;
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
@@ -52,12 +62,52 @@ public class Plateau implements Serializable {
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
-					tab[i][j] = new Cellule(new Position(i,j), r.nextInt(3) + 1);
+					tmp = r.nextInt(3) + 1;
+					if (tmp == 1)
+						nb_1++;
+					tab[i][j] = new Cellule(new Position(i,j), tmp);
 				}
+			}
+		}
+		while (nb_1 < borne) {
+			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
+			if (this.tab[p.i()][p.j()].getFish() != 1) {
+				this.tab[p.i()][p.j()].setFish(1);
+				nb_1++;
 			}
 		}
 	}
 
+	public static Plateau parse(String filename) throws IOException {
+		ArrayList<Cellule[]> list = new ArrayList<>();
+		Cellule[] line;
+		int line_nb = 0;
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String s = br.readLine();
+		String[] splited;
+
+		while (s != null) {
+			splited = s.split(" ");
+			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
+			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
+				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
+					line[i] = new Cellule(new Position(line_nb,i),true,0);
+				else
+					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
+			}
+			line_nb++;
+			list.add(line);
+			s = br.readLine();
+		}
+
+		Cellule[][] tab = new Cellule[line_nb][line_nb];
+		for (Cellule[] element : list) {
+			for (Cellule c: element) {
+				tab[c.getPosition().i()][c.getPosition().j()] = c.clone();
+			}
+		}
+		return new Plateau(tab, new LinkedList<>(), new LinkedList<>());
+	}
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param p : la position
@@ -94,15 +144,15 @@ public class Plateau implements Serializable {
 		int dec = (p.i() % 2 == 0) ? 0 : 1;
 
 		for (Position candidat: new Position[]{
-
 				new Position(p.i() - 1,p.j() - dec),
 				new Position(p.i() - 1,p.j() + 1 - dec),
 				new Position(p.i(),p.j() - 1),
 				new Position(p.i(),p.j() + 1),
 				new Position(p.i() + 1,p.j() - dec),
 				new Position(p.i() + 1,p.j() + 1 - dec)}) {
-			if (isInTab(p) && (getCellule(candidat) != null))
-				r.add(candidat);
+			if (isInTab(candidat))
+				if (!getCellule(candidat).isObstacle())
+					r.add(candidat);
 		}
 		return r;
 	}
