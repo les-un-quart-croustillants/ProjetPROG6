@@ -35,7 +35,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 1000;
+	private double delay = 250;
 
 	@Override
 	public void update() {
@@ -88,30 +88,32 @@ public class MoteurGraphique extends GameObject {
 		}
 	}
 
-	private Couple<Position, Position> currentCoupIA;
+	private Position pingouinCoupIA;
 
 	private void onStateSELECTIONNER_PINGOUIN_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
-			currentCoupIA = GamePane.moteur().coupIA();
-			GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.droit().i()][currentCoupIA.droit().j()].select();
-			GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.gauche().i()][currentCoupIA.gauche().j()].select();
+			Position p = GamePane.moteur().selectionnerPingouin(new Position(-1,-1));
+			pingouinCoupIA = p;
+			GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].select();
 			currentState = StateGraph.SELECTIONNER_DESTINATION_GRAPH;
 		}
 	}
 
 	private void onStateSELECTIONNER_DESTINATION_GRAPH() {
-		GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.gauche().i()][currentCoupIA.gauche().j()].pingouinGraphique.moveTo(currentCoupIA.droit());
-		GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.gauche().i()][currentCoupIA.gauche().j()]
-				.detruire();
-		GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.droit().i()][currentCoupIA.droit().j()].deselect();
-		GamePane.getPlateauCadre().plateauGraphique.cases[currentCoupIA.gauche().i()][currentCoupIA.gauche().j()].deselect();
-		currentState = StateGraph.CHANGER_JOUEUR_GRAPH;
+		if(GamePane.moteur().joueurCourant().estIA()){
+			Position p = GamePane.moteur().selectionnerDestination(new Position(-1,-1));
+			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].deselect();
+			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].pingouinGraphique.moveTo(p);
+			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()]
+					.detruire();
+			currentState = StateGraph.CHANGER_JOUEUR_GRAPH;
+		}
 	}
 
 	private void onStatePOSER_PINGOUIN_GRAPH() {
 		int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 		if (GamePane.moteur().joueurCourant().estIA()) {
-			Position p = GamePane.moteur().posePingouinIA();
+			Position p = GamePane.moteur().poserPingouin(new Position(-1,-1));
 			GamePane.getPlateauCadre().gameObjects
 					.add(new PingouinGraphique(GamePane.moteur().plateau().getCellule(p).pingouin(),
 							GamePane.getPlateauCadre().plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
