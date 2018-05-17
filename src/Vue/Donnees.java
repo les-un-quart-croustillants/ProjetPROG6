@@ -11,7 +11,7 @@ public abstract class Donnees {
 	
 	public static Color[] COULEURS_JOUEURS = {Color.ORANGERED, Color.GREENYELLOW,Color.CORNFLOWERBLUE,Color.YELLOW};
 	public static Image IMG_GLACIER = new Image("bg_glacier.png");
-	public static Image IMG_BLOC_GLACE = new Image("bloc_glace.png");
+	public static Image IMG_BLOC_GLACE = new Image("bloc_glace2.png");
 	public static Image IMG_PINGOUIN_FACE= new Image("pingouin_fusee_face_mini.png");
 
 
