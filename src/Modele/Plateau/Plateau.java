@@ -5,18 +5,22 @@ import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
 import static java.lang.Integer.max;
 
-public class Plateau {
+public class Plateau implements Serializable {
 	private int size;
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
 
+	public Plateau() {
+		this(8);
+	}
 	public Plateau(int size) {
 		this.size = size;
 		this.undoList = new LinkedList<>();

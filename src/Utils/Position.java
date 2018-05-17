@@ -1,12 +1,15 @@
 package Utils;
 
-public class Position {
-    private int i, j;
 
-    public Position(int i, int j) {
-        this.i = i;
-        this.j = j;
-    }
+import java.io.Serializable;
+
+public class Position implements Serializable {
+	private int i, j;
+
+	public Position(int i, int j) {
+		this.i = i;
+		this.j = j;
+	}
 
     public int i() {
         return i;
