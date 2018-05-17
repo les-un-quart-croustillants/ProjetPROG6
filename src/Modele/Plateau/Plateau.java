@@ -5,7 +5,11 @@ import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
 import Utils.Position;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -74,6 +78,36 @@ public class Plateau implements Serializable {
 		}
 	}
 
+	public static Plateau parse(String filename) throws IOException {
+		ArrayList<Cellule[]> list = new ArrayList<>();
+		Cellule[] line;
+		int line_nb = 0;
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String s = br.readLine();
+		String[] splited;
+
+		while (s != null) {
+			splited = s.split(" ");
+			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
+			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
+				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
+					line[i] = new Cellule(new Position(line_nb,i),true,0);
+				else
+					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
+			}
+			line_nb++;
+			list.add(line);
+			s = br.readLine();
+		}
+
+		Cellule[][] tab = new Cellule[line_nb][line_nb];
+		for (Cellule[] element : list) {
+			for (Cellule c: element) {
+				tab[c.getPosition().i()][c.getPosition().j()] = c.clone();
+			}
+		}
+		return new Plateau(tab, new LinkedList<>(), new LinkedList<>());
+	}
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param p : la position

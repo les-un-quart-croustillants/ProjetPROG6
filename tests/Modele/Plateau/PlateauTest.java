@@ -465,4 +465,16 @@ public class PlateauTest {
 			Assert.fail();
 		}
 	}
+
+	@Test
+	public void parse() {
+		String filename = "tests/rsc/test_parse_terrain";
+		try {
+			Plateau test = Plateau.parse(filename);
+			Assert.assertEquals("{8, [ [[(0,0),false,1,null], [(0,1),false,1,null], [(0,2),false,2,null], [(0,3),false,1,null], [(0,4),false,3,null], [(0,5),false,3,null], [(0,6),false,3,null], [(0,7),true,0,null]] [[(1,0),false,2,null], [(1,1),false,3,null], [(1,2),false,2,null], [(1,3),false,1,null], [(1,4),false,1,null], [(1,5),false,1,null], [(1,6),false,2,null], [(1,7),false,2,null]] [[(2,0),false,3,null], [(2,1),false,1,null], [(2,2),false,3,null], [(2,3),false,2,null], [(2,4),false,3,null], [(2,5),false,1,null], [(2,6),false,2,null], [(2,7),true,0,null]] [[(3,0),false,2,null], [(3,1),false,3,null], [(3,2),false,3,null], [(3,3),false,1,null], [(3,4),false,1,null], [(3,5),false,1,null], [(3,6),false,2,null], [(3,7),false,2,null]] [[(4,0),false,3,null], [(4,1),false,2,null], [(4,2),false,1,null], [(4,3),false,2,null], [(4,4),false,3,null], [(4,5),false,2,null], [(4,6),false,2,null], [(4,7),true,0,null]] [[(5,0),false,1,null], [(5,1),false,1,null], [(5,2),false,2,null], [(5,3),false,1,null], [(5,4),false,3,null], [(5,5),false,3,null], [(5,6),false,1,null], [(5,7),false,3,null]] [[(6,0),false,1,null], [(6,1),false,3,null], [(6,2),false,1,null], [(6,3),false,2,null], [(6,4),false,3,null], [(6,5),false,3,null], [(6,6),false,2,null], [(6,7),true,0,null]] [[(7,0),false,3,null], [(7,1),false,3,null], [(7,2),false,2,null], [(7,3),false,1,null], [(7,4),false,1,null], [(7,5),false,2,null], [(7,6),false,1,null], [(7,7),false,2,null]] ],h:[],u:[]]}", test.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
 }
