@@ -14,6 +14,7 @@ public class JeuConsole {
 	private static char[] sym_joueurs = { 'M', 'A', 'B', 'C' };
 	private static Scanner sc;
 	public static void main(String[] args) {
+		Position error = new Position(-1,-1);
 		Plateau p = new Plateau(8);
 		m = new Moteur(p, 2);
 		m.setCurrentState(State.POSER_PINGOUIN);
@@ -27,7 +28,7 @@ public class JeuConsole {
 				int a, b;
 				a = sc.nextInt();
 				b = sc.nextInt();
-				if (m.poserPingouin(new Position(a, b))) {
+				if (m.poserPingouin(new Position(a, b)).equals(error)) {
 					System.out.println("Pingouin en ("+a+","+b+")");
 				}
 				else {
@@ -39,7 +40,7 @@ public class JeuConsole {
 				int a, b;
 				a = sc.nextInt();
 				b = sc.nextInt();
-				if (m.selectionnerPingouin(new Position(a, b))) {
+				if (m.selectionnerPingouin(new Position(a, b)).equals(error)) {
 					System.out.println("Selection du pingouin en ("+a+","+b+")");
 				}
 				else {
@@ -51,7 +52,7 @@ public class JeuConsole {
 				int a, b;
 				a = sc.nextInt();
 				b = sc.nextInt();
-				if (m.selectionnerDestination(new Position(a, b))) {
+				if (m.selectionnerDestination(new Position(a, b)).equals(error)) {
 					System.out.println("Pingouin deplace en ("+a+","+b+")");
 				}
 				else {
