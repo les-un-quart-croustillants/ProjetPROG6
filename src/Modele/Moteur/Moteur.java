@@ -1,5 +1,7 @@
 package Modele.Moteur;
 
+import java.beans.Transient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
@@ -11,7 +13,7 @@ import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
 
-public class Moteur {
+public class Moteur implements Serializable {
 	//DATA
 	private ArrayList<Joueur> joueurs;
 	private Plateau plateau;
@@ -27,7 +29,7 @@ public class Moteur {
 	private HashMap<Couple<State, Action>, State> transition;
 	
 	//AUTRE
-	private Position prochainCLicIA;
+	private transient Position prochainCLicIA;
 	
 	/**
 	 * Enum des etats de l'automate
