@@ -19,14 +19,18 @@ public class Plateau implements Serializable {
 	private LinkedList<Move> undoList;
 
 	public Plateau() {
-		this(8);
+		this(3, 1);
 	}
 	public Plateau(int size) {
+		this(size, (size < 8)?size:8);
+	}
+
+	public Plateau(int size, int nb_pingouin) {
 		this.size = size;
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
-		initTab();
+		initTab(nb_pingouin);
 	}
 
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
@@ -44,7 +48,9 @@ public class Plateau implements Serializable {
 	/**
 	 * initTab : initialise le tableau selon une configuration attendue.
 	 */
-	private void initTab() {
+	private void initTab(int borne) {
+		int tmp, nb_1 = 0;
+		Position p;
 		Random r = new Random();
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
@@ -52,8 +58,18 @@ public class Plateau implements Serializable {
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
-					tab[i][j] = new Cellule(new Position(i,j), r.nextInt(3) + 1);
+					tmp = r.nextInt(3) + 1;
+					if (tmp == 1)
+						nb_1++;
+					tab[i][j] = new Cellule(new Position(i,j), tmp);
 				}
+			}
+		}
+		while (nb_1 < borne) {
+			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
+			if (this.tab[p.i()][p.j()].getFish() != 1) {
+				this.tab[p.i()][p.j()].setFish(1);
+				nb_1++;
 			}
 		}
 	}
@@ -94,15 +110,15 @@ public class Plateau implements Serializable {
 		int dec = (p.i() % 2 == 0) ? 0 : 1;
 
 		for (Position candidat: new Position[]{
-
 				new Position(p.i() - 1,p.j() - dec),
 				new Position(p.i() - 1,p.j() + 1 - dec),
 				new Position(p.i(),p.j() - 1),
 				new Position(p.i(),p.j() + 1),
 				new Position(p.i() + 1,p.j() - dec),
 				new Position(p.i() + 1,p.j() + 1 - dec)}) {
-			if (isInTab(p) && (getCellule(candidat) != null))
-				r.add(candidat);
+			if (isInTab(candidat))
+				if (!getCellule(candidat).isObstacle())
+					r.add(candidat);
 		}
 		return r;
 	}

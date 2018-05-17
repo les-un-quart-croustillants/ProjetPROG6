@@ -13,7 +13,7 @@ public class PlateauTest {
 	Plateau p;
 	@Before
 	public void setUp() {
-		p = new Plateau(3);
+		p = new Plateau();
 	}
 
 	@Test
@@ -80,35 +80,39 @@ public class PlateauTest {
 	@Test
 	public void getNeighbours() {
 		int nb_test = 4;
+		getNeighbours_test1(nb_test);
+		getNeighbours_test2(nb_test);
+		getNeighbours_test3(nb_test);
+		Plateau vide = new Plateau(1);
+		Assert.assertTrue("getNeighbours test #4/" + nb_test + " failed", vide.getNeighbours(new Position(0,0)).isEmpty());
+	}
+	private void getNeighbours_test1(int nb_test) {
 		LinkedList<Position> expected = new LinkedList<>();
 		expected.add(new Position(0,0));
-		expected.add(new Position(0,1) );
-
-		expected.add(new Position(1,0) );
+		expected.add(new Position(0,1));
+		expected.add(new Position(1,0));
 		expected.add(new Position(1,2));
-
 		expected.add(new Position(2,0));
 		expected.add(new Position(2,1));
 		Assert.assertEquals("getNeighbours test #1/" + nb_test + " failed", expected, p.getNeighbours(new Position(1,1)));
-
-		expected = new LinkedList<>();
+	}
+	private void getNeighbours_test2(int nb_test) {
+		LinkedList<Position> expected = new LinkedList<>();
 		expected.add(new Position(0,1));
 		expected.add(new Position(1,0));
 		expected.add(new Position(1,1));
 		Assert.assertEquals("getNeighbours test #2/" + nb_test + " failed", expected, p.getNeighbours(new Position(0,0)));
-
-		Plateau vide = new Plateau(1);
-		Assert.assertTrue("getNeighbours test #3/" + nb_test + " failed", vide.getNeighbours(new Position(0,0)).isEmpty());
-
+	}
+	private void getNeighbours_test3(int nb_test) {
 		Plateau sujet = new Plateau(5);
-		expected = new LinkedList<>();
+		LinkedList<Position> expected = new LinkedList<>();
 		expected.add(new Position(1,1));
 		expected.add(new Position(1,2));
 		expected.add(new Position(2,0));
 		expected.add(new Position(2,2));
 		expected.add(new Position(3,1));
 		expected.add(new Position(3,2));
-		Assert.assertEquals("getNeighbours test #4/" + nb_test + " failed", expected, sujet.getNeighbours(new Position(2,1)));
+		Assert.assertEquals("getNeighbours test #3/" + nb_test + " failed", expected, sujet.getNeighbours(new Position(2,1)));
 	}
 
 	@Test
