@@ -3,6 +3,7 @@ package Modele.Plateau;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Test;
+import java.io.*;
 
 public class CelluleTest {
 
@@ -55,6 +56,40 @@ public class CelluleTest {
 		Assert.assertEquals(c.pingouin(), p);
 	}
 
+
+	public void serial_test(Cellule c) {
+		String filename = "test_serial.bin";
+		try {
+			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
+			os.writeObject(c);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			Assert.fail();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+
+		try {
+			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
+			Cellule c_lecture = (Cellule) is.readObject();
+			Assert.assertEquals(c, c_lecture);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			Assert.fail();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+	@Test
+	public void serial() {
+		String filename = "test_serial.bin";
+		Cellule c = new Cellule(new Position(0,0), false, 2, null);
+		serial_test(c);
+		c =  new Cellule(new Position(0,0), false, 2, new Pingouin(0, new Position(0,0)));
+		serial_test(c);
+	}
 
 	@Test
 	public void clonetests() {
