@@ -230,19 +230,23 @@ public class Moteur {
 	 */
 	public Joueur joueurSuivant() {
 		if(tousElimines())
-			return null;
+			return null;	
 		
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
 		} while (this.joueurCourant().estElimine());
 		
-		for(Pingouin p: this.joueurCourant().pingouins()) {
-			if(!this.plateau.estIsolee(p.position())) {
-				return joueurCourant();
+		if(this.currentState() == State.POSER_PINGOUIN) {
+			return joueurCourant();
+		} else {
+			for(Pingouin p: this.joueurCourant().pingouins()) {
+				if(!this.plateau.estIsolee(p.position())) {
+					return joueurCourant();
+				}
 			}
+			this.joueurCourant().eliminer();
+			return joueurSuivant();	
 		}
-		this.joueurCourant().eliminer();
-		return joueurSuivant();
 	}
 	
 	/**
@@ -266,20 +270,22 @@ public class Moteur {
 	 * @return p si le pingouin a �t� pos�, (-1,-1) sinon
 	 */
 	public Position poserPingouin(Position position) {
+		Position tmp = position;
+		
 		if (currentState == State.POSER_PINGOUIN) {
 			//Si le joueur est une IA
 			if(this.joueurCourant().estIA()) {
 				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
 				//Si le calcule de l'IA a reussis
 				if(!calculated.equals(new Position(-1,-1))) {
-					position = calculated;
+					tmp = calculated;
 				}else {
 					transition(Action.SELECTION_INVALIDE);
 					return new Position(-1,-1);	
 				}
 			}
 			//Si la pose reussis
-			if (this.joueurCourant().posePingouin(this.plateau, position)) {
+			if (this.joueurCourant().posePingouin(this.plateau, tmp)) {
 				this.nbPingouin++;
 				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
@@ -288,7 +294,7 @@ public class Moteur {
 				} else {
 					transition(Action.SELECTION_VALIDE);
 				}
-				return position;
+				return tmp;
 			} else {
 				transition(Action.SELECTION_INVALIDE);
 				return new Position(-1,-1);
