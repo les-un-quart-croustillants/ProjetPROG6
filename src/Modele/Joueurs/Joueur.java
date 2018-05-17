@@ -12,18 +12,34 @@ public abstract class Joueur {
 	private int nbPingouins;
 	private int scoreFish;
 	private int scoreDestroyed;
+	Difficulte difficulte;
 	private ArrayList<Pingouin> pingouins;
 	
-	public Joueur(int id){
-		this.id = id;
-		this.scoreFish = 0;
-		this.scoreDestroyed = 0;
-		this.pingouins = new ArrayList<Pingouin>();
+	public enum Difficulte{
+		PHYSIQUE,
+		FACILE,
+		MOYEN,
+		DIFFICILE;
+		
+		public String toString(Difficulte d) {
+			switch(d) {
+				case PHYSIQUE:
+					return "PHYSIQUE";
+				case FACILE:
+					return "FACILE";
+				case MOYEN:
+					return "MOYEN";
+				case DIFFICILE:
+					return "DIFFICILE";
+				default:
+					return "UNDEFINED";
+			}
+		}
 	}
 	
-	public Joueur(int id,int p){
+	
+	public Joueur(int id,Difficulte d){
 		this.id = id;
-		this.nbPingouins = p;
 		this.scoreFish = 0;
 		this.scoreDestroyed = 0;
 		this.pingouins = new ArrayList<Pingouin>();
@@ -93,6 +109,13 @@ public abstract class Joueur {
 		this.pingouins.add(p);
 	}
 	
+	/*
+	 * Renvois le delay a attendre (ms) avant de faire jouer le joueur
+	 */
+	public int delay() {
+		return 0;
+	}
+	
 	/**
 	 * Fonction appelee dans l'IA pour calculer le prochain coup
 	 * renvoie (PosPingouin,PosObjectif) si une erreur c'est produite
@@ -144,13 +167,13 @@ public abstract class Joueur {
 		for(int i= 0; i < UtilsIA.listeConnexeComposante(plateau).size();i++)
 			System.out.println("La composante connexe "+i+" : " + UtilsIA.listeConnexeComposante(plateau).get(i));
 		System.out.println("------------------------------------------------------");
+		
+		System.out.println("------------------------------------------------------");
+		System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
+		System.out.println("Le coup joue par l'IA dure : " + UtilsIA.jouerCoupDifficile(plateau,this.id));
+
+		System.out.println("------------------------------------------------------");
 		*/
-		//System.out.println("------------------------------------------------------");
-		//System.out.println("Le coup joue par l'IA : " + UtilsIA.jouerCoupFacile(plateau,this.id));
-		//ystem.out.println("Le coup joue par l'IA dure : " + UtilsIA.jouerCoupDifficile(plateau,this.id));
-
-		//System.out.println("------------------------------------------------------");
-
 		if(plateau.getCellule(start).aPingouin()) { //test si le pingouin existe
 			if(plateau.getCellule(start).pingouin().employeur() == this.id()) { //test si le pingouin appartient bien a ce joueur
 				res = plateau.jouer(start,goal);
