@@ -108,6 +108,7 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.SELECTION_VALIDE),State.POSER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.SELECTION_INVALIDE),State.POSER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.MAUVAIS_ETAT),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.FIN_PARTIE),State.RESULTATS);
 		
 		// SELECTIONNER_PINGOUIN
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_VALIDE),State.SELECTIONNER_DESTINATION);
@@ -119,6 +120,7 @@ public class Moteur {
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_VALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.FIN_PARTIE),State.RESULTATS);
 	}
 	
 	/**
@@ -200,13 +202,13 @@ public class Moteur {
 				@Override
 			    public int compare(Joueur a, Joueur b) {
 			        if(a.scoreFish() == b.scoreFish()) {
-			        	return Math.max(a.scoreDestroyed(),b.scoreDestroyed());
+			        	return a.scoreDestroyed() - b.scoreDestroyed();
 			        } else {
-			        	return Math.max(a.scoreFish(),b.scoreFish());
+			        	return a.scoreFish() - b.scoreFish();
 			        }
 			    }
 			});
-			
+			Collections.reverse(joueurs);
 			ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 			for(Joueur j : this.joueurs) {
 				res.add(			new ArrayList<Integer>() {
@@ -364,6 +366,7 @@ public class Moteur {
 					return new Position(-1,-1);
 				} else {
 					if (joueurSuivant() == null) {
+						System.out.println("FIN PARTIE");
 						transition(Action.FIN_PARTIE);
 					} else {
 						transition(Action.SELECTION_VALIDE);
