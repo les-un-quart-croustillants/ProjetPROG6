@@ -1,5 +1,6 @@
 package Modele.Joueurs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import Modele.Plateau.Pingouin;
@@ -7,7 +8,9 @@ import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
 
-public abstract class Joueur {
+public abstract class Joueur implements Serializable{
+
+	private static final long serialVersionUID = 4239601391177019445L;
 	private int id;
 	private String nom;
 	private int nbPingouins;
@@ -17,7 +20,7 @@ public abstract class Joueur {
 	private ArrayList<Pingouin> pingouins;
 	private boolean elimine;
 	
-	public enum Difficulte{
+	public enum Difficulte implements Serializable{
 		PHYSIQUE,
 		FACILE,
 		MOYEN,
