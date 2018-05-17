@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
-import Modele.Joueurs.Joueur.Difficulte;
-import Modele.Joueurs.JoueurIA;
-import Modele.Joueurs.JoueurPhysique;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -17,7 +14,6 @@ import Utils.Position;
 public class Moteur {
 	//DATA
 	private ArrayList<Joueur> joueurs;
-	private ArrayList<Joueur> eliminees;
 	private Plateau plateau;
 	
 	//ETAT MOTEUR
@@ -92,21 +88,13 @@ public class Moteur {
 		}
 	}
 	
-	public Moteur(Plateau p, ArrayList<Couple<Integer,Difficulte>> joueurs) {
+	public Moteur(Plateau p, ArrayList<Joueur> joueurs) {
 		this.plateau = p;
 		this.njoueurs = joueurs.size();
-		this.joueurs = new ArrayList<Joueur>();
-		this.eliminees = new ArrayList<Joueur>();
+		this.joueurs = joueurs;
 		this.nbPingouin = 0;
 		currentState = State.INIT;
 		initTransitions();
-		for(Couple<Integer,Difficulte> j : joueurs) {
-			if(j.droit().equals(Difficulte.PHYSIQUE)) {
-				this.joueurs.add(new JoueurPhysique(j.gauche(),j.droit()));
-			} else {
-				this.joueurs.add(new JoueurIA(j.gauche(),j.droit()));
-			}
-		}
 	}
 	
 	/**
@@ -172,31 +160,67 @@ public class Moteur {
 	}
 
 	public Joueur joueurCourant() {
-		return this.joueurs.get(indexJoueurCourant);
+		if(!tousElimines())
+			return this.joueurs.get(indexJoueurCourant);
+		else
+			return null;
 	}
 
 	public int indexJoueurCourant() {
-		return this.indexJoueurCourant;
+		if(!tousElimines())
+			return this.indexJoueurCourant;
+		else
+			return -1;
 	}
+	
+	public boolean tousElimines(){
+		int i = 0;
+		for(Joueur j : this.joueurs) {
+			if(j.estElimine())
+				i++;
+		}
+		if(i==this.joueurs.size())
+			return true;
+		else
+			return false;
+	}
+	
 	
 	/**
 	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
 	 * représente un rang dans le podium (le gagnant est a l'indice 0), dans 
 	 * chaque ligne il y a: l'ID du joueur, son score de poissons et son score de cases.
 	 * @return
+	 * @throws Exception 
 	 */
-	public ArrayList<ArrayList<Integer>> podium() {
-		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
-		for(Joueur j : this.eliminees) {
-			res.add(			new ArrayList<Integer>() {
-			private static final long serialVersionUID = 1L;
-			{
-			    add(j.id());
-			    add(j.scoreFish());
-			    add(j.scoreDestroyed());
-			}});
+	public ArrayList<ArrayList<Integer>> podium() throws Exception {
+		if(tousElimines()) {
+			//Tri les joueurs elimines en vue du calcul du podium
+			Collections.sort(this.joueurs, new Comparator<Joueur>() {
+				@Override
+			    public int compare(Joueur a, Joueur b) {
+			        if(a.scoreFish() == b.scoreFish()) {
+			        	return Math.max(a.scoreDestroyed(),b.scoreDestroyed());
+			        } else {
+			        	return Math.max(a.scoreFish(),b.scoreFish());
+			        }
+			    }
+			});
+			
+			ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+			for(Joueur j : this.joueurs) {
+				res.add(			new ArrayList<Integer>() {
+				private static final long serialVersionUID = 1L;
+				{
+				    add(j.id());
+				    add(j.scoreFish());
+				    add(j.scoreDestroyed());
+				}});
+			}
+			return res;
+		} else {
+			throw new Exception("");
 		}
-		return res;
 	}
 
 	/**
@@ -205,36 +229,20 @@ public class Moteur {
 	 * @return
 	 */
 	public Joueur joueurSuivant() {
-		this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-		if(this.joueurCourant().pingouins().size() == 0) {
-			return joueurCourant();
-		}
+		if(tousElimines())
+			return null;
+		
+		do {
+			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
+		} while (this.joueurCourant().estElimine());
+		
 		for(Pingouin p: this.joueurCourant().pingouins()) {
 			if(!this.plateau.estIsolee(p.position())) {
 				return joueurCourant();
 			}
 		}
-		Joueur j = this.joueurCourant();
-		this.eliminees.add(j);
-		//Tri les joueurs elimines en vue du calcul du podium
-		Collections.sort(this.eliminees, new Comparator<Joueur>() {
-			@Override
-		    public int compare(Joueur a, Joueur b) {
-		        if(a.scoreFish() == b.scoreFish()) {
-		        	return Math.max(a.scoreDestroyed(),b.scoreDestroyed());
-		        } else {
-		        	return Math.max(a.scoreFish(),b.scoreFish());
-		        }
-		    }
-		});
-		this.joueurs.remove(j);
-		if(joueurs.size()==this.indexJoueurCourant)
-			this.indexJoueurCourant--;
-		if(this.joueurs.size() > 0) {
-			return joueurCourant();
-		} else {
-			return null;
-		}
+		this.joueurCourant().eliminer();
+		return joueurSuivant();
 	}
 	
 	/**

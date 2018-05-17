@@ -15,6 +15,7 @@ public abstract class Joueur {
 	private int scoreDestroyed;
 	Difficulte difficulte;
 	private ArrayList<Pingouin> pingouins;
+	private boolean elimine;
 	
 	public enum Difficulte{
 		PHYSIQUE,
@@ -44,6 +45,7 @@ public abstract class Joueur {
 		this.nom = nom;
 		this.scoreFish = 0;
 		this.scoreDestroyed = 0;
+		this.elimine = false;
 		this.pingouins = new ArrayList<Pingouin>();
 	}
 
@@ -117,6 +119,14 @@ public abstract class Joueur {
 	
 	public void addPingouins(Pingouin p) {
 		this.pingouins.add(p);
+	}
+	
+	public boolean estElimine() {
+		return this.elimine;
+	}
+	
+	public void eliminer() {
+		this.elimine = true;
 	}
 	
 	/*
