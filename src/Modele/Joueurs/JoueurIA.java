@@ -11,19 +11,19 @@ import Utils.Position;
 
 public class JoueurIA extends Joueur {
 	
-	public JoueurIA(int id,Difficulte d){
-		super(id,d);
+	public JoueurIA(int id,String n,Difficulte d){
+		super(id,n,d);
 	}
 
 	@Override
 	public int delay() {
 		switch(this.difficulte) {
 			case FACILE:
-				return 0;
+				return 1000;
 			case MOYEN:
 				return 500;
 			case DIFFICILE:
-				return 1000;
+				return 0;
 			default:
 				return 0;
 		}
