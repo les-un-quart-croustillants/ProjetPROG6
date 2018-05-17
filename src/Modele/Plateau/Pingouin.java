@@ -2,7 +2,9 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Pingouin {
+import java.io.Serializable;
+
+public class Pingouin implements Serializable {
 	private int employeur;
 	private int nbPoissonManges;
 	private Position position;

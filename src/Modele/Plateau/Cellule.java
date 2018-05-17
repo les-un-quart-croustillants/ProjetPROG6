@@ -2,7 +2,9 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Cellule {
+import java.io.Serializable;
+
+public class Cellule implements Serializable {
 	private Position position;
 	private boolean destroyed;
 	private int fish;

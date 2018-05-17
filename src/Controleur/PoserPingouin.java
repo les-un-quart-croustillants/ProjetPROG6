@@ -32,7 +32,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
 					int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
-					if (GamePane.moteur().poserPingouin(c.posPlateau)) {
+					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
 						GamePane.getPlateauCadre().gameObjects.add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
 										pc.plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
@@ -42,7 +42,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 			} else if (GamePane.moteur().currentState() == State.SELECTIONNER_PINGOUIN) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
-					if (GamePane.moteur().selectionnerPingouin(c.posPlateau)) {
+					if (!GamePane.moteur().selectionnerPingouin(c.posPlateau).equals(new Position(-1, -1))) {
 						for (Position pos : pc.plateau.accessible(c.posPlateau)) {
 							if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 								pc.plateauGraphique.cases[pos.i()][pos.j()].select();
@@ -54,7 +54,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				Position lastSelection = GamePane.moteur().pingouinSelection().position();
 				LinkedList<Position> lastaccessibles = pc.plateau.accessible(lastSelection);
-				if (c != null && GamePane.moteur().selectionnerDestination(c.posPlateau)) {
+				if (c != null && !GamePane.moteur().selectionnerDestination(c.posPlateau).equals(new Position(-1,-1))) {
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(c.posPlateau);
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].detruire();
 					for (Position pos : lastaccessibles) {
