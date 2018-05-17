@@ -3,7 +3,7 @@ package Modele.Joueurs;
 
 public class JoueurPhysique extends Joueur {
 	
-	public JoueurPhysique(int id, Difficulte d){
-		super(id,d);
+	public JoueurPhysique(int id,String n, Difficulte d){
+		super(id,n,d);
 	}
 }

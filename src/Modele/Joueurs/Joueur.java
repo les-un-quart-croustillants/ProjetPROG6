@@ -9,6 +9,7 @@ import Utils.Position;
 
 public abstract class Joueur {
 	private int id;
+	private String nom;
 	private int nbPingouins;
 	private int scoreFish;
 	private int scoreDestroyed;
@@ -38,8 +39,9 @@ public abstract class Joueur {
 	}
 	
 	
-	public Joueur(int id,Difficulte d){
+	public Joueur(int id,String nom,Difficulte d){
 		this.id = id;
+		this.nom = nom;
 		this.scoreFish = 0;
 		this.scoreDestroyed = 0;
 		this.pingouins = new ArrayList<Pingouin>();
@@ -59,6 +61,10 @@ public abstract class Joueur {
 	
 	public int nbPingouin() {
 		return this.nbPingouins;
+	}
+	
+	public String nom() {
+		return this.nom;
 	}
 	
 	public void setId(int id) {
@@ -99,6 +105,10 @@ public abstract class Joueur {
 	
 	public void subNbPingouins(int l) {
 		this.nbPingouins -= l;
+	}
+	
+	public void setNom(String n) {
+		this.nom = n;
 	}
 
 	public ArrayList<Pingouin> pingouins(){
