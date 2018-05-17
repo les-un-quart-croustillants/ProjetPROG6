@@ -8,6 +8,8 @@ import Modele.Plateau.Plateau;
 import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Utils.Couple;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UtilsIA {
@@ -160,7 +162,7 @@ public class UtilsIA {
 	public static void calculFils(Noeud n,int id,Plateau plateau) {
 		Plateau plat = plateau.clone();
 		
-		LinkedList<Couple<Position,Position>> list = n.listcoup();
+		LinkedList<Couple<Position,Position>> list = (LinkedList<Couple<Position,Position>>)n.listcoup().clone();
 		Plateau p = plateaucoup(  list,  plat );
 		Cellule [][] tab = p.getTab();
 		int size = p.getSize();
@@ -369,7 +371,7 @@ public class UtilsIA {
 	 * @return
 	 */
 	public static int evaluerA(Noeud n,Plateau p, int id) {
-		return HeuristiqueB.calcul(p, n.listcoup(), id);
+		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id);
 	}
 	
 	/**
@@ -379,7 +381,7 @@ public class UtilsIA {
 	 * @return
 	 */
 	public static int evaluerB(Noeud n,Plateau p, int id) {
-		return HeuristiqueA.calcul(p, n.listcoup(), id);
+		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id);
 	}
 	
 	/**
@@ -392,10 +394,20 @@ public class UtilsIA {
 	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id) {
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
+
 		if (n.estFeuille() || profondeur == 0) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
 			heuristique = evaluerA(n,plateau,id); 
+			
+			//System.out.println("pere :");
+			//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)n.listcoup().clone(),plateau.clone()));
+			//System.out.println("---------------------------------------");
+			//System.out.println("fils :");
+			//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)n.pere().listcoup().clone(),plateau.clone()));
+			//System.out.println("heuristique fils : "+heuristique);
+
+			
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			return heuristique;
@@ -467,11 +479,11 @@ public class UtilsIA {
 		int profondeur = 3;
 		if(minimaxA(a,memo,profondeur,plateauclone,id) > 0) {
 			LinkedList<Noeud> cp;
-			System.out.println("taille fils racine : "+a.fils().size());
-			System.out.println("heuristique de la racine : "+a.heuristique());
-			for(int i = 0;i < a.fils().size();i++)
+			for(int i = 0;i < a.fils().size();i++) {
 				System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
-			
+				//System.out.println("tableau du fils"+ i+" : ");
+				//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)a.fils().get(i).listcoup().clone(),plateau.clone()));
+			}	
 			if(( a.filsTaggue().size()) != 0) {
 				cp = a.clone().filsTaggue(); //recuperations des solutions
 			}
@@ -480,12 +492,16 @@ public class UtilsIA {
 				return jouerCoupFacile(plateau,id);
 			}
 			System.out.println("taille fils racine apres : "+cp.size());
-
-			int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
-			System.out.println("et la ? "+ cp.get(rand).listcoup());
-			System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
-
-			return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
+			if(cp.size() != 0) {
+				int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
+				//System.out.println("et la ? "+ cp.get(rand).listcoup());
+				System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
+	
+				return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
+			}else {
+				System.out.println("coup facile3 :(");
+				return jouerCoupFacile(plateau,id);
+			}	
 		} else {
 			System.out.println("coup facile2 :(");
 			return jouerCoupFacile(plateau,id);
@@ -493,6 +509,61 @@ public class UtilsIA {
 
 	}
 	
+	///////////////////////////////////////////:
+	static char[] sym_joueurs = { 'M', 'A', 'B', 'C' };
+	static void afficher_etat(Plateau plat){
+		ArrayList<ArrayList<Pingouin> > pingouins = new ArrayList<ArrayList<Pingouin> >();
+		pingouins.add(new ArrayList<Pingouin>());
+		pingouins.add(new ArrayList<Pingouin>());
+		pingouins.add(new ArrayList<Pingouin>());
+		pingouins.add(new ArrayList<Pingouin>());
+		for(int i=0;i<plat.getSize();i++){
+			for(int j=0;j<plat.getSize();j++){
+				Position p = new Position(i, j);
+				if(!plat.getCellule(p).isDestroyed() && plat.getCellule(p).aPingouin()){
+					pingouins.get(plat.getCellule(p).pingouin().employeur()).add(plat.getCellule(p).pingouin());
+				}
+				if(plat.getCellule(p).isDestroyed()){
+					if(j==0 && i%2==0)
+						System.out.print("	");
+					else
+						System.out.print("	");
+				}
+				else if(i%2==1){
+					if(plat.getCellule(p).aPingouin())
+						System.out.print(sym_joueurs[plat.getCellule(p).pingouin().employeur()]+"   ");
+					else
+						System.out.print(plat.getCellule(p).getFish()+"   ");
+				}
+				else{
+					if(j==0){
+						if(plat.getCellule(p).aPingouin())
+							System.out.print("  "+sym_joueurs[plat.getCellule(p).pingouin().employeur()]);
+						else
+							System.out.print("  "+plat.getCellule(p).getFish());
+					}
+					else{
+						if(plat.getCellule(p).aPingouin())
+							System.out.print("   "+sym_joueurs[plat.getCellule(p).pingouin().employeur()]);
+						else
+							System.out.print("   "+plat.getCellule(p).getFish());
+					}
+				}
+			}
+			System.out.println();
+		}
+		
+		for(int i=0;i<4;i++){
+			if(pingouins.get(i).size()>0){
+				System.out.print("["+sym_joueurs[i]+"] Pingouins: ");
+				for (Pingouin p : pingouins.get(i)) {
+					System.out.print(p.position()+" ");
+				}
+				System.out.println();
+			}
+		}
+		
+	}
 	
 	
 	

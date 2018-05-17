@@ -14,6 +14,7 @@ public class HeuristiqueB {
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
 			if(composantesCalcul.size() > composantesInit.size()) {
+
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
 						if(composantesCalcul.get(i) == composantesInit.get(j))
@@ -48,7 +49,7 @@ public class HeuristiqueB {
 						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis >= 1) {
 							heuristique = heuristique +10;
 						}
-						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
+						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
 							heuristique = heuristique -10050;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
@@ -57,10 +58,10 @@ public class HeuristiqueB {
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
 							heuristique = heuristique +10;
 						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
+						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
 							heuristique = heuristique -1000;
 						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
+						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
 							heuristique = heuristique -10;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis > 0) {
@@ -68,7 +69,6 @@ public class HeuristiqueB {
 						}
 					}
 				}	
-				System.out.println("PAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSSSSSEEEEEEEEEEEEE222222222222222222");
 
 			}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {

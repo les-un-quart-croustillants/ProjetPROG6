@@ -8,18 +8,21 @@ import Utils.Couple;
 public class HeuristiqueA {
 		public static int calcul(Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id) {
 			int heuristique = 50;
+
 			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(pInitial);
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
 
+			
 			if(composantesCalcul.size() > composantesInit.size()) {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
-						if(composantesCalcul.get(i) == composantesInit.get(j))
+						if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
 							composantesCalcul.remove(i);
 					}
 				}
+				
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					if(composantesCalcul.get(i).size() != 1) {
 						int nbPingouinEnnemis = 0;
@@ -48,7 +51,7 @@ public class HeuristiqueA {
 						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis >= 1) {
 							heuristique = heuristique -10;
 						}
-						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
+						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
 							heuristique = heuristique +10050;
 						}
 						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
@@ -68,7 +71,6 @@ public class HeuristiqueA {
 						}
 					}
 				}	
-				System.out.println("PAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSSSSSEEEEEEEEEEEEE");
 			}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {
