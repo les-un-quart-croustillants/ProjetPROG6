@@ -6,7 +6,6 @@ import java.util.Scanner;
 import Modele.Joueurs.Joueur;
 import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Joueurs.JoueurIA;
-import Modele.Joueurs.JoueurPhysique;
 import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Pingouin;
@@ -21,7 +20,7 @@ public class JeuConsole {
 		Position error = new Position(-1,-1);
 		Plateau p = new Plateau(8);
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
-		joueurs.add(new JoueurPhysique(1,"Henry"));
+		joueurs.add(new JoueurIA(1,"Henry",Difficulte.FACILE));
 		joueurs.add(new JoueurIA(2,"Chris. P. Beacon",Difficulte.FACILE));
 		joueurs.add(new JoueurIA(3,"Johny cash",Difficulte.FACILE));
 		m = new Moteur(p, joueurs);
@@ -30,7 +29,9 @@ public class JeuConsole {
 		boolean fin = false;
 		while (!fin) {
 			afficher_etat();
-			System.out.println("[Joueur "+m.joueurCourant().nom()+"]");
+			if(m.currentState()!=State.RESULTATS) {
+				System.out.println("[Joueur "+m.joueurCourant().nom()+"]");
+			}
 			if(m.currentState()==State.POSER_PINGOUIN) {
 				System.out.println("Poser un pingouin (ecrire 2 entier):");
 				int a, b;
@@ -76,6 +77,7 @@ public class JeuConsole {
 					b = sc.nextInt();
 				}
 				if (!m.selectionnerDestination(new Position(a, b)).equals(error)) {
+					System.out.println(State.toString(m.currentState()));
 					System.out.println("Pingouin deplace en ("+a+","+b+")");
 				}
 				else {
@@ -88,7 +90,7 @@ public class JeuConsole {
 				try {
 					for(ArrayList<Integer> j : m.podium()) {
 						i++;
-						System.out.println("|"+i+"    |"+j.get(0)+"     |"+j.get(1)+"       |"+j.get(2)+"              |");
+						System.out.println("|"+i+"    |"+j.get(0)+"      |"+j.get(1)+"       |"+j.get(2)+"              |");
 					}
 				} catch (Exception e) {
 					System.out.println("La partie n'est pas fini les resultats ne sont pas disponibles");
