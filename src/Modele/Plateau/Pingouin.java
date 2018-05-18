@@ -11,9 +11,7 @@ public class Pingouin implements Serializable {
 
 
 	public Pingouin(int e){
-		this.employeur = e;
-		this.nbPoissonManges = 0;
-		this.position = new Position(0,0);
+		this(e, new Position(0,0));
 	}
 
 	public Pingouin(int e, Position p){
