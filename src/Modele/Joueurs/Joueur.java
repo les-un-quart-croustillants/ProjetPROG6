@@ -43,9 +43,10 @@ public abstract class Joueur implements Serializable{
 	}
 	
 	
-	public Joueur(int id,String nom,Difficulte d){
+	public Joueur(int id,int nbPingouins,String nom,Difficulte d){
 		this.id = id;
 		this.nom = nom;
+		this.nbPingouins = nbPingouins;
 		this.scoreFish = 0;
 		this.scoreDestroyed = 0;
 		this.elimine = false;
@@ -166,14 +167,16 @@ public abstract class Joueur implements Serializable{
 	 */
 	public boolean posePingouin(Plateau plateau,Position position) {
 		boolean res;
-		Pingouin p = new Pingouin(this.id());
-		res = plateau.poserPingouin(position, p);
-		if(res) {
-			this.addPingouins(p);
-			this.nbPingouins++;
-			this.addScoreFish(1);
+		if(this.nbPingouins > this.pingouins.size()) {
+			Pingouin p = new Pingouin(this.id());
+			if((res = plateau.poserPingouin(position, p))) {
+				this.addPingouins(p);
+				this.addScoreFish(1);
+			}
+			return res;	
+		} else {
+			return false;
 		}
-		return res;
 	}
 
 	/**
