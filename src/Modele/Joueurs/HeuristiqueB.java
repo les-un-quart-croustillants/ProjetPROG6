@@ -13,9 +13,48 @@ public class HeuristiqueB {
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(pInitial);
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
+			//ICI ON MAXIMISE CE QU'ON VEUT PAS
+			
 			if(composantesCalcul.size() > composantesInit.size()) {
-
+				
 				for(int i = 0; i < composantesCalcul.size();i++) {
+					for(int j = 0; j < composantesInit.size();j++) {
+						if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
+							composantesCalcul.remove(i);
+					}
+				}
+				
+				
+				for(int i = 0; i < composantesCalcul.size();i++) {
+					if(composantesCalcul.get(i).size() != 1) {
+						int nbPingouinEnnemis = 0;
+						int nbPingouinAllies = 0;
+						int nbPoissonsComposante = 0;
+						for(int j = 0; j < composantesCalcul.get(i).size();j++) {
+							if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
+								nbPingouinAllies++;
+								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
+									heuristique = heuristique - 3;
+								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
+									heuristique = heuristique - 2;
+							}
+							else if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() != id) {	
+								nbPingouinEnnemis++;
+								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
+									heuristique = heuristique + 3;
+								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
+									heuristique = heuristique + 2;
+							}	
+							nbPoissonsComposante = nbPoissonsComposante + pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish();	
+						}						
+						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
+							System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa222222222222222222222");
+
+							heuristique = heuristique -1000;
+						}
+					}
+				}
+			/*	for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
 						if(composantesCalcul.get(i) == composantesInit.get(j))
 							composantesCalcul.remove(i);
@@ -87,7 +126,7 @@ public class HeuristiqueB {
 						}	
 						
 					}
-				}
+				}*/
 			}
 		return heuristique;
 	}
