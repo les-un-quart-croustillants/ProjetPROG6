@@ -446,9 +446,16 @@ public class PlateauTest {
 	public void serial() {
 		String filename = "tests/rsc/test_serial.bin";
 
+		Plateau sujet = new Plateau(10);
+		Position pos1 = new Position(0,0),
+				pos2 = new Position(0,1);
+		sujet.getCellule(pos1).setPenguin(new Pingouin(0, pos1));
+		sujet.jouer(pos1, pos2);
+		sujet.jouer(pos2, new Position(1,1));
+		sujet.undo();
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
-			os.writeObject(p);
+			os.writeObject(sujet);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
@@ -459,8 +466,8 @@ public class PlateauTest {
 
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
-			Plateau p_lecture = (Plateau) is.readObject();
-			Assert.assertEquals(p, p_lecture);
+			Plateau sujet_lecture = (Plateau) is.readObject();
+			Assert.assertEquals(sujet, sujet_lecture);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
