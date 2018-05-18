@@ -35,7 +35,7 @@ public class JoueurIA extends Joueur {
 	
 	@Override
 	public Couple<Position,Position> prochainCoup(Plateau plateau) {
-		return UtilsIA.jouerCoupFacile(plateau,super.id());
+		return UtilsIA.jouerCoupDifficile(plateau,super.id());
 	}
 	
 	@Override

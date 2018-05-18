@@ -44,9 +44,7 @@ public class GamePane extends Pane{
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
 		joueurs.add(new JoueurPhysique(0,"Joueur 1"));
 		//joueurs.add(new JoueurIA(0,"Loukavocat",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(1,"Loukavocat",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(2,"Loukanape",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(3,"Loukasscouilles",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(1,"Loukasscouilles",Difficulte.FACILE));
 		this.moteur = new Moteur(new Plateau(8),joueurs);
 		init();
 	}

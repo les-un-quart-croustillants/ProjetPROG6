@@ -13,7 +13,7 @@ public class HeuristiqueA {
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(pInitial);
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
-			//IC ON MAXIMISE CE QU'ON VEUT
+			//ICI ON MAXIMISE CE QU'ON VEUT
 			
 			if(composantesCalcul.size() > composantesInit.size()) {
 				
@@ -65,18 +65,31 @@ public class HeuristiqueA {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-					//if(nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/12 && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
-						//heuristique = heuristique -5;
-					//}
-					//TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
-					//if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
-					//	heuristique = heuristique +1000;
-					//}
-					// TODO : les heuristiques suivantes
-					
-					
-					
-					
+					if(nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/12 && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique -5;
+					}
+					// TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
+					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+						heuristique = heuristique -10;
+					}
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) >= 1) {
+						heuristique = heuristique +1000;
+					}
+					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique -5;
+					}
+					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) > 0 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique -1000;
+					}
+					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+						heuristique = heuristique +1000;
+					}
+					if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/10) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
+						heuristique = heuristique +1000;
+					}
+					if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis > 0) {
+						heuristique = heuristique +3;
+					}
 					
 				}
 				
