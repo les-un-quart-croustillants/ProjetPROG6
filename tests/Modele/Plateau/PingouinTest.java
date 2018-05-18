@@ -1,7 +1,6 @@
 package Modele.Plateau;
 
 import Utils.Position;
-import com.sun.xml.internal.ws.developer.Serialization;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +9,7 @@ import java.io.*;
 public class PingouinTest {
 	@Test
 	public void serial() {
-			String filename = "test_serial.bin";
+			String filename = "tests/rsc/test_serial.bin";
 			Pingouin p = new Pingouin(0, new Position(0,0));
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));

@@ -444,7 +444,7 @@ public class PlateauTest {
 
 	@Test
 	public void serial() {
-		String filename = "test_serial.bin";
+		String filename = "tests/rsc/test_serial.bin";
 
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));

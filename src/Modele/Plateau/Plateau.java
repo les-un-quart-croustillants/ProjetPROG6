@@ -370,8 +370,8 @@ public class Plateau implements Serializable {
 
 	/**
 	 * undo : Annule le coup précédent si possible
-	 * @return : la valeur du coup annulé,
-	 * -1 si aucun coup annulé
+	 * @return : un couple composé de la valeur du coup annulé, -1 si aucun coup annulé
+	 * et de l'id du joueur, -1 si aucun coup annulé
 	 */
 	public Couple<Integer,Integer> undo() {
 		if(history.isEmpty())

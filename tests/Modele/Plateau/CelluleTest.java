@@ -1,10 +1,8 @@
 package Modele.Plateau;
 
 import Utils.Position;
-import javafx.scene.control.Cell;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.theories.internal.SpecificDataPointsSupplier;
 
 import java.io.*;
 import java.util.Random;
@@ -127,7 +125,7 @@ public class CelluleTest {
 
 
 	public void serial_test(Cellule c) {
-		String filename = "test_serial.bin";
+		String filename = "tests/rsc/test_serial.bin";
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
 			os.writeObject(c);
@@ -153,7 +151,6 @@ public class CelluleTest {
 	}
 	@Test
 	public void serial() {
-		String filename = "test_serial.bin";
 		Cellule c = new Cellule(new Position(0,0), false, 2, null);
 		serial_test(c);
 		c =  new Cellule(new Position(0,0), false, 2, new Pingouin(0, new Position(0,0)));

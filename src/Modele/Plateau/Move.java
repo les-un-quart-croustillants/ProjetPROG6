@@ -2,7 +2,9 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Move {
+import java.io.Serializable;
+
+public class Move implements Serializable {
 	private Position to;
 	private Position from;
 	private int fishAte;
