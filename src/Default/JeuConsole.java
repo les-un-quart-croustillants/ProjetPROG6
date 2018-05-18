@@ -20,9 +20,9 @@ public class JeuConsole {
 		Position error = new Position(-1,-1);
 		Plateau p = new Plateau(8);
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
-		joueurs.add(new JoueurIA(1,"Henry",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(2,"Chris. P. Beacon",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(3,"Johny cash",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(1,3,"Henry",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(2,3,"Chris. P. Beacon",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(3,3,"Johny cash",Difficulte.FACILE));
 		m = new Moteur(p, joueurs);
 		m.setCurrentState(State.POSER_PINGOUIN);
 		sc = new Scanner(System.in);
