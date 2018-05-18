@@ -337,7 +337,7 @@ public class Moteur implements Serializable {
 				this.nbPingouin++;
 				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
-				if(this.njoueurs == 3 && this.nbPingouin==9 || this.njoueurs != 3 && this.nbPingouin==8 ) {
+				if(pingouinsPoses()) {
 					transition(Action.PINGOUINPOSES);
 				} else {
 					transition(Action.SELECTION_VALIDE);
