@@ -1,5 +1,6 @@
 package Modele.Plateau;
 
+import Utils.Couple;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
@@ -360,6 +361,7 @@ public class PlateauTest {
 
 	@Test
 	public void undo() {
+		Couple<Integer, Integer> res;
 		Position from= new Position(0,0),
 				to = new Position(0,1);
 		Pingouin pingouin = new Pingouin(0, from);
@@ -369,7 +371,7 @@ public class PlateauTest {
 		Assert.assertNotEquals(p, sujet);
 		Assert.assertFalse(sujet.getHistory().isEmpty());
 		Assert.assertTrue(sujet.getUndoList().isEmpty());
-		sujet.undo();
+		res = sujet.undo();
 		Assert.assertFalse(sujet.getUndoList().isEmpty());
 		Assert.assertTrue(sujet.getHistory().isEmpty());
 		Assert.assertEquals(1, sujet.getUndoList().size());
@@ -378,6 +380,8 @@ public class PlateauTest {
 		Assert.assertFalse(p.getCellule(to).aPingouin());
 		Assert.assertTrue(p.getCellule(from).aPingouin());
 		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
+		Assert.assertEquals((Integer) p.getCellule(to).getFish(), res.gauche());
+		Assert.assertEquals((Integer) pingouin.employeur(), res.droit());
 	}
 
 	@Test

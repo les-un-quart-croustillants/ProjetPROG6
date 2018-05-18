@@ -3,6 +3,7 @@ package Modele.Plateau;
 import Modele.Plateau.Exception.BewareOfOrcasException;
 import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
+import Utils.Couple;
 import Utils.Position;
 
 import java.io.BufferedReader;
@@ -372,9 +373,9 @@ public class Plateau implements Serializable {
 	 * @return : la valeur du coup annulé,
 	 * -1 si aucun coup annulé
 	 */
-	public int undo() {
+	public Couple<Integer,Integer> undo() {
 		if(history.isEmpty())
-			return -1;
+			return new Couple<>(-1,-1);
 		Move lastMove = history.removeLast();
 		Position from = lastMove.getFrom(),
 				to = lastMove.getTo();
@@ -390,7 +391,7 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 
-		return fishAte;
+		return new Couple(fishAte,pingouin.employeur());
 	}
 
 	/**
