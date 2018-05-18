@@ -73,7 +73,11 @@ public class Moteur implements Serializable {
 		SELECTION_VALIDE,	// La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
 		PINGOUINPOSES,		// La phase de pose de pingouin est terminee
-		FIN_PARTIE;			// Tous les pingouins sont bloquees
+		FIN_PARTIE,			// Tous les pingouins sont bloquees
+		UNDO,				// Undo demande par un joueur
+		REDO,				// Redo demande par un joueur
+		UNDOPHASEMODIFIER,	// Undo qui change la phase de jeu
+		REDOPHASEMODIFIER;	// Redo qui change la phase de jeu
 		
 		static public String toString(Action s) {
 			switch(s) {
@@ -112,18 +116,31 @@ public class Moteur implements Serializable {
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.SELECTION_INVALIDE),State.POSER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.MAUVAIS_ETAT),State.POSER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.FIN_PARTIE),State.RESULTATS);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.UNDO),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.REDO),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.UNDOPHASEMODIFIER),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.REDOPHASEMODIFIER),State.SELECTIONNER_PINGOUIN);
 		
 		// SELECTIONNER_PINGOUIN
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_VALIDE),State.SELECTIONNER_DESTINATION);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.MAUVAIS_ETAT),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.FIN_PARTIE),State.RESULTATS);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.UNDO),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.REDO),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_PINGOUIN,Action.UNDOPHASEMODIFIER),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.REDOPHASEMODIFIER),State.SELECTIONNER_PINGOUIN);
 		
 		// SELECTIONNER_DESTINATION
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_VALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.SELECTION_INVALIDE),State.SELECTIONNER_PINGOUIN);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.MAUVAIS_ETAT),State.SELECTIONNER_DESTINATION);
 		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.FIN_PARTIE),State.RESULTATS);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.UNDO),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.REDO),State.SELECTIONNER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.SELECTIONNER_DESTINATION,Action.UNDOPHASEMODIFIER),State.POSER_PINGOUIN);
+		this.transition.put(new Couple<State,Action>(State.POSER_PINGOUIN,Action.REDOPHASEMODIFIER),State.SELECTIONNER_PINGOUIN);
+
 	}
 	
 	/**
@@ -188,6 +205,24 @@ public class Moteur implements Serializable {
 			return true;
 		else
 			return false;
+	}
+	
+	private boolean pingouinsPoses() {
+		for(Joueur j: this.joueurs) {
+			if(j.nbPingouin() != j.pingouins().size()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private int indexJoueur(int id) {
+		for(int i=0;i<this.joueurs.size();i++) {
+			if(this.joueurs.get(i).id() == id) {
+				return i;
+			}	
+		}
+		return -1;
 	}
 	
 	
@@ -385,4 +420,54 @@ public class Moteur implements Serializable {
 			return new Position(-1,-1);
 		}
 	}
+	
+	public Joueur undo() {
+		Couple<Integer,Integer> res;
+		
+		do { //On remonte dans les joueurs jusqu'a en trouver un humain
+			res = plateau.undo();
+			if(res.gauche() > 0) {
+				if((indexJoueurCourant = indexJoueur(res.droit())) > 0) {
+					joueurCourant().undo(res.gauche());
+				} else {
+					throw new Exception("Le joueur renvoyé par undo est introuvable");
+				}
+			} else {
+				return null;
+			}
+		}while(joueurCourant().estIA());
+		
+		if(pingouinsPoses()) {
+			transition(Action.UNDO);
+		} else {
+			transition(Action.UNDOPHASEMODIFIER);
+		}
+		
+		return joueurCourant();
+	}
+	
+	public Joueur redo() {
+		int fishAte;
+		
+		do {
+			if((fishAte = plateau.redo()) > 0) {
+				if(currentState == State.POSER_PINGOUIN) {
+					joueurSuivant().redo(fishAte,0);	
+				} else {
+					joueurSuivant().redo(fishAte,1);
+				}
+			} else {
+				return null;
+			}
+		} while(this.joueurCourant().estIA());
+		
+		if(!pingouinsPoses()) {
+			transition(Action.REDO);
+		} else {
+			transition(Action.REDOPHASEMODIFIER);
+		}
+		
+		return joueurCourant();
+	}
+	
 }
