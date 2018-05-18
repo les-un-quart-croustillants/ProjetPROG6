@@ -78,39 +78,63 @@ public abstract class Joueur implements Serializable{
 	}
 
 	public void setScoreFish(int s) {
-		this.scoreFish = s;
+		if(s < 0) {
+			this.scoreFish = 0;
+		} else {
+			this.scoreFish = s;	
+		}
 	}
 	
 	public void addScoreFish(int a) {
-		this.scoreFish += a;
+		if((this.scoreFish += a) < 0) {
+			this.scoreFish = 0;
+		}
 	}
 	
-	public void subScoreFish(int l) {
-		this.scoreFish -= l;
+	public void subScoreFish(int s) {
+		if((this.scoreFish -= s) < 0) {
+			this.scoreFish = 0;
+		}
 	}
 	
 	public void setScoreDestroyed(int s) {
-		this.scoreDestroyed = s;
+		if(s < 0) {
+			this.scoreDestroyed = 0;
+		} else {
+			this.scoreDestroyed = s;
+		}
 	}
 	
 	public void addScoreDestroyed(int a) {
-		this.scoreDestroyed += a;
+		if((this.scoreDestroyed += a) < 0) {
+			this.scoreDestroyed = 0;
+		}
 	}
 	
-	public void subScoreDestroyed(int l) {
-		this.scoreDestroyed -= l;
+	public void subScoreDestroyed(int s) {
+		if((this.scoreDestroyed -= s) < 0) {
+			this.scoreDestroyed = 0;
+		}
 	}
 	
 	public void setNbPingouins(int s) {
-		this.nbPingouins = s;
+		if(s < 0 ) {
+			this.nbPingouins = 0;
+		} else {
+			this.nbPingouins = s;
+		}
 	}
 	
 	public void addNbPingouins(int a) {
-		this.nbPingouins += a;
+		if((this.nbPingouins += a) < 0) {
+			this.nbPingouins = 0;
+		}
 	}
 	
-	public void subNbPingouins(int l) {
-		this.nbPingouins -= l;
+	public void subNbPingouins(int s) {
+		if((this.nbPingouins -= s) < 0) {
+			this.nbPingouins = 0;
+		}
 	}
 	
 	public void setNom(String n) {
@@ -222,6 +246,17 @@ public abstract class Joueur implements Serializable{
 	
 	public boolean estIA() {
 		return false;
+	}
+	
+	public void undo(int fishUndone) {
+		this.subScoreFish(fishUndone);
+		this.subScoreDestroyed(1);
+		this.ressusciter();
+	}
+	
+	public void redo(int fishRedone,int destroyedRedone) {
+		this.addScoreFish(fishRedone);
+		this.addScoreDestroyed(destroyedRedone);
 	}
 	
 	@Override
