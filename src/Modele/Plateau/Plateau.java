@@ -27,7 +27,7 @@ public class Plateau implements Serializable {
 		this(3, 1);
 	}
 	public Plateau(int size) {
-		this(size, (size*size < 8)?size:8);
+		this(size, 8);
 	}
 
 	public Plateau(int size, int nb_pingouin) {
@@ -35,6 +35,7 @@ public class Plateau implements Serializable {
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
+
 		initTab(nb_pingouin);
 	}
 
@@ -54,9 +55,13 @@ public class Plateau implements Serializable {
 	 * initTab : initialise le tableau selon une configuration attendue.
 	 */
 	private void initTab(int borne) {
-		int tmp, nb_1 = 0;
+		int tmp,
+			nb_cases = (size * size) - (size + 1 / 2),
+			nb_1 = 0;
 		Position p;
 		Random r = new Random();
+		if (borne > nb_cases )
+			borne = nb_cases;
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				if(i % 2 == 0 && j == this.size-1) { // ligne courte
