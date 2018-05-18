@@ -26,7 +26,7 @@ public class Plateau implements Serializable {
 		this(3, 1);
 	}
 	public Plateau(int size) {
-		this(size, (size < 8)?size:8);
+		this(size, (size*size < 8)?size:8);
 	}
 
 	public Plateau(int size, int nb_pingouin) {
@@ -471,7 +471,7 @@ public class Plateau implements Serializable {
 		return res;
 	}
 
-	public String tabToString() {
+	private String tabToString() {
 		String res = "[ ";
 		for (Cellule[] line: this.tab) {
 			res += Arrays.toString(line) + " ";
@@ -484,7 +484,7 @@ public class Plateau implements Serializable {
 		return new Plateau(this.tab, this.history, this.undoList);
 	}
 
-	public boolean tabEquals(Cellule[][] tab) {
+	boolean tabEquals(Cellule[][] tab) {
 		boolean b = tab.length == this.size;
 		if (b)
 			for (int i = 0; i < this.size; i++) {
