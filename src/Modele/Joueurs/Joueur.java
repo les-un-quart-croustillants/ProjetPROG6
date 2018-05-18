@@ -132,6 +132,10 @@ public abstract class Joueur implements Serializable{
 		this.elimine = true;
 	}
 	
+	public void ressusciter() {
+		this.elimine = true;
+	}
+	
 	/*
 	 * Renvois le delay a attendre (ms) avant de faire jouer le joueur
 	 */
