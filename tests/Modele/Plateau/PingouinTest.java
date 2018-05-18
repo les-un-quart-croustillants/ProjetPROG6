@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.io.*;
 
 public class PingouinTest {
-
 	@Test
 	public void serial() {
 			String filename = "test_serial.bin";

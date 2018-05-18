@@ -26,19 +26,6 @@ public class Move {
 		return to;
 	}
 
-
-	public void setFrom(Position from) {
-		this.from = from;
-	}
-
-	public void setFishAte(int fishAte) {
-		this.fishAte = fishAte;
-	}
-
-	public void setTo(Position to) {
-		this.to = to;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		return this.from.equals(((Move) obj).getFrom())

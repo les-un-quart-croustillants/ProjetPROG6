@@ -367,6 +367,11 @@ public class Plateau implements Serializable {
 		return res;
 	}
 
+	/**
+	 * undo : Annule le coup précédent si possible
+	 * @return : la valeur du coup annulé,
+	 * -1 si aucun coup annulé
+	 */
 	public int undo() {
 		if(history.isEmpty())
 			return -1;
@@ -388,6 +393,11 @@ public class Plateau implements Serializable {
 		return fishAte;
 	}
 
+	/**
+	 * redo : ré-exécute le dernier coup annulé, si il y en a
+	 * @return la valeur du coup exécuté si il y'en a un,
+	 * -1 sinon
+	 */
 	public int redo() {
 		if (undoList.isEmpty())
 			return -1;
