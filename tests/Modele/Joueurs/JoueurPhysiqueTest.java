@@ -3,25 +3,19 @@ package Modele.Joueurs;
 
 import Modele.Plateau.Plateau;
 import Utils.Position;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class JoueurPhysiqueTest {
 	JoueurPhysique j;
 
-	@Before
-	public void setUp() {
-		j = new JoueurPhysique(0,"2");
-	}
-
 	@Ignore
 	@Test
 	public void jouerCoup() {
+		JoueurPhysique j = new JoueurPhysique(0,0,"2");
 		Plateau plateau = new Plateau(10);
 		Position start,goal;
 		int expected;
-		setUp();
 
 		System.err.println("Not implemented.");
 
@@ -71,5 +65,4 @@ public class JoueurPhysiqueTest {
 		}
 		*/
 	}
-
 }
