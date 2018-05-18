@@ -166,23 +166,32 @@ public class Plateau implements Serializable {
 		return res;
 	}
 
-	private boolean safeAdd(LinkedList<Position> l, Position candidat) {
-		if (isInTab(candidat) && !getCellule(candidat).isObstacle()) {
-			if (!l.contains(candidat))
+	/**
+	 * safeAdd : ajoute une position dans la liste si elle n'y est pas déjà présente,
+	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
+	 * @param l : la liste de position
+	 * @param candidat : la position à ajouter
+	 * @param traitePingouinObstacle : si les pingouins sont traités comme obstacle ou non
+	 * @return si l'ajout de candidat à été fait ou non.
+	 */
+	private boolean safeAdd(LinkedList<Position> l, Position candidat, boolean traitePingouinObstacle) {
+		if (isInTab(candidat)) {
+			if ((traitePingouinObstacle && !getCellule(candidat).isObstacle()) || (!traitePingouinObstacle && getCellule(candidat).isDestroyed())) {
+				if (!l.contains(candidat))
 					l.add(candidat);
-			return true;
+				return true;
+			}
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
-	 * accessible : les positions accessibles depuis une position
-	 * @param p : position courante
-	 * @return : la liste des position accessibles
+	 * listAccessibles : liste les positions accessibles depuis p
+	 * @param p : la position de départ
+	 * @param traiterPingouinObstacle : si les pingouins sont des obstacles
+	 * @return LinkedList des positions accessible depuis p
 	 */
-	public LinkedList<Position> accessible(Position p) {
+	private LinkedList<Position> listAccessibles(Position p, boolean traiterPingouinObstacle) {
 		Position candidat;
 		LinkedList<Position> res = new LinkedList<>();
 		boolean bu = true, // diagonale arrière haute continue
@@ -201,11 +210,11 @@ public class Plateau implements Serializable {
 				decalage_arriere = (i + 1) / 2;
 			if (bu) { // diagonale arrière haute
 				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
-				bu = safeAdd(res, candidat);
+				bu = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 			if (bd) { // digonale arrière basse
 				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
-				bd = safeAdd(res, candidat);
+				bd = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 			if (p.i() % 2 == 0)
 				decalage_avant = (i + 1) / 2;
@@ -213,20 +222,20 @@ public class Plateau implements Serializable {
 				decalage_avant = i / 2;
 			if (fu) { // diagonale avant haute
 				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
-				fu = safeAdd(res, candidat);
+				fu = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 			if (fd) { // diagonale avant basse
 				candidat = new Position(p.i() + i, p.j() + decalage_avant);
-				fd = safeAdd(res, candidat);
+				fd = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 
 			if (b) {
 				candidat = new Position(p.i(), p.j() - i); // ligne arrière
-				b = safeAdd(res, candidat);
+				b = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 			if (f) {
 				candidat = new Position(p.i(), p.j() + i); // ligne avant
-				f = safeAdd(res, candidat);
+				f = safeAdd(res, candidat, traiterPingouinObstacle);
 			}
 		}
 		return res;
