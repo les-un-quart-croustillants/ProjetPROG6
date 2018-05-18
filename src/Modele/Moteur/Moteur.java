@@ -24,6 +24,7 @@ public class Moteur implements Serializable {
 	private int nbPingouin;
 	private int indexJoueurCourant=0;
 	private Position selected;
+	private boolean undoRedoAutorise;
 	
 	//AUTOMATE
     private State currentState;
@@ -100,6 +101,13 @@ public class Moteur implements Serializable {
 		this.njoueurs = joueurs.size();
 		this.joueurs = joueurs;
 		this.nbPingouin = 0;
+		this.undoRedoAutorise = false;
+		for(Joueur j:joueurs) {
+			if(!j.estIA()) {
+				this.undoRedoAutorise = true;
+			}
+		}
+		
 		currentState = State.INIT;
 		initTransitions();
 	}
@@ -421,53 +429,65 @@ public class Moteur implements Serializable {
 		}
 	}
 	
-	public Joueur undo() {
-		Couple<Integer,Integer> res;
+	public Joueur undo() throws Exception {
 		
-		do { //On remonte dans les joueurs jusqu'a en trouver un humain
-			res = plateau.undo();
-			if(res.gauche() > 0) {
-				if((indexJoueurCourant = indexJoueur(res.droit())) > 0) {
-					joueurCourant().undo(res.gauche());
+		if(this.undoRedoAutorise) {
+			Couple<Integer,Integer> res;
+			
+			do { //On remonte dans les joueurs jusqu'a en trouver un humain
+				res = plateau.undo();
+				if(res.gauche() > 0) {
+					if((indexJoueurCourant = indexJoueur(res.droit())) > 0) {
+						joueurCourant().undo(res.gauche());
+					} else {
+						throw new Exception("Le joueur renvoyé par undo est introuvable");
+					}
 				} else {
-					throw new Exception("Le joueur renvoyé par undo est introuvable");
+					return null;
 				}
+			}while(joueurCourant().estIA());
+			
+			if(pingouinsPoses()) {
+				transition(Action.UNDO);
 			} else {
-				return null;
+				transition(Action.UNDOPHASEMODIFIER);
 			}
-		}while(joueurCourant().estIA());
-		
-		if(pingouinsPoses()) {
-			transition(Action.UNDO);
+			
+			return joueurCourant();			
 		} else {
-			transition(Action.UNDOPHASEMODIFIER);
+			return null;
 		}
-		
-		return joueurCourant();
+
 	}
 	
 	public Joueur redo() {
-		int fishAte;
 		
-		do {
-			if((fishAte = plateau.redo()) > 0) {
-				if(currentState == State.POSER_PINGOUIN) {
-					joueurSuivant().redo(fishAte,0);	
+		if(this.undoRedoAutorise) {
+			int fishAte;
+			
+			do {
+				if((fishAte = plateau.redo()) > 0) {
+					if(currentState == State.POSER_PINGOUIN) {
+						joueurSuivant().redo(fishAte,0);	
+					} else {
+						joueurSuivant().redo(fishAte,1);
+					}
 				} else {
-					joueurSuivant().redo(fishAte,1);
+					return null;
 				}
+			} while(this.joueurCourant().estIA());
+			
+			if(!pingouinsPoses()) {
+				transition(Action.REDO);
 			} else {
-				return null;
+				transition(Action.REDOPHASEMODIFIER);
 			}
-		} while(this.joueurCourant().estIA());
-		
-		if(!pingouinsPoses()) {
-			transition(Action.REDO);
+			
+			return joueurCourant();
 		} else {
-			transition(Action.REDOPHASEMODIFIER);
+			return null;
 		}
-		
-		return joueurCourant();
 	}
+
 	
 }
