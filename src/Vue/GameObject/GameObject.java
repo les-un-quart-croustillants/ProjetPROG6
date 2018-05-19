@@ -1,12 +1,12 @@
 package Vue.GameObject;
 
 
-import com.sun.javafx.geom.Vec2d;
+import com.sun.javafx.geom.Vec2f;
 
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject {
-	protected Vec2d position;
+	protected Vec2f position;
 	private boolean estDetruit=false;
 	OnDestroyHandler odh;
 	
@@ -15,10 +15,10 @@ public class GameObject {
 	}
 	
 	public GameObject(int x,int y) {
-		position = new Vec2d(x,y);
+		position = new Vec2f(x,y);
 	}
 	
-	public Vec2d position() {
+	public Vec2f position() {
 		return position;
 	}
 	

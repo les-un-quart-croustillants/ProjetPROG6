@@ -10,9 +10,9 @@ import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Plateau;
 import Vue.Cadre.PlateauCadre;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
-public class GamePane extends Pane{
+public class GamePane extends StackPane{
 	private static GamePane instance = null;
 	private PlateauCadre plateauCadre;
 	private Moteur moteur;
