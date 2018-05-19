@@ -2,7 +2,9 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Move {
+import java.io.Serializable;
+
+public class Move implements Serializable {
 	private Position to;
 	private Position from;
 	private int fishAte;
@@ -24,19 +26,6 @@ public class Move {
 
 	public Position getTo() {
 		return to;
-	}
-
-
-	public void setFrom(Position from) {
-		this.from = from;
-	}
-
-	public void setFishAte(int fishAte) {
-		this.fishAte = fishAte;
-	}
-
-	public void setTo(Position to) {
-		this.to = to;
 	}
 
 	@Override

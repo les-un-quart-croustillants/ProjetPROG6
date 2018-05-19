@@ -13,9 +13,6 @@ public class Cellule implements Serializable {
 	public Cellule() {
 		this(new Position(0,0), false, 0, null);
 	}
-	public Cellule(Position position, boolean destroyed) {
-		this(position, destroyed, 0, null);
-	}
 	public Cellule(Position position, int fish) {
 		this(position, false, fish, null);
 	}
