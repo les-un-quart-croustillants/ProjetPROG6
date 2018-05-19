@@ -44,8 +44,8 @@ public class PlateauTest {
 		Plateau sujet;
 		for (int i = 0; i < 100; i++) {
 			nb_cases1 = 0;
-			size = 8; // r.nextInt(97) + 3;
-			nb_pingouins = 12; // r.nextInt((size*size) - ((size + 1) / 2));
+			size = r.nextInt(97) + 3;
+			nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
 			sujet = new Plateau(size, nb_pingouins);
 			for (int j = 0; j < size; j++) {
 				for (int k = 0; k < size; k++) {
