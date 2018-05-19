@@ -56,7 +56,7 @@ public class Plateau implements Serializable {
 	 */
 	private void initTab(int borne) {
 		int tmp,
-			nb_cases = (size * size) - (size + 1 / 2),
+			nb_cases = (size * size) - (size + 1) / 2,
 			nb_1 = 0;
 		Position p;
 		Random r = new Random();

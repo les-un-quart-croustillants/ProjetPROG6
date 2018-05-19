@@ -18,7 +18,7 @@ public class PlateauTest {
 	}
 
 	@Test
-	public void initTab() {
+	public void initTab_line_length() {
 		for (int i = 0; i < p.getSize(); i++) {
 			if (i % 2 == 0) {
 				Assert.assertTrue("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
@@ -34,6 +34,26 @@ public class PlateauTest {
 									&& cell.getFish() <= 3);
 				Assert.assertTrue("initTab : test nombre de poisson " + (i+j) + "/" + (2*p.getSize()) + " failed.", condition);
 			}
+		}
+	}
+
+	@Test
+	public void initTab_nb_pingouin() {
+		Random r = new Random();
+		int size, nb_cases1, nb_pingouins;
+		Plateau sujet;
+		for (int i = 0; i < 100; i++) {
+			nb_cases1 = 0;
+			size = 8; // r.nextInt(97) + 3;
+			nb_pingouins = 12; // r.nextInt((size*size) - ((size + 1) / 2));
+			sujet = new Plateau(size, nb_pingouins);
+			for (int j = 0; j < size; j++) {
+				for (int k = 0; k < size; k++) {
+					if (sujet.getCellule(new Position(j,k)).getFish() == 1)
+						nb_cases1++;
+				}
+			}
+			Assert.assertTrue(nb_cases1 >= nb_pingouins);
 		}
 	}
 
