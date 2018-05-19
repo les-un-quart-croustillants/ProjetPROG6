@@ -85,7 +85,7 @@ public class ScorePane extends StackPane {
 			Label l;
 			//nom
 			l = nom_joueur(j.nom());
-			l.setTextFill(Donnees.COULEURS_JOUEURS[i]);
+			l.setTextFill(Donnees.COULEURS_JOUEURS[j.id()]);
 			GridPane.setColumnIndex(l,0);			
 			GridPane.setRowIndex(l,i+1);
 			gp.getChildren().add(l);
