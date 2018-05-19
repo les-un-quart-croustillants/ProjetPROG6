@@ -60,13 +60,14 @@ public class JeuConsole {
 		boolean fin_partie = false;
 
 		/* Initialisation moteur */
-		joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
+		//joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
 		joueurs.add(new JoueurIA(1, 3, "Henry", Difficulte.FACILE));
 		joueurs.add(new JoueurIA(2, 3, "Chris. P. Beacon", Difficulte.FACILE));
 		joueurs.add(new JoueurIA(3, 3, "Johny cash", Difficulte.FACILE));
 		m = new Moteur(p, joueurs);
 		m.setCurrentState(State.POSER_PINGOUIN);
 
+		prettyTitle();
 		while (!fin_partie) {
 			System.out.println("_______________________________________________________________");
 			System.out.println();
@@ -315,6 +316,10 @@ public class JeuConsole {
 				}
 			}
 			System.out.println(RESET);
+			if(i != m.plateau().getSize()-1) {
+				System.out.print(WHITE_BG+BLACK+"                              "+RESET);
+				System.out.println();	
+			}
 		}
 
 		for (int i = 0; i <= m.njoueurs(); i++) {
@@ -327,7 +332,7 @@ public class JeuConsole {
 						System.out.print(p.position() + " ");
 					}
 				}
-				if (m.pingouinSelection() != null && m.pingouinSelection().employeur() == m.joueur(i).id()) {
+				if (m.pingouinSelection() != null && m.pingouinSelection().employeur() == m.joueur(i-1).id()) {
 					System.out.println();
 					System.out.print(colorbg_joueurs[i] + "Coups possible" + RESET + " ");
 					for (Position pos : highLight) {
@@ -338,6 +343,30 @@ public class JeuConsole {
 			}
 		}
 
+	}
+	
+	private static void prettyTitle() throws InterruptedException {
+		System.out.print(WHITE_BG+BLACK);
+		System.out.println("        /@@@@@@@\\                                                                 ");
+		System.out.println("      (@@@@@ # @@@@@\\                                                             ");
+		System.out.println("     (` \\@@@@@@@@~~~~           ____  (_)___  ____ _____  __  __(_)___  _____     ");
+		System.out.println("    /`    \\@@@@@|              / __ \\/ / __ \\/ __ `/ __ \\/ / / / / __ \\/ ___/     ");
+		System.out.println("   /@@     ''''  \\            / /_/ / / / / / /_/ / /_/ / /_/ / / / / (__  )      ");
+		System.out.println("  /@@@@\\          |          / .___/_/_/ /_/\\__, /\\____/\\__,_/_/_/ /_/____/       ");
+		System.out.println(" /@@@@@@@\\        |         /_/            /____/                                 ");
+		System.out.println("/@@@@@@@@@        |                                                               ");
+		System.out.println("|@@@@@@@@         |                                                               ");
+		System.out.println("|@@@@@@@          |                                                               ");
+		System.out.println("|@@@@@@@          |                                                               ");
+		System.out.println("|@@@'@@@@        |                                                                ");
+		System.out.println("|@@@ '@@@        ;                                                                ");
+		System.out.println("|@@@  @@;       ;                                                                 ");
+		System.out.println("|@@@  ''       ;                                                                  ");
+		System.out.println("(@@@@         ;                                                                   ");
+		System.out.println(" (@@@@        |                                                                   ");
+		System.out.println("  (__@@_______)                                                                   ");
+		System.out.print(RESET);
+		Thread.sleep(5000);
 	}
 
 }
