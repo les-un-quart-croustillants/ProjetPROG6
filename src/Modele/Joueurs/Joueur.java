@@ -155,7 +155,7 @@ public abstract class Joueur implements Serializable {
 	}
 
 	public void ressusciter() {
-		this.elimine = true;
+		this.elimine = false;
 	}
 
 	/*

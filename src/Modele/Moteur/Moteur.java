@@ -467,9 +467,13 @@ public class Moteur implements Serializable {
 
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
-				if (res.gauche() > 0) {
-					if ((indexJoueurCourant = indexJoueur(res.droit())) > 0) {
+				if (res.gauche() >= 0) {
+					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
+						System.out.println("Avant: "+joueurCourant() + " | " +indexJoueurCourant());
+						System.out.flush();
 						joueurCourant().undo(res.gauche());
+						System.out.println("Apres: "+joueurCourant() + " | "+ indexJoueurCourant());
+						System.out.flush();
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
