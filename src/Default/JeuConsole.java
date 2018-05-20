@@ -12,7 +12,6 @@ import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
-import Utils.Couple;
 import Utils.Position;
 
 public class JeuConsole {
