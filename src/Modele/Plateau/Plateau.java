@@ -27,7 +27,7 @@ public class Plateau implements Serializable {
 		this(3, 1);
 	}
 	public Plateau(int size) {
-		this(size, (size*size < 8)?size:8);
+		this(size, 8);
 	}
 
 	public Plateau(int size, int nb_pingouin) {
@@ -35,6 +35,7 @@ public class Plateau implements Serializable {
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
+
 		initTab(nb_pingouin);
 	}
 
@@ -54,9 +55,13 @@ public class Plateau implements Serializable {
 	 * initTab : initialise le tableau selon une configuration attendue.
 	 */
 	private void initTab(int borne) {
-		int tmp, nb_1 = 0;
+		int tmp,
+			nb_cases = (size * size) - (size + 1) / 2,
+			nb_1 = 0;
 		Position p;
 		Random r = new Random();
+		if (borne > nb_cases )
+			borne = nb_cases;
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				if(i % 2 == 0 && j == this.size-1) { // ligne courte
@@ -280,6 +285,8 @@ public class Plateau implements Serializable {
 		coeff_j = diffDir(current.j(), target.j());
 		candidat = current.clone();
 		int borne = Math.max(Math.abs(current.i() - target.i()), Math.abs(current.j() - target.j()));
+		if(coeff_j == 0 && Math.abs(current.i() - target.i()) > 1)
+			return false;
 		for (int d = 1; d <= borne; d++) {
 			if (coeff_i != 0) {
 				if (current.i() % 2 == 0)        // pair
@@ -294,8 +301,9 @@ public class Plateau implements Serializable {
 						dec = (d + 1) / 2;
 
 				candidat = new Position(current.i() + coeff_i * d, current.j() + coeff_j * dec);
-			} else
-				candidat = new Position(current.i(), current.j() + coeff_j * d);
+			}
+			else
+				candidat = new Position(current.i(), current.j() + (coeff_j * d));
 			if (!isInTab(candidat) || (isInTab(candidat) && getCellule(candidat).isObstacle()))
 				return false;
 		}
@@ -435,7 +443,7 @@ public class Plateau implements Serializable {
 	 */
 	public boolean poserPingouin(Position p, Pingouin pingouin) {
 		// Si la case en p n'est pas fondue et n'a pas de pingouin
-		if(!this.getCellule(p).isObstacle()) {
+		if(isInTab(p) && !this.getCellule(p).isObstacle()) {
 			//Si la case en p a un seul poisson
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);

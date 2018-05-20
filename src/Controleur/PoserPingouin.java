@@ -33,7 +33,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				if (c != null) {
 					int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
-						GamePane.getPlateauCadre().gameObjects.add(
+						GamePane.getPlateauCadre().gameObjects.get(1).add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
 										pc.plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
 						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
@@ -47,6 +47,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 							if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 								pc.plateauGraphique.cases[pos.i()][pos.j()].select();
 						}
+						GamePane.getPlateauCadre().infoGraphique.setText("Selectionnez une destination");
 					}
 				}
 			}
@@ -54,8 +55,11 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				Position lastSelection = GamePane.moteur().pingouinSelection().position();
 				LinkedList<Position> lastaccessibles = pc.plateau.accessible(lastSelection);
-				if (c != null && !GamePane.moteur().selectionnerDestination(c.posPlateau).equals(new Position(-1,-1))) {
-					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(c.posPlateau);
+				Position p = new Position(-1,-1);
+				if(c!=null)
+					p = c.posPlateau;
+				if (!GamePane.moteur().selectionnerDestination(p).equals(new Position(-1,-1))) {
+					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(p);
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].detruire();
 					for (Position pos : lastaccessibles) {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)

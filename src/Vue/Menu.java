@@ -42,6 +42,7 @@ public class Menu extends StackPane {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
+				System.out.println(ConfigMenu.getInstance().create_config());
 			}
 		});
 	}
