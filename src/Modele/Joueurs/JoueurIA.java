@@ -11,8 +11,10 @@ import Utils.Position;
 
 public class JoueurIA extends Joueur {
 	
-	public JoueurIA(int id,String n,Difficulte d){
-		super(id,n,d);
+	private static final long serialVersionUID = -8134226007569319548L;
+
+	public JoueurIA(int id,int nbP,String n,Difficulte d){
+		super(id,nbP,n,d);
 	}
 
 	@Override

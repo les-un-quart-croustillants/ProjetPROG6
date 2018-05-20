@@ -1,5 +1,6 @@
 package Modele.Plateau;
 
+import Utils.Couple;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +18,7 @@ public class PlateauTest {
 	}
 
 	@Test
-	public void initTab() {
+	public void initTab_line_length() {
 		for (int i = 0; i < p.getSize(); i++) {
 			if (i % 2 == 0) {
 				Assert.assertTrue("initTab : test fin de ligne" + i + "/" + p.getSize() + " failed.", p.getCellule(new Position(i,p.getSize() - 1)).isDestroyed());
@@ -33,6 +34,26 @@ public class PlateauTest {
 									&& cell.getFish() <= 3);
 				Assert.assertTrue("initTab : test nombre de poisson " + (i+j) + "/" + (2*p.getSize()) + " failed.", condition);
 			}
+		}
+	}
+
+	@Test
+	public void initTab_nb_pingouin() {
+		Random r = new Random();
+		int size, nb_cases1, nb_pingouins;
+		Plateau sujet;
+		for (int i = 0; i < 100; i++) {
+			nb_cases1 = 0;
+			size = r.nextInt(97) + 3;
+			nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
+			sujet = new Plateau(size, nb_pingouins);
+			for (int j = 0; j < size; j++) {
+				for (int k = 0; k < size; k++) {
+					if (sujet.getCellule(new Position(j,k)).getFish() == 1)
+						nb_cases1++;
+				}
+			}
+			Assert.assertTrue(nb_cases1 >= nb_pingouins);
 		}
 	}
 
@@ -265,6 +286,10 @@ public class PlateauTest {
 		Assert.assertTrue(p.estAccessible(current, target));
 		Assert.assertTrue(p.estAccessible(target, current));
 
+		target = new Position(2,0);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
 		p.destroyCell(new Position(1,1));
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
@@ -297,26 +322,32 @@ public class PlateauTest {
 		boolean test = false;
 		Pingouin pingouin = new Pingouin(1);
 		int i = 0,
-			j = 0;
-		Cellule c = p.getCellule(new Position(i,j));
-		while(!test) {
-			while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
-				j++;
-				if (j == p.getSize()) {
-					j = 0;
-					i++;
+				j = 0;
+		Cellule c = p.getCellule(new Position(i, j));
+		Position pos;
+		for (int k = 0; k < 100; k++) {
+			while (!test) {
+				while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
+					j++;
+					if (j == p.getSize()) {
+						j = 0;
+						i++;
+					}
+					c = p.getCellule(new Position(i, j));
 				}
-				c = p.getCellule(new Position(i, j));
-			}
-			if (i < p.getSize() && j < p.getSize()) {
-				test = true;
-				Position pos = new Position(i, j);
-				p.poserPingouin(pos, pingouin);
-				pingouin.setPosition(pos);
-				Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
-				Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+				if (i < p.getSize() && j < p.getSize()) {
+					test = true;
+					pos = new Position(i, j);
+					pingouin.setPosition(pos);
+					Assert.assertTrue(p.poserPingouin(pos, pingouin));
+					Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
+					Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+				}
 			}
 		}
+		pos = new Position(0,2);
+		pingouin = new Pingouin(0,pos);
+		Assert.assertFalse(p.poserPingouin(pos, pingouin));
 	}
 
 	@Test
@@ -351,7 +382,7 @@ public class PlateauTest {
 			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
-			if (sujet.isInTab(target) && sujet.estAccessible(current, target))
+			if (sujet.isInTab(target) && sujet.accessible(current).contains(target))
 				expected = sujet.getCellule(target).getFish();
 			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
 			sujet = p.clone();
@@ -360,6 +391,7 @@ public class PlateauTest {
 
 	@Test
 	public void undo() {
+		Couple<Integer, Integer> res;
 		Position from= new Position(0,0),
 				to = new Position(0,1);
 		Pingouin pingouin = new Pingouin(0, from);
@@ -369,7 +401,7 @@ public class PlateauTest {
 		Assert.assertNotEquals(p, sujet);
 		Assert.assertFalse(sujet.getHistory().isEmpty());
 		Assert.assertTrue(sujet.getUndoList().isEmpty());
-		sujet.undo();
+		res = sujet.undo();
 		Assert.assertFalse(sujet.getUndoList().isEmpty());
 		Assert.assertTrue(sujet.getHistory().isEmpty());
 		Assert.assertEquals(1, sujet.getUndoList().size());
@@ -378,6 +410,8 @@ public class PlateauTest {
 		Assert.assertFalse(p.getCellule(to).aPingouin());
 		Assert.assertTrue(p.getCellule(from).aPingouin());
 		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
+		Assert.assertEquals((Integer) p.getCellule(to).getFish(), res.gauche());
+		Assert.assertEquals((Integer) pingouin.employeur(), res.droit());
 	}
 
 	@Test
@@ -440,11 +474,18 @@ public class PlateauTest {
 
 	@Test
 	public void serial() {
-		String filename = "test_serial.bin";
+		String filename = "tests/rsc/test_serial.bin";
 
+		Plateau sujet = new Plateau(10);
+		Position pos1 = new Position(0,0),
+				pos2 = new Position(0,1);
+		sujet.getCellule(pos1).setPenguin(new Pingouin(0, pos1));
+		sujet.jouer(pos1, pos2);
+		sujet.jouer(pos2, new Position(1,1));
+		sujet.undo();
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
-			os.writeObject(p);
+			os.writeObject(sujet);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
@@ -455,8 +496,8 @@ public class PlateauTest {
 
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
-			Plateau p_lecture = (Plateau) is.readObject();
-			Assert.assertEquals(p, p_lecture);
+			Plateau sujet_lecture = (Plateau) is.readObject();
+			Assert.assertEquals(sujet, sujet_lecture);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
