@@ -37,8 +37,8 @@ public class PlateauGraphique extends GameObject {
 		else {
 			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize()*0.75));
 		}
-		position.x = plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase+espacement) / 2;
-		position.y = plateauCadre.getHeight() / 2 - plateau.getSize() * (tailleCase+espacement) *0.25;
+		position.x = (float) (plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase+espacement) / 2);
+		position.y = (float) (plateauCadre.getHeight() / 2 - plateau.getSize() * (tailleCase+espacement) *0.25);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class PlateauGraphique extends GameObject {
 		for (int i = 0; i < plateau.getSize(); i++) {
 			for (int j = 0; j < plateau.getSize() - (1 - i % 2); j++) {
 				cases[i][j] = new Case(this, i, j);
-				pc.gameObjects.add(cases[i][j]);
+				pc.gameObjects.get(0).add(cases[i][j]);
 			}
 		}
 		//pc.gameObjects.add(new PingouinGraphique(new Pingouin(1, new Position(5,5)), this));

@@ -28,7 +28,7 @@ public class PingouinGraphique extends GameObject {
 	@Override
 	public void update() {
 		position.x = pg.cases[pingouinPosition.i()][pingouinPosition.j()].position().x+pg.tailleCase/2;
-		position.y = pg.cases[pingouinPosition.i()][pingouinPosition.j()].position().y+pg.tailleCase*0.35;
+		position.y = (float) (pg.cases[pingouinPosition.i()][pingouinPosition.j()].position().y+pg.tailleCase*0.35);
 		offset.x = -Donnees.IMG_PINGOUIN_FACE.getWidth()/2 * scale;
 		offset.y = -Donnees.IMG_PINGOUIN_FACE.getHeight() * scale;
 		width = (int) (Donnees.IMG_PINGOUIN_FACE.getWidth()*scale);

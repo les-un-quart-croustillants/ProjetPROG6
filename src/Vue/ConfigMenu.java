@@ -4,24 +4,47 @@ import javafx.scene.layout.*;
 import java.util.LinkedList;
 import javafx.event.*;
 import javafx.scene.control.*;
+import javafx.scene.*;
 import javafx.scene.text.*;
+import Utils.GameConfig;
 
 public class ConfigMenu extends VBox {
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
-		public Label name, nbPenguin;
+		public Label nbPenguin;
 		public Button typeJoueur, difficulte, minusPenguin, plusPenguin, delete;
-		public int nb_Penguin;
+		public int nb_Penguin = 1;
 		
-		public JoueurConfig(int nb_joueur, VBox parent) {
+		GameConfig.ConfigJoueur getConfig() {
+			GameConfig.TypeJoueur t;
+			GameConfig.difficulte d;
+			
+			if(typeJoueur.getText() == "Humain") {
+				t = GameConfig.TypeJoueur.HUMAIN;
+			} else {
+				t = GameConfig.TypeJoueur.IA;
+			}
+			
+			if(difficulte.getText() == "Facile") {
+				d = GameConfig.difficulte.FACILE;
+			} else if(difficulte.getText() == "Moyen") {
+				d = GameConfig.difficulte.MOYEN;
+			} else {
+				d = GameConfig.difficulte.DIFFICILE;
+			}
+			
+			return new GameConfig.ConfigJoueur(t, d, nb_Penguin);
+		}
+		
+		public JoueurConfig(VBox parent) {
 			this.getStyleClass().add("joueurconfig");
 			VBox joueurLyt = new VBox();
-			name = new Label("Joueur "+nb_joueur);
 			typeJoueur = new Button("Humain");
 			difficulte = new Button("Facile");
 			nbPenguin = new Label("x"+nb_Penguin);
 			minusPenguin = new Button();
-			delete = new Button("x");
+			delete = new Button();
+			delete.getStyleClass().add("closebtn");
 			plusPenguin = new Button();
 			
 			minusPenguin.getStyleClass().addAll("iconbutton", "leftbuttonsmall");
@@ -47,12 +70,38 @@ public class ConfigMenu extends VBox {
 				}
 			});
 			
+			typeJoueur.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent e) {
+					if(typeJoueur.getText() == "Humain") {
+						typeJoueur.setText("IA");
+						objet.getChildren().add(2, difficulte);
+					} else {
+						typeJoueur.setText("Humain");
+						objet.getChildren().remove(difficulte);
+					}
+				}
+			});
+			
+			difficulte.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent e) {
+					if(difficulte.getText() == "Facile") {
+						difficulte.setText("Moyen");
+					} else if(difficulte.getText() == "Moyen") {
+						difficulte.setText("Difficile");
+					} else {
+						difficulte.setText("Facile");
+					}
+				}
+			});
+			
 			joueurLyt.getChildren().add(typeJoueur);
-			this.getChildren().addAll(delete, name, joueurLyt, minusPenguin, nbPenguin, plusPenguin);
+			this.getChildren().addAll(delete, joueurLyt, minusPenguin, nbPenguin, plusPenguin);
 		}
 	}
 	
 	private static ConfigMenu instance = null;
+	Integer dim = 8;
+	VBox listJoueurs;
 	Button retour;
 	
 	public static ConfigMenu getInstance() {
@@ -69,40 +118,68 @@ public class ConfigMenu extends VBox {
 	
 	private void create_elements() {
 		// Allocations
-		Label dimensions = new Label("DIMENSIONS DU PLATEAU");
-		Label widthLbl = new Label("Largeur");
-		Label heightLbl = new Label("Hauteur");
-		Label widthLblNb = new Label("6");
-		Label heightLblNb = new Label("7");
+		Label dimLbl = new Label("Dimension du plateau");
+		Label dimLblNb = new Label(dim.toString());
+		Label x = new Label("x");
+		Label dimLblNb2 = new Label(dim.toString());
 		HBox dimensionsBox = new HBox();
+		listJoueurs = new VBox();
 		Label configLbl = new Label("CONFIG.");
 		ScrollPane joueursPane = new ScrollPane();
-		VBox listJoueurs = new VBox();
 		Button newJoueur = new Button("Nouveau joueur");
+		Button minusDim = new Button();
+		Button plusDim = new Button();
 		
 		retour = new Button("Retour");
 		
 		// Configuration
+		dimensionsBox.getStyleClass().add("hbox");
+		listJoueurs.getStyleClass().add("center");
+		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
 		configLbl.getStyleClass().add("title");
 		retour.getStyleClass().add("textbutton"); 
 		joueursPane.setContent(listJoueurs);
+		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
+		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
+		
+		plusDim.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				dim++;
+				dimLblNb.setText(dim.toString());
+				dimLblNb2.setText(dim.toString());
+			}
+		});
+		
+		minusDim.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				dim = dim-1 <= 0 ? 1 : dim-1;
+				dimLblNb.setText(dim.toString());
+				dimLblNb2.setText(dim.toString());
+			}
+		});
 		
 		newJoueur.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				listJoueurs.getChildren().remove(newJoueur);
-				listJoueurs.getChildren().add(new JoueurConfig(1, listJoueurs));
-				listJoueurs.getChildren().add(newJoueur);
+				listJoueurs.getChildren().add(new JoueurConfig(listJoueurs));
+				joueursPane.setVvalue(1.0);
 			}
 		});
 		
 		// Ajout
-		listJoueurs.getChildren().addAll(new JoueurConfig(1, listJoueurs), 
-				new JoueurConfig(2, listJoueurs), 
-				new JoueurConfig(3, listJoueurs), 
-				new JoueurConfig(4, listJoueurs), 
-				newJoueur);
+		listJoueurs.getChildren().addAll(new JoueurConfig(listJoueurs), 
+				new JoueurConfig(listJoueurs), 
+				new JoueurConfig(listJoueurs), 
+				new JoueurConfig(listJoueurs));
 		
-		dimensionsBox.getChildren().addAll(widthLbl, widthLblNb, heightLbl, heightLblNb);
-		this.getChildren().addAll(configLbl, joueursPane, dimensions, dimensionsBox, retour);
+		dimensionsBox.getChildren().addAll(dimLbl, new Label(), minusDim, dimLblNb, x, dimLblNb2, plusDim);
+		this.getChildren().addAll(configLbl, joueursPane, newJoueur, dimensionsBox, retour);
+	}
+	
+	GameConfig create_config() {
+		GameConfig gc = new GameConfig(dim);
+		for(Node jc : listJoueurs.getChildren()) {
+			gc.joueurs.add(((JoueurConfig)jc).getConfig());
+		}
+		return gc;
 	}
 }

@@ -47,7 +47,7 @@ private void create_elements() {
 		leftMap.getStyleClass().addAll("iconbutton", "leftbutton");
 		rightMap.getStyleClass().addAll("iconbutton", "rightbutton");
 		
-		config.getStyleClass().add("config");
+		config.getStyleClass().add("smallerbtn");
 		
 		mapSelection.setAlignment(Pos.CENTER);
 		mapSelection.getStyleClass().add("mapselection");

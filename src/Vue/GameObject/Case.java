@@ -2,12 +2,14 @@ package Vue.GameObject;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.Random;
 
 import com.sun.javafx.geom.Vec2f;
 
 import Utils.Position;
 import Vue.Donnees;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Case extends GameObject {
@@ -21,6 +23,13 @@ public class Case extends GameObject {
 	public PingouinGraphique pingouinGraphique;
 	public Color couleur;
 	public Position posPlateau;
+	
+	private int currentFrame = 0;
+	private int frameRate = 10;
+	private int nSpritesPerLine = 4;
+	private int nSpritesPerCol = 2;
+	private int nSprites = nSpritesPerCol*nSpritesPerLine;
+	private double timeLastFrame = 0;
 
 	Case(PlateauGraphique pg, int i, int j) {
 		this.pg = pg;
@@ -30,6 +39,7 @@ public class Case extends GameObject {
 		position.x = pg.tailleCase;
 		position.y = pg.tailleCase;
 		posPlateau = new Position(i, j);
+		currentFrame = new Random().nextInt(7);
 	}
 
 	@Override
@@ -54,14 +64,35 @@ public class Case extends GameObject {
 		}
 
 	}
-
+	
+	
+	private Image sprite;
 	@Override
 	public void draw(GraphicsContext gc) {
 		gc.save();
+		afficher_reflet(gc);
 		gc.setGlobalAlpha(1);
-		gc.drawImage(Donnees.IMG_BLOC_GLACE, position.x, position.y, pg.tailleCase,
+		if(pg.plateau.getCellule(posPlateau).aPingouin()) {
+			sprite = Donnees.IMG_BLOC_GLACE;
+		}
+		else {
+			switch(pg.plateau.getCellule(posPlateau).getFish()) {
+			case 1:
+				sprite = Donnees.IMG_BLOC_GLACE_P1;
+				break;
+			case 2:
+				sprite = Donnees.IMG_BLOC_GLACE_P2;
+				break;
+			case 3:
+				sprite = Donnees.IMG_BLOC_GLACE_P3;
+				break;
+			default:
+				sprite = Donnees.IMG_BLOC_GLACE;
+				break;
+			}
+		}
+		gc.drawImage(sprite, position.x, position.y, pg.tailleCase,
 				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
-		
 		if (selected) {
 			gc.setStroke(new Color(1, 1, 0, 1));
 			gc.setLineWidth(5);
@@ -81,17 +112,6 @@ public class Case extends GameObject {
 			// gc.fillPolygon(dpx, dpy, polygon.npoints);
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}
-		gc.setFill(Color.DEEPSKYBLUE);
-		gc.setGlobalAlpha(1);
-		gc.setFont(Donnees.FONT_TEXT);
-		gc.scale(0.5, 0.5);
-		gc.fillText(Integer.toString(pg.plateau.getCellule(posPlateau).getFish()),
-				(position.x + pg.tailleCase / 2 - gc.getFont().getSize() * 0.15)*2,
-				(position.y + pg.tailleCase / 2 - gc.getFont().getSize()*0.2)*2);
-		/*String truc = "("+posPlateau.i()+","+posPlateau.j()+")";
-		gc.fillText(truc,
-		position.x + pg.tailleCase / 2 - gc.getFont().getSize() * 0.32,
-		position.y + pg.tailleCase / 2 + gc.getFont().getSize() * 0.25);*/
 		gc.restore();
 	}
 
@@ -151,5 +171,23 @@ public class Case extends GameObject {
 
 	public void enleverMiseEnValeur() {
 		miseEnValeur = false;
+	}
+	
+	private int sx,sy,sw,sh;
+	private void afficher_reflet(GraphicsContext gc) {
+		if(timeLastFrame + 1000/frameRate< System.currentTimeMillis()) {
+			currentFrame++;
+			if(currentFrame>=nSprites)
+				currentFrame = 0;
+			sx = currentFrame % nSpritesPerLine * 256;
+			sy = currentFrame / nSpritesPerLine * 221;
+			sw = 256;
+			sh = 221;
+			timeLastFrame = System.currentTimeMillis();
+		}
+		gc.setGlobalAlpha(0.3);
+		gc.drawImage(Donnees.IMG_BLOC_GLACE_RIPPLE, sx,sy,sw,sh, position.x, position.y+pg.tailleCase*0.2, pg.tailleCase,
+				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
+		gc.setGlobalAlpha(1);
 	}
 }
