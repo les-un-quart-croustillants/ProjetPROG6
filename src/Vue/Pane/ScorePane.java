@@ -62,7 +62,7 @@ public class ScorePane extends PopupPane {
 		gp.setVgap(20);
 		gp.setAlignment(Pos.CENTER);
 		//gp.setStyle(" -fx-background-color: rgba(255,0,0,1);");
-		ArrayList<ArrayList<Integer>> podium = GamePane.moteur().podium();
+		ArrayList<ArrayList<Integer>> podium = GamePane.moteur().scores(true);
 		for(int i=0;i<podium.size();i++) {
 			Joueur j = GamePane.moteur().joueur(podium.get(i).get(0));
 			int npoissons = podium.get(i).get(1);
