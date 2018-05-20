@@ -298,26 +298,32 @@ public class PlateauTest {
 		boolean test = false;
 		Pingouin pingouin = new Pingouin(1);
 		int i = 0,
-			j = 0;
-		Cellule c = p.getCellule(new Position(i,j));
-		while(!test) {
-			while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
-				j++;
-				if (j == p.getSize()) {
-					j = 0;
-					i++;
+				j = 0;
+		Cellule c = p.getCellule(new Position(i, j));
+		Position pos;
+		for (int k = 0; k < 100; k++) {
+			while (!test) {
+				while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
+					j++;
+					if (j == p.getSize()) {
+						j = 0;
+						i++;
+					}
+					c = p.getCellule(new Position(i, j));
 				}
-				c = p.getCellule(new Position(i, j));
-			}
-			if (i < p.getSize() && j < p.getSize()) {
-				test = true;
-				Position pos = new Position(i, j);
-				p.poserPingouin(pos, pingouin);
-				pingouin.setPosition(pos);
-				Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
-				Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+				if (i < p.getSize() && j < p.getSize()) {
+					test = true;
+					pos = new Position(i, j);
+					pingouin.setPosition(pos);
+					Assert.assertTrue(p.poserPingouin(pos, pingouin));
+					Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
+					Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+				}
 			}
 		}
+		pos = new Position(0,2);
+		pingouin = new Pingouin(0,pos);
+		Assert.assertFalse(p.poserPingouin(pos, pingouin));
 	}
 
 	@Test

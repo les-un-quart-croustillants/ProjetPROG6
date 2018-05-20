@@ -440,7 +440,7 @@ public class Plateau implements Serializable {
 	 */
 	public boolean poserPingouin(Position p, Pingouin pingouin) {
 		// Si la case en p n'est pas fondue et n'a pas de pingouin
-		if(!this.getCellule(p).isObstacle()) {
+		if(isInTab(p) && !this.getCellule(p).isObstacle()) {
 			//Si la case en p a un seul poisson
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);
