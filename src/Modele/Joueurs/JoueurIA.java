@@ -3,27 +3,48 @@ package Modele.Joueurs;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
+//import java.util.LinkedList;
+//import Modele.Plateau.Cellule;
+//import Modele.Plateau.Pingouin;
+//import java.util.HashMap;
+//import java.util.Random;
 
 public class JoueurIA extends Joueur {
+	
+	private static final long serialVersionUID = -8134226007569319548L;
 
-	public JoueurIA(int id) {
-		super(id);
-	}
-
-	public JoueurIA(int id, int p) {
-		super(id, p);
+	public JoueurIA(int id,int nbP,String n,Difficulte d){
+		super(id,nbP,n,d);
 	}
 
 	@Override
-	public Couple<Position, Position> prochainCoup(Plateau plateau) {
-		return new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1));
+	public int delay() {
+		switch(this.difficulte) {
+			case FACILE:
+				return 1000;
+			case MOYEN:
+				return 500;
+			case DIFFICILE:
+				return 0;
+			default:
+				return 0;
+		}
 	}
-
+	
+	public Couple<Position,Position> coupDifficile(Plateau plateau) {
+		return UtilsIA.jouerCoupDifficile(plateau,super.id());
+	}
+	
+	@Override
+	public Couple<Position,Position> prochainCoup(Plateau plateau) {
+		return UtilsIA.jouerCoupFacile(plateau,super.id());
+	}
+	
 	@Override
 	public Position prochainePosePingouin(Plateau plateau) {
-		return new Position(-1, -1);
+		return UtilsIA.bestplace(plateau, super.id());
 	}
-
+	
 	@Override
 	public boolean estIA() {
 		return true;

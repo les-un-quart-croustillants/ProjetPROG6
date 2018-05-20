@@ -27,8 +27,62 @@
 	-fx-padding: 0px;
 }
 
-.config {
+.smallerbtn {
 	-fx-font-size: 24px;
 	-fx-border-image-width: 5px 5px 5px 5px;
 	-fx-background-insets: 4px;
+}
+
+.title {
+	-fx-font-size: 72px;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane .label {
+	-fx-font-size: 25px;
+}
+
+.scroll-pane .closebtn {
+	-fx-pref-height: 24px;
+	-fx-pref-width: 20px;
+	-fx-alignment: center;
+}
+
+.scroll-pane .button {
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+	-fx-padding: 0px;
+	-fx-font-size: 25px;
+}
+
+.scroll-pane {
+	-fx-background-color: transparent;
+	-fx-pref-height: 213px;
+	-fx-max-width: 360px;
+	-fx-fit-to-height: true;
+	-fx-fit-to-width: false;
+}
+
+.scroll-bar:vertical {
+	-fx-background-color: transparent;
+	-fx-unit-increment: 1;
+	-fx-block-increment: 1;
+}
+
+.center {
+	-fx-alignment: center;
+	-fx-spacing: 15px;
+	-fx-padding: 15px;
+}
+
+.hbox {
+	-fx-alignment: center;
+	-fx-spacing: 15px;
+}
+
+.joueurconfig {
+	-fx-spacing: 20px;
 }

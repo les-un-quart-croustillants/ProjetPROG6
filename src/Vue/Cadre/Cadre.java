@@ -11,7 +11,7 @@ import javafx.scene.layout.Pane;
 public class Cadre extends Pane {
 	private Canvas canvas;
 	public GraphicsContext gc;
-	public ArrayList<GameObject> gameObjects;
+	public ArrayList<ArrayList<GameObject>> gameObjects;
 
 	public Cadre() {
 		super();
@@ -20,7 +20,10 @@ public class Cadre extends Pane {
 		canvas.widthProperty().bind(this.widthProperty());
 		canvas.heightProperty().bind(this.heightProperty());
 		gc = canvas.getGraphicsContext2D();
-		gameObjects = new ArrayList<GameObject>();
+		gameObjects = new ArrayList<ArrayList<GameObject>>();
+		for(int i=0;i<10;i++) {
+			gameObjects.add(new ArrayList<GameObject>());
+		}
 	}
 
 	public Cadre(int wpref, int hpref) {
@@ -32,16 +35,29 @@ public class Cadre extends Pane {
 	 * update : Appelle la fonction update de tous ses gameobjects.
 	 */
 	public void update() {
-		Iterator<GameObject> it = gameObjects.iterator();
-		while (it.hasNext()) {
-			GameObject go = it.next();
-			go.update();
-
-			if (go.estDetruit()) {
-				it.remove();
-				go.onDestroy();
+		/*
+		 * Iterator<GameObject> it = gameObjects.iterator(); while(it.hasNext()) {
+		 * GameObject go = it.next(); go.update();
+		 * 
+		 * if(go.estDetruit()) { it.remove(); go.onDestroy(); }
+		 * 
+		 * }
+		 */
+		// TODO : à améliorer
+		// update
+		for (int i = 0; i < gameObjects.size(); i++) {
+			for (int j = 0; j < gameObjects.get(i).size(); j++) {
+				gameObjects.get(i).get(j).update();
 			}
-
+			// detruire
+			Iterator<GameObject> it = gameObjects.get(i).iterator();
+			while (it.hasNext()) {
+				GameObject go = it.next();
+				if (go.estDetruit()) {
+					it.remove();
+					go.onDestroy();
+				}
+			}
 		}
 	}
 
@@ -51,10 +67,12 @@ public class Cadre extends Pane {
 	public void draw() {
 		gc.clearRect(0, 0, this.getWidth(), this.getHeight());
 		// gc.strokeRect(0, 0, this.getWidth(), this.getHeight());
-		Iterator<GameObject> it = gameObjects.iterator();
-		while (it.hasNext()) {
-			GameObject go = it.next();
-			go.draw(gc);
+		for (int i = 0; i < gameObjects.size(); i++) {
+			Iterator<GameObject> it = gameObjects.get(i).iterator();
+			while (it.hasNext()) {
+				GameObject go = it.next();
+				go.draw(gc);
+			}
 		}
 	}
 }
