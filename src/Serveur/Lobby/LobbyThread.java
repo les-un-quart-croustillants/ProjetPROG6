@@ -31,7 +31,6 @@ public class LobbyThread implements Runnable {
 			(new Thread(this)).start();
 		} catch (Exception e) {
 			System.out.println("Connection au client echouee");
-			.getClass().System.out.println(e.getMessage());
 		}
 	}
 
@@ -53,7 +52,7 @@ public class LobbyThread implements Runnable {
 				switch (splited[0]) {
 				case "I": // Get instances
 					System.out.println("Client asking for instances. Sending instances...");
-					this.out.print(this.instances);
+					this.outObj.writeObject(this.instances);
 					System.out.println("done");
 					break;
 				case "C": // Connect to instance

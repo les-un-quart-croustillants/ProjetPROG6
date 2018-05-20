@@ -10,14 +10,17 @@ public class ClientAnwserProtocol {
 
 	public enum State {
 		DEFAULT, // Wait a string by default
-		WAITFORINSTANCES; // Wait for the instances object
-
-		public String toString(State s) {
+		WAITFORINSTANCES, // Wait for the instances object
+		WAITFORANWSER; // Message from server is expected
+		
+		public static String toString(State s) {
 			switch (s) {
 			case DEFAULT:
 				return "DEFAULT";
 			case WAITFORINSTANCES:
 				return "WAITFORINSTANCES";
+			case WAITFORANWSER:
+				return "WAITFORANWSER";
 			default:
 				return "UNDEFINED";
 			}
@@ -46,6 +49,11 @@ public class ClientAnwserProtocol {
 			}
 		}
 		String res = this.ihmMessage;
+		if(res == "I") {
+			this.currentState = State.WAITFORINSTANCES;	
+		} else {
+			this.currentState = State.WAITFORANWSER;
+		}
 		this.serverMessage = input;
 		this.ihmMessage = null;
 		notifyAll();
@@ -73,6 +81,7 @@ public class ClientAnwserProtocol {
 			}
 		}
 		String res = this.serverMessage;
+		this.currentState = State.DEFAULT;
 		this.serverMessage = null;
 		return res;
 	}
@@ -91,7 +100,7 @@ public class ClientAnwserProtocol {
 
 	synchronized public void instances() {
 		this.ihmMessage = "I";
-		this.currentState = State.WAITFORINSTANCES;
+		this.currentState = State.DEFAULT;
 		notifyAll();
 	}
 

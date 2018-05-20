@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -17,6 +18,7 @@ public class Client implements Runnable {
 	Socket clientSocket;
 	PrintWriter out;
 	ObjectInputStream inObj;
+	ObjectOutputStream outObj;
 	BufferedReader in;
 	ClientAnwserProtocol cap;
 
@@ -29,15 +31,12 @@ public class Client implements Runnable {
 		this.joueursIDs = new ArrayList<Integer>();
 		try {
 			this.clientSocket = new Socket(hostName, port);
-			System.out.println("YES");
 			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
-			System.out.println("YES");
 			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			System.out.println("YES");
-			//this.inObj = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-			System.out.println("YES");
+			this.outObj = new ObjectOutputStream(clientSocket.getOutputStream());
+			outObj.flush();
+			this.inObj = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
 			this.cap = cap;
-			System.out.println("YES");
 			(new Thread(this)).start();
 		} catch (UnknownHostException e) {
 			System.err.println("impossible d'atteindre le lobby " + hostName);
@@ -55,15 +54,16 @@ public class Client implements Runnable {
 		String inputLine = null, outputLine = null;
 		Object inputObj;
 		
-		System.out.println("Connection etablie avec le serveur");
-
 		try {
 			// out.print(this.joueursIDs); //Envois des identifiants des joueurs geres par
 			// le client
 			// Lecture du flus de donnees provenant du serveur
 			while (inputLine != "Bye") {
 				if (cap.currentState() == State.DEFAULT) { // Si le client est en attente d'un message
-					inputLine = "none"; //in.readLine();
+					inputLine = "none";
+					outputLine = cap.processInputString(inputLine);
+				} else if(cap.currentState() == State.WAITFORANWSER) {
+					inputLine = in.readLine();
 					outputLine = cap.processInputString(inputLine);
 				} else { // Si le client est en attente de donnees
 					inputObj = inObj.readObject();

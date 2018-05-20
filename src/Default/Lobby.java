@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 
 import Serveur.Lobby.InstanceList;
 import Serveur.Lobby.LobbyThread;
+import Utils.Couple;
 
 public class Lobby {
 	public static void main(String[] args) throws IOException {
@@ -17,6 +18,8 @@ public class Lobby {
 			boolean run = true;
 			ServerSocket serverSocket = new ServerSocket(0);
 			InstanceList instances = new InstanceList();
+			instances.add(new Couple<String,Integer>("bob",12345));
+			instances.add(new Couple<String,Integer>("Alice",54321));
 			try (final DatagramSocket socket = new DatagramSocket()) {
 				socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
 				ip = socket.getLocalAddress().getHostAddress();
