@@ -42,7 +42,7 @@ public class JeuConsole {
 	/* format texte */
 	public static final String BOLD = "\033[1m";
 	public static final String UNDERLINE = "\033[4m";
-	public static final String BLINK = "\033[5m";
+	public static final String FRAMED = "\033[51m";
 	/* affichage */
 	public static final String CLEAR = "\033[2Jm";
 
@@ -59,10 +59,10 @@ public class JeuConsole {
 		boolean fin_partie = false;
 
 		/* Initialisation moteur */
-		//joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
-		joueurs.add(new JoueurIA(1, 3, "Henry", Difficulte.FACILE));
-		joueurs.add(new JoueurIA(2, 3, "Chris. P. Beacon", Difficulte.FACILE));
-		joueurs.add(new JoueurIA(3, 3, "Johny cash", Difficulte.FACILE));
+		joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
+		//joueurs.add(new JoueurIA(0, 3, "Henry", Difficulte.FACILE));
+		joueurs.add(new JoueurIA(1, 3, "Chris. P. Beacon", Difficulte.FACILE));
+		joueurs.add(new JoueurIA(2, 3, "Johny cash", Difficulte.FACILE));
 		m = new Moteur(p, joueurs);
 		m.setCurrentState(State.POSER_PINGOUIN);
 
@@ -175,10 +175,14 @@ public class JeuConsole {
 	 * @throws Exception
 	 */
 	private static void processInput(Moteur m, Position input) throws Exception {
-		if (input.equals(undo) && m.undo() == null) {
-			System.out.println("Undo impossible.");
-		} else if (input.equals(redo) && m.redo() == null) {
-			System.out.println("Redo impossible.");
+		if (input.equals(undo)) {
+			if(m.undo() == null) {
+				System.out.println("Undo impossible.");	
+			}
+		} else if (input.equals(redo)) {
+			if(m.redo() == null) {
+				System.out.println("Redo impossible.");	
+			}
 		} else if (m.currentState() == State.POSER_PINGOUIN) {
 			if (!(input = m.poserPingouin(input)).equals(error)) {
 				System.out.println("Pingouin pose en (" + input.i() + "," + input.j() + ")");
@@ -234,7 +238,7 @@ public class JeuConsole {
 						if (m.plateau().getCellule(p).aPingouin()) {
 							if ((m.pingouinSelection() != null)
 									&& m.plateau().getCellule(p).pingouin().equals(m.pingouinSelection())) {
-								System.out.print(BOLD + UNDERLINE
+								System.out.print(BOLD + FRAMED
 										+ color_joueurs[m.plateau().getCellule(p).pingouin().employeur()] + "P" + RESET
 										+ WHITE_BG + BLACK + " ");
 							} else {
@@ -253,7 +257,7 @@ public class JeuConsole {
 						if (m.plateau().getCellule(p).aPingouin()) {
 							if ((m.pingouinSelection() != null)
 									&& m.plateau().getCellule(p).pingouin().equals(m.pingouinSelection())) {
-								System.out.print(BOLD + UNDERLINE
+								System.out.print(BOLD + FRAMED
 										+ color_joueurs[m.plateau().getCellule(p).pingouin().employeur()] + "P" + RESET
 										+ WHITE_BG + BLACK + "   ");
 							} else {
@@ -274,7 +278,7 @@ public class JeuConsole {
 						if (m.plateau().getCellule(p).aPingouin()) {
 							if ((m.pingouinSelection() != null)
 									&& m.plateau().getCellule(p).pingouin().equals(m.pingouinSelection())) {
-								System.out.print("  " + BOLD + UNDERLINE
+								System.out.print("  " + BOLD + FRAMED
 										+ color_joueurs[m.plateau().getCellule(p).pingouin().employeur()] + "P" + RESET
 										+ WHITE_BG + BLACK);
 							} else {
@@ -294,7 +298,7 @@ public class JeuConsole {
 						if (m.plateau().getCellule(p).aPingouin()) {
 							if ((m.pingouinSelection() != null)
 									&& m.plateau().getCellule(p).pingouin().equals(m.pingouinSelection())) {
-								System.out.print("   " + BOLD + UNDERLINE
+								System.out.print("   " + BOLD + FRAMED
 										+ color_joueurs[m.plateau().getCellule(p).pingouin().employeur()] + "P" + RESET
 										+ WHITE_BG + BLACK);
 							} else {
@@ -321,7 +325,7 @@ public class JeuConsole {
 			}
 		}
 
-		for (int i = 0; i <= m.njoueurs(); i++) {
+		for (int i = 0; i < m.njoueurs(); i++) {
 			if (pingouins.get(i).size() > 0) {
 				System.out.print(colorbg_joueurs[i] + "Pingouins" + RESET + " ");
 				for (Pingouin p : pingouins.get(i)) {
@@ -331,7 +335,7 @@ public class JeuConsole {
 						System.out.print(p.position() + " ");
 					}
 				}
-				if (m.pingouinSelection() != null && m.pingouinSelection().employeur() == m.joueur(i-1).id()) {
+				if (m.pingouinSelection() != null && m.pingouinSelection().employeur() == m.joueur(i).id()) {
 					System.out.println();
 					System.out.print(colorbg_joueurs[i] + "Coups possible" + RESET + " ");
 					for (Position pos : highLight) {
@@ -365,7 +369,7 @@ public class JeuConsole {
 		System.out.println(" (@@@@        |                                                                   ");
 		System.out.println("  (__@@_______)                                                                   ");
 		System.out.print(RESET);
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 	}
 
 }
