@@ -8,6 +8,7 @@ import Utils.Couple;
 
 public class HeuristiqueB {
 		public static int calcul(Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id) {
+
 			int heuristique = 50;
 
 			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
@@ -26,16 +27,7 @@ public class HeuristiqueB {
 					}
 				}
 				
-				System.out.println("------------------------------------");
 
-				for(int i = 0; i < composantesInit.size();i++) {
-					System.out.println("les composantes avant : "+composantesInit.get(i));
-				}
-				
-				for(int i = 0; i < composantesCalcul.size();i++) {
-						System.out.println("les composantes apres : "+composantesCalcul.get(i));
-				}
-				System.out.println("------------------------------------");
 				LinkedList<Integer> nbPingouinEnnemisList = new LinkedList<Integer>();
 				LinkedList<Integer> nbPingouinAlliesList = new LinkedList<Integer>();
 				LinkedList<Integer> nbPoissonsComposanteList = new LinkedList<Integer>();
@@ -66,87 +58,32 @@ public class HeuristiqueB {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-					if(nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/12 && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique +5;
-					}
 					// TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
-					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
-						heuristique = heuristique -1000;
-					}
-					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) >= 1) {
-						heuristique = heuristique -1000;
-					}
-					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique +5;
-					}
-					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) > 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique +1000;
-					}
-					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
-						heuristique = heuristique -1000;
-					}
-					if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/10) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
-						heuristique = heuristique -1000;
-					}					
-					if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis > 0) {
-						heuristique = heuristique -3;
-					}
-				}
-			/*	for(int i = 0; i < composantesCalcul.size();i++) {
-					for(int j = 0; j < composantesInit.size();j++) {
-						if(composantesCalcul.get(i) == composantesInit.get(j))
-							composantesCalcul.remove(i);
-					}
-				}
-				for(int i = 0; i < composantesCalcul.size();i++) {
-					if(composantesCalcul.get(i).size() != 1) {
-						int nbPingouinEnnemis = 0;
-						int nbPingouinAllies = 0;
-						int nbPoissonsComposante = 0;
-						for(int j = 0; j < composantesCalcul.get(i).size();j++) {
-							if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
-								nbPingouinAllies++;
-								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
-									heuristique = heuristique - 3;
-								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
-									heuristique = heuristique - 2;
-							}
-							else if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() != id) {	
-								nbPingouinEnnemis++;
-								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
-									heuristique = heuristique + 3;
-								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
-									heuristique = heuristique + 2;
-							}	
-							nbPoissonsComposante = nbPoissonsComposante + pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish();	
-						}
-						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
-							heuristique = heuristique +5;
-						}
-						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis >= 1) {
-							heuristique = heuristique +10;
-						}
-						if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
-							heuristique = heuristique -10050;
-						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis == 0) {
-							heuristique = heuristique +2;
-						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis == 0) {
-							heuristique = heuristique +10;
-						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
-							heuristique = heuristique -1000;
-						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/12) && nbPingouinAllies == 0 && nbPingouinEnnemis > 0) {
-							heuristique = heuristique -10;
-						}
-						if((nbPoissonsComposante < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAllies > 0 && nbPingouinEnnemis > 0) {
-							heuristique = heuristique +1;
-						}
-					}
-				}	
 
+					//si une petit ile est laissée seule
+					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique + nbPoissonsComposanteList.get(i);
+					}
+					
+					//si une portion du plateau est laissee a l'ennemi
+					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+						heuristique = heuristique + nbPoissonsComposanteList.get(i) - 3*nbPingouinEnnemisList.get(i) ;
+					}
+					//si on a un pingouinennemi est seul sur une grosse partie de banquise
+					if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 1) {
+						heuristique = heuristique + 20;
+					}
+					
+					// si on est seuls sur la banquise
+					if(nbPingouinAlliesList.get(i) > 0 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique - nbPoissonsComposanteList.get(i) + 3*nbPingouinEnnemisList.get(i);
+					}
+					//si on a un pingouin seul sur une grosse pasrtie de banquise
+					if((nbPoissonsComposante > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 1 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique - 20;
+					}
+					
+				}
 			}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {
@@ -164,7 +101,7 @@ public class HeuristiqueB {
 						}	
 						
 					}
-				}*/
+				}
 			}
 		return heuristique;
 	}

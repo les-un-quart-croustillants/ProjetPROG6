@@ -29,13 +29,19 @@ public class JoueurIA extends Joueur {
 		}
 	}
 	
-	public Couple<Position,Position> coupDifficile(Plateau plateau) {
-		return UtilsIA.jouerCoupDifficile(plateau,super.id());
-	}
 	
 	@Override
 	public Couple<Position,Position> prochainCoup(Plateau plateau) {
-		return UtilsIA.jouerCoupDifficile(plateau,super.id());
+		switch(super.difficulte) {
+			case FACILE:
+				return UtilsIA.jouerCoupFacile(plateau,super.id());
+			case MOYEN:
+				return UtilsIA.jouerCoupFacile(plateau,super.id());
+			case DIFFICILE:
+				return UtilsIA.jouerCoupDifficile(plateau,super.id());
+			default :
+				return UtilsIA.jouerCoupFacile(plateau,super.id());
+		}
 	}
 	
 	@Override

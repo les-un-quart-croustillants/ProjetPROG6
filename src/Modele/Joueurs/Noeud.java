@@ -7,9 +7,11 @@ import Utils.Couple;
 public class Noeud {
 
 		private LinkedList<Couple<Position,Position>> listcoup;
-		private int heuristique;
+		private int heuristique = -100000;
 		private Noeud pere ;
 		private LinkedList<Noeud> fils;
+		private int valancetre = -100000;
+
 		
 		public Noeud() {
 			this.listcoup = new LinkedList<Couple<Position,Position>>() ;
@@ -36,6 +38,15 @@ public class Noeud {
 			this.pere = pere;
 			this.fils = lfils;
 		}
+		
+		public void setvalancetre(int a) {
+			this.valancetre = a;
+		}
+		
+		public int getvalancetre() {
+			return this.valancetre;
+		}
+		
 		/**
 		 * @return si le neoud est une feuille
 		 */
