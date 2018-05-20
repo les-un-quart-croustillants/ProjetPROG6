@@ -262,10 +262,10 @@ public class Moteur implements Serializable {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<ArrayList<Integer>> podium() throws Exception {
-		if (tousElimines()) {
-			@SuppressWarnings("unchecked")
-			ArrayList<Joueur> tmp = (ArrayList<Joueur>) this.joueurs.clone();
+	public ArrayList<ArrayList<Integer>> scores(boolean sorted) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Joueur> tmp = (ArrayList<Joueur>) this.joueurs.clone();
+		if(sorted) {
 			// Tri les joueurs elimines en vue du calcul du podium
 			Collections.sort(tmp, new Comparator<Joueur>() {
 				@Override
@@ -277,22 +277,20 @@ public class Moteur implements Serializable {
 					}
 				}
 			});
-			Collections.reverse(tmp);
-			ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
-			for (Joueur j : tmp) {
-				res.add(new ArrayList<Integer>() {
-					private static final long serialVersionUID = 1L;
-					{
-						add(j.id());
-						add(j.scoreFish());
-						add(j.scoreDestroyed());
-					}
-				});
-			}
-			return res;
-		} else {
-			throw new Exception("");
+			Collections.reverse(tmp);	
 		}
+		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+		for (Joueur j : tmp) {
+			res.add(new ArrayList<Integer>() {
+				private static final long serialVersionUID = 1L;
+				{
+					add(j.id());
+					add(j.scoreFish());
+					add(j.scoreDestroyed());
+				}
+			});
+		}
+		return res;
 	}
 
 	/**
@@ -392,7 +390,7 @@ public class Moteur implements Serializable {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
-				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau);
+				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau,this.scores(false));
 				if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
 					// Si choix du pingouin effectue
 					tmp = calculated.gauche();
