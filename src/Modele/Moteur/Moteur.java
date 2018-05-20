@@ -264,8 +264,10 @@ public class Moteur implements Serializable {
 	 */
 	public ArrayList<ArrayList<Integer>> podium() throws Exception {
 		if (tousElimines()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<Joueur> tmp = (ArrayList<Joueur>) this.joueurs.clone();
 			// Tri les joueurs elimines en vue du calcul du podium
-			Collections.sort(this.joueurs, new Comparator<Joueur>() {
+			Collections.sort(tmp, new Comparator<Joueur>() {
 				@Override
 				public int compare(Joueur a, Joueur b) {
 					if (a.scoreFish() == b.scoreFish()) {
@@ -275,9 +277,9 @@ public class Moteur implements Serializable {
 					}
 				}
 			});
-			Collections.reverse(joueurs);
+			Collections.reverse(tmp);
 			ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
-			for (Joueur j : this.joueurs) {
+			for (Joueur j : tmp) {
 				res.add(new ArrayList<Integer>() {
 					private static final long serialVersionUID = 1L;
 					{
