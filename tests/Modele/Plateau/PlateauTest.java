@@ -266,6 +266,10 @@ public class PlateauTest {
 		Assert.assertTrue(p.estAccessible(current, target));
 		Assert.assertTrue(p.estAccessible(target, current));
 
+		target = new Position(2,0);
+		Assert.assertFalse(p.estAccessible(current, target));
+		Assert.assertFalse(p.estAccessible(target, current));
+
 		p.destroyCell(new Position(1,1));
 		Assert.assertFalse(p.estAccessible(current, target));
 		Assert.assertFalse(p.estAccessible(target, current));
@@ -358,7 +362,7 @@ public class PlateauTest {
 			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
-			if (sujet.isInTab(target) && sujet.estAccessible(current, target))
+			if (sujet.isInTab(target) && sujet.accessible(current).contains(target))
 				expected = sujet.getCellule(target).getFish();
 			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
 			sujet = p.clone();
