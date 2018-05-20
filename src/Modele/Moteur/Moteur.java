@@ -21,7 +21,6 @@ public class Moteur implements Serializable {
 
 	// ETAT MOTEUR
 	private int njoueurs;
-	private int nbPingouin;
 	private int indexJoueurCourant = 0;
 	private Position selected;
 	private boolean undoRedoAutorise;
@@ -101,7 +100,6 @@ public class Moteur implements Serializable {
 		this.plateau = p;
 		this.njoueurs = joueurs.size();
 		this.joueurs = joueurs;
-		this.nbPingouin = 0;
 		this.undoRedoAutorise = false;
 		this.selected = null;
 		for (Joueur j : joueurs) {
@@ -360,7 +358,6 @@ public class Moteur implements Serializable {
 			}
 			// Si la pose reussis
 			if (this.joueurCourant().posePingouin(this.plateau, tmp)) {
-				this.nbPingouin++;
 				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
 				if (pingouinsPoses()) {
