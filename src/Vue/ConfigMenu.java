@@ -9,38 +9,49 @@ import javafx.scene.text.*;
 import Utils.GameConfig;
 
 public class ConfigMenu extends VBox {
+	public boolean editFlag = false;	
+	private static ConfigMenu instance = null;
+	Integer dim = 8;
+	VBox listJoueurs;
+	Button retour;
+	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
 		public Label nbPenguin;
 		public Button typeJoueur, difficulte, minusPenguin, plusPenguin, delete;
-		public int nb_Penguin = 1;
+		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
+		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
+		private int nb_Penguin;
 		
 		GameConfig.ConfigJoueur getConfig() {
-			GameConfig.TypeJoueur t;
-			GameConfig.difficulte d;
-			
-			if(typeJoueur.getText() == "Humain") {
-				t = GameConfig.TypeJoueur.HUMAIN;
+			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin);
+		}
+		
+		public void editNbPenguins(int newnb) {
+			nb_Penguin = newnb >= 4 ? 4 : newnb <= 0 ? 0 : newnb;
+			nbPenguin.setText("x"+nb_Penguin);
+		}
+		
+		public void editPlayerType(GameConfig.TypeJoueur type) {
+			if(type == GameConfig.TypeJoueur.HUMAIN) {
+				typeJoueur.setText("HUMAIN");
+				if(type_joueur != type)
+					objet.getChildren().remove(difficulte);
 			} else {
-				t = GameConfig.TypeJoueur.IA;
+				typeJoueur.setText("IA");
+				if(type_joueur != type)
+					objet.getChildren().add(2, difficulte);
 			}
-			
-			if(difficulte.getText() == "Facile") {
-				d = GameConfig.difficulte.FACILE;
-			} else if(difficulte.getText() == "Moyen") {
-				d = GameConfig.difficulte.MOYEN;
-			} else {
-				d = GameConfig.difficulte.DIFFICILE;
-			}
-			
-			return new GameConfig.ConfigJoueur(t, d, nb_Penguin);
+			type_joueur = type;
 		}
 		
 		public JoueurConfig(VBox parent) {
+			type_joueur = GameConfig.TypeJoueur.HUMAIN;
+			diff_IA = GameConfig.difficulte.FACILE;
 			this.getStyleClass().add("joueurconfig");
 			VBox joueurLyt = new VBox();
-			typeJoueur = new Button("Humain");
-			difficulte = new Button("Facile");
+			typeJoueur = new Button("HUMAIN");
+			difficulte = new Button("FACILE");
 			nbPenguin = new Label("x"+nb_Penguin);
 			minusPenguin = new Button();
 			delete = new Button();
@@ -52,44 +63,42 @@ public class ConfigMenu extends VBox {
 			
 			minusPenguin.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
-					nb_Penguin = nb_Penguin-1 <= 1 ? 1 : nb_Penguin-1;
-					nbPenguin.setText("x"+nb_Penguin); 
+					editNbPenguins(nb_Penguin-1);
 				} 
 			});
 			
 			delete.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
 					parent.getChildren().remove(objet); 
+					if(!ConfigMenu.getInstance().editFlag)
+						ConfigMenu.getInstance().normalize();
 				} 
 			});
 			
 			plusPenguin.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
-					nb_Penguin = nb_Penguin+1 >= 4 ? 4 : nb_Penguin+1;
-					nbPenguin.setText("x"+nb_Penguin);
+					editNbPenguins(nb_Penguin+1);
 				}
 			});
 			
 			typeJoueur.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
-					if(typeJoueur.getText() == "Humain") {
-						typeJoueur.setText("IA");
-						objet.getChildren().add(2, difficulte);
+					if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
+						editPlayerType(GameConfig.TypeJoueur.IA);
 					} else {
-						typeJoueur.setText("Humain");
-						objet.getChildren().remove(difficulte);
+						editPlayerType(GameConfig.TypeJoueur.HUMAIN);
 					}
 				}
 			});
 			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
-					if(difficulte.getText() == "Facile") {
-						difficulte.setText("Moyen");
-					} else if(difficulte.getText() == "Moyen") {
-						difficulte.setText("Difficile");
+					if(difficulte.getText() == "FACILE") {
+						difficulte.setText("MOYEN");
+					} else if(difficulte.getText() == "MOYEN") {
+						difficulte.setText("DIFFICLE");
 					} else {
-						difficulte.setText("Facile");
+						difficulte.setText("FACILE");
 					}
 				}
 			});
@@ -98,11 +107,6 @@ public class ConfigMenu extends VBox {
 			this.getChildren().addAll(delete, joueurLyt, minusPenguin, nbPenguin, plusPenguin);
 		}
 	}
-	
-	private static ConfigMenu instance = null;
-	Integer dim = 8;
-	VBox listJoueurs;
-	Button retour;
 	
 	public static ConfigMenu getInstance() {
 		if(instance == null)
@@ -114,6 +118,27 @@ public class ConfigMenu extends VBox {
 		Font.loadFont(getClass().getResourceAsStream("LuckiestCuy.ttf"), 14);
 		this.getStyleClass().add("menu");
 		create_elements();
+	}
+	
+	private void normalize() {
+		// Nb pingouins
+		int size = listJoueurs.getChildren().size();
+		boolean first_visited = false;
+		int nbpenguins;
+		if(size <= 4) {
+			nbpenguins = size;
+		} else {
+			nbpenguins = 4;
+		}
+		for(Node jc : listJoueurs.getChildren()) {
+			((JoueurConfig)jc).editNbPenguins(nbpenguins);
+			if(!first_visited) {
+				((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
+				first_visited = true;
+			} else {
+				((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
+			}
+		}
 	}
 	
 	private void create_elements() {
@@ -162,6 +187,8 @@ public class ConfigMenu extends VBox {
 			public void handle(ActionEvent e) {
 				listJoueurs.getChildren().add(new JoueurConfig(listJoueurs));
 				joueursPane.setVvalue(1.0);
+				if(!editFlag)
+					normalize();
 			}
 		});
 		
@@ -170,6 +197,7 @@ public class ConfigMenu extends VBox {
 				new JoueurConfig(listJoueurs), 
 				new JoueurConfig(listJoueurs), 
 				new JoueurConfig(listJoueurs));
+		normalize();
 		
 		dimensionsBox.getChildren().addAll(dimLbl, new Label(), minusDim, dimLblNb, x, dimLblNb2, plusDim);
 		this.getChildren().addAll(configLbl, joueursPane, newJoueur, dimensionsBox, retour);
