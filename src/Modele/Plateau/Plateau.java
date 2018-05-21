@@ -168,12 +168,18 @@ public class Plateau implements Serializable {
 	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
 	 * @param l : la liste de position
 	 * @param candidat : la position à ajouter
-	 * @param traitePingouinObstacle : si les pingouins sont traités comme obstacle ou non
+	 * @param mode : l'entier représentant le mode a utilisé
+	 *              0..+ : l'indice du joueur courant,
+	 *              	ce mode ne considère que les pingouins adverses comme obstacles
+	 *              -1 : considère tous les pingouins comme obstacles
+	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
 	 * @return si l'ajout de candidat à été fait ou non.
 	 */
-	private boolean safeAdd(LinkedList<Position> l, Position candidat, boolean traitePingouinObstacle) {
+	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
 		if (isInTab(candidat)) {
-			if ((traitePingouinObstacle && !getCellule(candidat).isObstacle()) || (!traitePingouinObstacle && getCellule(candidat).isDestroyed())) {
+			if ((mode == -1 && !getCellule(candidat).isObstacle())
+					|| (mode == -2 && getCellule(candidat).isDestroyed())
+					|| (mode >= 0 && getCellule(candidat).pingouin().employeur() != mode)) {
 				if (!l.contains(candidat))
 					l.add(candidat);
 				return true;
@@ -185,10 +191,14 @@ public class Plateau implements Serializable {
 	/**
 	 * listAccessibles : liste les positions accessibles depuis p
 	 * @param p : la position de départ
-	 * @param traiterPingouinObstacle : si les pingouins sont des obstacles
+	 * @param mode : l'entier représentant le mode a utilisé
+	 *              0..+ : l'indice du joueur courant,
+	 *              	ce mode ne considère que les pingouins adverses comme obstacles
+	 *              -1 : considère tous les pingouins comme obstacles
+	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
 	 * @return LinkedList des positions accessible depuis p
 	 */
-	private LinkedList<Position> listAccessibles(Position p, boolean traiterPingouinObstacle) {
+	private LinkedList<Position> listAccessibles(Position p, int mode) {
 		Position candidat;
 		LinkedList<Position> res = new LinkedList<>();
 		boolean bu = true, // diagonale arrière haute continue
@@ -207,11 +217,11 @@ public class Plateau implements Serializable {
 				decalage_arriere = (i + 1) / 2;
 			if (bu) { // diagonale arrière haute
 				candidat = new Position(p.i() - i, p.j() - decalage_arriere);
-				bu = safeAdd(res, candidat, traiterPingouinObstacle);
+				bu = safeAdd(res, candidat, mode);
 			}
 			if (bd) { // digonale arrière basse
 				candidat = new Position(p.i() + i, p.j() - decalage_arriere);
-				bd = safeAdd(res, candidat, traiterPingouinObstacle);
+				bd = safeAdd(res, candidat, mode);
 			}
 			if (p.i() % 2 == 0)
 				decalage_avant = (i + 1) / 2;
@@ -219,20 +229,20 @@ public class Plateau implements Serializable {
 				decalage_avant = i / 2;
 			if (fu) { // diagonale avant haute
 				candidat = new Position(p.i() - i, p.j() +  decalage_avant);
-				fu = safeAdd(res, candidat, traiterPingouinObstacle);
+				fu = safeAdd(res, candidat, mode);
 			}
 			if (fd) { // diagonale avant basse
 				candidat = new Position(p.i() + i, p.j() + decalage_avant);
-				fd = safeAdd(res, candidat, traiterPingouinObstacle);
+				fd = safeAdd(res, candidat, mode);
 			}
 
 			if (b) {
 				candidat = new Position(p.i(), p.j() - i); // ligne arrière
-				b = safeAdd(res, candidat, traiterPingouinObstacle);
+				b = safeAdd(res, candidat, mode);
 			}
 			if (f) {
 				candidat = new Position(p.i(), p.j() + i); // ligne avant
-				f = safeAdd(res, candidat, traiterPingouinObstacle);
+				f = safeAdd(res, candidat, mode);
 			}
 		}
 		return res;
@@ -245,7 +255,7 @@ public class Plateau implements Serializable {
 	 * @return : la liste des position accessibles
 	 */
 	public LinkedList<Position> accessible(Position p) {
-		return listAccessibles(p, true);
+		return listAccessibles(p, -1);
 	}
 
 	/**
@@ -255,7 +265,11 @@ public class Plateau implements Serializable {
 	 * @return : la liste des position accessibles
 	 */
 	public LinkedList<Position> accessiblesanspingouin(Position p) {
-		return listAccessibles(p, false);
+		return listAccessibles(p, -2);
+	}
+
+	public LinkedList<Position> accessiblesansadverse(Position p, int id_joueur) {
+		return listAccessibles(p, id_joueur);
 	}
 
 	int diffDir(int a, int b) {
