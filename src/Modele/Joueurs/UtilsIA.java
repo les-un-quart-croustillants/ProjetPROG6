@@ -393,7 +393,7 @@ public class UtilsIA {
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
 
-		if (n.estFeuille() || profondeur == 3) {
+		if (n.estFeuille() || profondeur == 2) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
 			
@@ -470,7 +470,7 @@ public class UtilsIA {
 		//System.out.println("valeur heuristique du pere "+n.pere().heuristique());
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
-		if (n.estFeuille() || profondeur == 3 ) {
+		if (n.estFeuille() || profondeur == 2 ) {
 			// la configuration ne permet pas de jouer
 			// le joueur A gagne
 			heuristique = evaluerB(n,plateau,id);
