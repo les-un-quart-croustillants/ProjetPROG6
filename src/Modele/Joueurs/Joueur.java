@@ -172,7 +172,7 @@ public abstract class Joueur implements Serializable {
 	 * @param plateau
 	 * @return
 	 */
-	public Couple<Position, Position> prochainCoup(Plateau plateau) {
+	public Couple<Position, Position> prochainCoup(Plateau plateau,ArrayList<ArrayList<Integer>> scores) {
 		return new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1));
 	}
 
