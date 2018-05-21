@@ -14,6 +14,14 @@
 	-fx-font-size: 58px;
 }
 
+.nameplayer {
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+	-fx-padding: 0px;
+	-fx-font-size: 25px;
+	-fx-max-width: 125px;
+}
+
 .iconbutton {
 	-fx-background-color: transparent;
 }
@@ -61,7 +69,7 @@
 .scroll-pane {
 	-fx-background-color: transparent;
 	-fx-pref-height: 213px;
-	-fx-max-width: 360px;
+	-fx-max-width: 460px;
 	-fx-fit-to-height: true;
 	-fx-fit-to-width: false;
 }

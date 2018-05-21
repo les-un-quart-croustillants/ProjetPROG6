@@ -2,7 +2,6 @@ package Vue.GameObject;
 
 
 import Modele.Moteur.Moteur;
-import Utils.Couple;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.Pane.GamePane;

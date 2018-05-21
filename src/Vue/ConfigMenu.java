@@ -1,7 +1,7 @@
 package Vue;
 
 import javafx.scene.layout.*;
-import java.util.LinkedList;
+import javafx.scene.input.*;
 import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.*;
@@ -18,7 +18,8 @@ public class ConfigMenu extends VBox {
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
 		public Label nbPenguin;
-		public Button typeJoueur, difficulte, minusPenguin, plusPenguin, delete;
+		public Button difficulte, minusPenguin, plusPenguin, delete;
+		public TextField typeJoueur;
 		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
 		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
 		private int nb_Penguin;
@@ -50,7 +51,7 @@ public class ConfigMenu extends VBox {
 			diff_IA = GameConfig.difficulte.FACILE;
 			this.getStyleClass().add("joueurconfig");
 			VBox joueurLyt = new VBox();
-			typeJoueur = new Button("HUMAIN");
+			typeJoueur = new TextField("HUMAIN");
 			difficulte = new Button("FACILE");
 			nbPenguin = new Label("x"+nb_Penguin);
 			minusPenguin = new Button();
@@ -60,6 +61,9 @@ public class ConfigMenu extends VBox {
 			
 			minusPenguin.getStyleClass().addAll("iconbutton", "leftbuttonsmall");
 			plusPenguin.getStyleClass().addAll("iconbutton", "rightbuttonsmall");
+			typeJoueur.getStyleClass().addAll("nameplayer");
+			typeJoueur.setEditable(false);
+			typeJoueur.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 			
 			minusPenguin.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
@@ -81,15 +85,30 @@ public class ConfigMenu extends VBox {
 				}
 			});
 			
-			typeJoueur.setOnAction(new EventHandler<ActionEvent>() {
-				public void handle(ActionEvent e) {
-					if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
-						editPlayerType(GameConfig.TypeJoueur.IA);
+			typeJoueur.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent e) {
+					if(e.getButton() == MouseButton.SECONDARY) {
+						typeJoueur.setEditable(true);
+						typeJoueur.requestFocus();
 					} else {
-						editPlayerType(GameConfig.TypeJoueur.HUMAIN);
+						if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
+							editPlayerType(GameConfig.TypeJoueur.IA);
+						} else {
+							editPlayerType(GameConfig.TypeJoueur.HUMAIN);
+						}
 					}
 				}
 			});
+			
+			typeJoueur.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				public void handle(KeyEvent e) {
+					if(e.getCode() == KeyCode.ENTER) {
+						typeJoueur.setEditable(false);
+					}
+				}
+			});
+			
+
 			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {

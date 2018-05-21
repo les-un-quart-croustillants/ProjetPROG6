@@ -2,8 +2,6 @@ package Utils;
 
 import java.util.LinkedList;
 
-import Modele.Moteur.Moteur.State;
-
 public class GameConfig {
 	public enum TypeJoueur {
 		HUMAIN, IA;
