@@ -25,8 +25,8 @@ public class JoueurCourantGraphique extends GameObject{
 	
 	@Override
 	public void update() {
-		position.x = GamePane.getPlateauCadre().getWidth()/2 - text.length() * 10;
-		position.y = 100;
+		position.x = (float) (GamePane.getPlateauCadre().getWidth()/2 - text.length() * 10);
+		position.y = (float) (GamePane.getPlateauCadre().getHeight()*0.07);
 	}
 	
 	@Override

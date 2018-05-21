@@ -12,6 +12,8 @@ public class InterfaceGraphique extends Application {
 	private static MoteurApp m;
 	private static Stage stage;
 	
+	static public float dt = 1f/60f;
+	
 	public static void creer(String[] args, MoteurApp m) {
 		InterfaceGraphique.m = m;
 		launch(args);
