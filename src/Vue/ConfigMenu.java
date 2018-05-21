@@ -13,10 +13,11 @@ public class ConfigMenu extends VBox {
 	private static ConfigMenu instance = null;
 	Integer dim = 8;
 	VBox listJoueurs;
-	Button retour;
+	Button retour, map_customization;
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
+		public boolean name_editted = false;
 		public Label nbPenguin;
 		public Button difficulte, minusPenguin, plusPenguin, delete;
 		public TextField typeJoueur;
@@ -25,7 +26,7 @@ public class ConfigMenu extends VBox {
 		private int nb_Penguin;
 		
 		GameConfig.ConfigJoueur getConfig() {
-			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin);
+			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, typeJoueur.getText());
 		}
 		
 		public void editNbPenguins(int newnb) {
@@ -34,23 +35,23 @@ public class ConfigMenu extends VBox {
 		}
 		
 		public void editPlayerType(GameConfig.TypeJoueur type) {
-			if(type == GameConfig.TypeJoueur.HUMAIN) {
-				typeJoueur.setText("HUMAIN");
-				if(type_joueur != type)
-					objet.getChildren().remove(difficulte);
-			} else {
-				typeJoueur.setText("IA");
-				if(type_joueur != type)
-					objet.getChildren().add(2, difficulte);
-			}
 			type_joueur = type;
+			if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
+				typeJoueur.setText("HUMAIN");
+				if(difficulte.isVisible())
+					difficulte.setVisible(false);
+			} else {
+					typeJoueur.setText("IA");
+					if(!difficulte.isVisible())
+						difficulte.setVisible(true);		
+			}
 		}
 		
 		public JoueurConfig(VBox parent) {
 			type_joueur = GameConfig.TypeJoueur.HUMAIN;
 			diff_IA = GameConfig.difficulte.FACILE;
 			this.getStyleClass().add("joueurconfig");
-			VBox joueurLyt = new VBox();
+			HBox joueurLyt = new HBox();
 			typeJoueur = new TextField("HUMAIN");
 			difficulte = new Button("FACILE");
 			nbPenguin = new Label("x"+nb_Penguin);
@@ -91,6 +92,7 @@ public class ConfigMenu extends VBox {
 						typeJoueur.setEditable(true);
 						typeJoueur.requestFocus();
 					} else {
+						objet.name_editted = false;
 						if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
 							editPlayerType(GameConfig.TypeJoueur.IA);
 						} else {
@@ -104,6 +106,8 @@ public class ConfigMenu extends VBox {
 				public void handle(KeyEvent e) {
 					if(e.getCode() == KeyCode.ENTER) {
 						typeJoueur.setEditable(false);
+					} else {
+						objet.name_editted = true;
 					}
 				}
 			});
@@ -115,14 +119,14 @@ public class ConfigMenu extends VBox {
 					if(difficulte.getText() == "FACILE") {
 						difficulte.setText("MOYEN");
 					} else if(difficulte.getText() == "MOYEN") {
-						difficulte.setText("DIFFICLE");
+						difficulte.setText("DIFFICILE");
 					} else {
 						difficulte.setText("FACILE");
 					}
 				}
 			});
 			
-			joueurLyt.getChildren().add(typeJoueur);
+			joueurLyt.getChildren().addAll(typeJoueur, difficulte);
 			this.getChildren().addAll(delete, joueurLyt, minusPenguin, nbPenguin, plusPenguin);
 		}
 	}
@@ -149,13 +153,17 @@ public class ConfigMenu extends VBox {
 		} else {
 			nbpenguins = 4;
 		}
+		// Type de joueur
+		//if(Menu.getInstance().getStylesheets())
 		for(Node jc : listJoueurs.getChildren()) {
 			((JoueurConfig)jc).editNbPenguins(nbpenguins);
 			if(!first_visited) {
-				((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
+				if(!((JoueurConfig)jc).name_editted)
+					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
 				first_visited = true;
 			} else {
-				((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
+				if(!((JoueurConfig)jc).name_editted)
+					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
 			}
 		}
 	}
@@ -174,9 +182,11 @@ public class ConfigMenu extends VBox {
 		Button minusDim = new Button();
 		Button plusDim = new Button();
 		
+		map_customization = new Button("Configuration du terrain");
 		retour = new Button("Retour");
 		
 		// Configuration
+		map_customization.getStyleClass().add("textbutton");
 		dimensionsBox.getStyleClass().add("hbox");
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
@@ -219,7 +229,7 @@ public class ConfigMenu extends VBox {
 		normalize();
 		
 		dimensionsBox.getChildren().addAll(dimLbl, new Label(), minusDim, dimLblNb, x, dimLblNb2, plusDim);
-		this.getChildren().addAll(configLbl, joueursPane, newJoueur, dimensionsBox, retour);
+		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, retour);
 	}
 	
 	GameConfig create_config() {

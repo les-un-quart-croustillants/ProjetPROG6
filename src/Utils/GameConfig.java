@@ -33,16 +33,18 @@ public class GameConfig {
 		public TypeJoueur type;
 		public difficulte difficulte_ia;
 		public Integer nb_pingouins;
+		public String name;
 		
-		public ConfigJoueur(TypeJoueur t, difficulte d, Integer n) {
+		public ConfigJoueur(TypeJoueur t, difficulte d, Integer n, String name) {
 			type = t;
+			this.name = name; 
 			difficulte_ia = d;
 			nb_pingouins = n;
 		}
 		
 		@Override
 		public String toString() {
-			String str = type.toString();
+			String str = name + "("+type.toString()+")";
 			if(type == TypeJoueur.IA)
 				str += " " + difficulte_ia.toString();
 			
