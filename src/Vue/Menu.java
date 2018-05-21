@@ -66,6 +66,13 @@ public class Menu extends StackPane {
 				ig.graphic_state();
 			}
 		});
+		
+		MainMenu.getInstance().quickgame.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				mApp.transition(Action.NOUVELLE_PARTIE);
+				ig.graphic_state();
+			}
+		});
 	}
 	
 	private void newGameBehaviour() {
