@@ -101,18 +101,18 @@ public class PlateauCadre extends Cadre {
 	
 	private Button creer_bouton_quitter() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('bouton_quitter.png'); -fx-background-color: transparent; -fx-padding: 0 0 0 0;");
+		b.setStyle("-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0 0 0 0;");
 
 		b.setOnMouseEntered(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('bouton_quitter_hover.png'); -fx-background-color: transparent; -fx-padding: 0;");
+				b.setStyle("-fx-graphic: url('bouton_parametre_hover.png'); -fx-background-color: transparent; -fx-padding: 0;");
 			}
 		});
 		b.setOnMouseExited(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('bouton_quitter.png'); -fx-background-color: transparent; -fx-padding: 0;");
+				b.setStyle("-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0;");
 			}
 		});
 

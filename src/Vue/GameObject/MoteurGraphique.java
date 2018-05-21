@@ -109,6 +109,10 @@ public class MoteurGraphique extends GameObject {
 	private void onStateSELECTIONNER_PINGOUIN_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().selectionnerPingouin(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))) {
+				System.out.println("Probleme: l'ia n'a pas su jouer");
+				System.exit(1);
+			}
 			pingouinCoupIA = p;
 			GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].select();
 			currentState = StateGraph.SELECTIONNER_DESTINATION_GRAPH;
@@ -118,6 +122,10 @@ public class MoteurGraphique extends GameObject {
 	private void onStateSELECTIONNER_DESTINATION_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().selectionnerDestination(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))) {
+				System.out.println("Probleme: l'ia n'a pas su jouer");
+				System.exit(1);
+			}
 			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].deselect();
 			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].pingouinGraphique
 					.moveTo(p);

@@ -21,7 +21,6 @@ public class Moteur implements Serializable {
 
 	// ETAT MOTEUR
 	private int njoueurs;
-	private int nbPingouin;
 	private int indexJoueurCourant = 0;
 	private Position selected;
 	private boolean undoRedoAutorise;
@@ -101,7 +100,6 @@ public class Moteur implements Serializable {
 		this.plateau = p;
 		this.njoueurs = joueurs.size();
 		this.joueurs = joueurs;
-		this.nbPingouin = 0;
 		this.undoRedoAutorise = false;
 		this.selected = null;
 		for (Joueur j : joueurs) {
@@ -264,10 +262,12 @@ public class Moteur implements Serializable {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<ArrayList<Integer>> podium() throws Exception {
-		if (tousElimines()) {
+	public ArrayList<ArrayList<Integer>> scores(boolean sorted) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Joueur> tmp = (ArrayList<Joueur>) this.joueurs.clone();
+		if(sorted) {
 			// Tri les joueurs elimines en vue du calcul du podium
-			Collections.sort(this.joueurs, new Comparator<Joueur>() {
+			Collections.sort(tmp, new Comparator<Joueur>() {
 				@Override
 				public int compare(Joueur a, Joueur b) {
 					if (a.scoreFish() == b.scoreFish()) {
@@ -277,22 +277,20 @@ public class Moteur implements Serializable {
 					}
 				}
 			});
-			Collections.reverse(joueurs);
-			ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
-			for (Joueur j : this.joueurs) {
-				res.add(new ArrayList<Integer>() {
-					private static final long serialVersionUID = 1L;
-					{
-						add(j.id());
-						add(j.scoreFish());
-						add(j.scoreDestroyed());
-					}
-				});
-			}
-			return res;
-		} else {
-			throw new Exception("");
+			Collections.reverse(tmp);	
 		}
+		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+		for (Joueur j : tmp) {
+			res.add(new ArrayList<Integer>() {
+				private static final long serialVersionUID = 1L;
+				{
+					add(j.id());
+					add(j.scoreFish());
+					add(j.scoreDestroyed());
+				}
+			});
+		}
+		return res;
 	}
 
 	/**
@@ -360,7 +358,6 @@ public class Moteur implements Serializable {
 			}
 			// Si la pose reussis
 			if (this.joueurCourant().posePingouin(this.plateau, tmp)) {
-				this.nbPingouin++;
 				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
 				if (pingouinsPoses()) {
@@ -393,7 +390,7 @@ public class Moteur implements Serializable {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
-				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau);
+				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau,this.scores(false));
 				if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
 					// Si choix du pingouin effectue
 					tmp = calculated.gauche();
@@ -467,9 +464,13 @@ public class Moteur implements Serializable {
 
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
-				if (res.gauche() > 0) {
-					if ((indexJoueurCourant = indexJoueur(res.droit())) > 0) {
+				if (res.gauche() >= 0) {
+					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
+						System.out.println("Avant: "+joueurCourant() + " | " +indexJoueurCourant());
+						System.out.flush();
 						joueurCourant().undo(res.gauche());
+						System.out.println("Apres: "+joueurCourant() + " | "+ indexJoueurCourant());
+						System.out.flush();
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
