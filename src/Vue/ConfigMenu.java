@@ -17,7 +17,7 @@ public class ConfigMenu extends VBox {
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
-		public boolean name_editted = false;
+		public boolean type_editted = false;
 		public Label nbPenguin;
 		public Button difficulte, minusPenguin, plusPenguin, delete;
 		public TextField typeJoueur;
@@ -30,7 +30,7 @@ public class ConfigMenu extends VBox {
 		}
 		
 		public void editNbPenguins(int newnb) {
-			nb_Penguin = newnb >= 4 ? 4 : newnb <= 0 ? 0 : newnb;
+			nb_Penguin = newnb >= 4 ? 4 : newnb <= 0 ? 1 : newnb;
 			nbPenguin.setText("x"+nb_Penguin);
 		}
 		
@@ -68,6 +68,7 @@ public class ConfigMenu extends VBox {
 			
 			minusPenguin.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
+					objet.type_editted = true;
 					editNbPenguins(nb_Penguin-1);
 				} 
 			});
@@ -82,6 +83,7 @@ public class ConfigMenu extends VBox {
 			
 			plusPenguin.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
+					objet.type_editted = true;
 					editNbPenguins(nb_Penguin+1);
 				}
 			});
@@ -92,7 +94,7 @@ public class ConfigMenu extends VBox {
 						typeJoueur.setEditable(true);
 						typeJoueur.requestFocus();
 					} else {
-						objet.name_editted = false;
+						objet.type_editted = true;
 						if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
 							editPlayerType(GameConfig.TypeJoueur.IA);
 						} else {
@@ -107,7 +109,7 @@ public class ConfigMenu extends VBox {
 					if(e.getCode() == KeyCode.ENTER) {
 						typeJoueur.setEditable(false);
 					} else {
-						objet.name_editted = true;
+						objet.type_editted = true;
 					}
 				}
 			});
@@ -116,6 +118,7 @@ public class ConfigMenu extends VBox {
 			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
+					objet.type_editted = true;
 					if(difficulte.getText() == "FACILE") {
 						difficulte.setText("MOYEN");
 					} else if(difficulte.getText() == "MOYEN") {
@@ -158,11 +161,11 @@ public class ConfigMenu extends VBox {
 		for(Node jc : listJoueurs.getChildren()) {
 			((JoueurConfig)jc).editNbPenguins(nbpenguins);
 			if(!first_visited) {
-				if(!((JoueurConfig)jc).name_editted)
+				if(!((JoueurConfig)jc).type_editted)
 					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
 				first_visited = true;
 			} else {
-				if(!((JoueurConfig)jc).name_editted)
+				if(!((JoueurConfig)jc).type_editted)
 					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
 			}
 		}
