@@ -393,9 +393,10 @@ public class UtilsIA {
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
 
-		if (n.estFeuille() || profondeur == 4) {
+		if (n.estFeuille() || profondeur == 3) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
+			
 			heuristique = evaluerA(n,plateau,id); 
 		
 			r.put(n.listcoup(), heuristique);
@@ -411,26 +412,24 @@ public class UtilsIA {
 			for(int i =0; i < n.fils().size() ;i++) {
 				
 				LinkedList<Position> composantePingouin = composanteConnexePingouin(pcurr,pcurr.getCellule(n.fils().get(i).listcoup().get(0).gauche()).pingouin());
-				int nbpingouincomposante = 0;
+				int nbpingouinennemiscomposante = 0;
 				for(int j =0; j < composantePingouin.size();j++) {
-					if(pcurr.getCellule(composantePingouin.get(j)).aPingouin())
-						nbpingouincomposante++;
+					if(pcurr.getCellule(composantePingouin.get(j)).aPingouin() && pcurr.getCellule(composantePingouin.get(j)).pingouin().employeur() != id)
+						nbpingouinennemiscomposante++;
 						
 				}
-				if(nbpingouincomposante != 1) {
+				if(nbpingouinennemiscomposante != 0) {
 					Noeud filsclone = n.fils().get(i).clone();
-
-
 					int curr = minimaxB(filsclone, r, profondeur+1,pcurr,id);
 					n.fils().get(i).setHeuristic(curr);
-					
+					/*
 					//elagage alpha beta
 					if(profondeur > 0 && n.pere().heuristique() != -100000 && n.fils().get(i).heuristique() > n.pere().heuristique()) {
 						heuristique = filsclone.heuristique();
 						r.put(n.listcoup(), heuristique);
 						n.setHeuristic(heuristique);
 						return heuristique;
-					}
+					}*/
 					
 					
 					// Si fils n'as pas encore ete calcule, le faire et mettre a jour r
@@ -446,7 +445,7 @@ public class UtilsIA {
 				}
 				else {
 					System.out.println("pingouin tout seul");
-					heuristique = Math.min(heuristique,-1);
+					heuristique = Math.min(heuristique,-1000000);
 				}
 			}
 			return heuristique;
@@ -471,7 +470,7 @@ public class UtilsIA {
 		//System.out.println("valeur heuristique du pere "+n.pere().heuristique());
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
-		if (n.estFeuille() || profondeur == 4 ) {
+		if (n.estFeuille() || profondeur == 3 ) {
 			// la configuration ne permet pas de jouer
 			// le joueur A gagne
 			heuristique = evaluerB(n,plateau,id);
@@ -480,7 +479,7 @@ public class UtilsIA {
 			return heuristique;
 		} else {
 			// Le joueur B doit jouer
-			heuristique = 1000; // + infini
+			heuristique = 1000000; // + infini
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			
@@ -492,8 +491,7 @@ public class UtilsIA {
 				int nbpingouincomposante = 0;
 				for(int j =0; j < composantePingouin.size();j++) {
 					if(pcurr.getCellule(composantePingouin.get(j)).aPingouin())
-						nbpingouincomposante++;
-						
+						nbpingouincomposante++;	
 				}
 				
 				if(nbpingouincomposante != 1) {
@@ -501,14 +499,14 @@ public class UtilsIA {
 					int curr = minimaxA(n.fils().get(i), r, profondeur+1,pcurr,id);
 					n.fils().get(i).setHeuristic(curr);
 					
-
+					/*
 					//elagage alpha beta
 					if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.fils().get(i).heuristique() < n.pere().heuristique()) {
 						heuristique = filsclone.heuristique();
 						r.put(n.listcoup(), heuristique);
 						n.setHeuristic(heuristique);
 						return heuristique;
-					}
+					}*/
 					
 					// Si fils n'as pas encore ete calcule , le faire et mettre a jour r
 					if(! r.containsKey(n.fils().get(i).listcoup())) {
@@ -521,7 +519,7 @@ public class UtilsIA {
 					}
 				}
 				else
-					heuristique = Math.min(heuristique,10000);
+					heuristique = Math.min(heuristique,1000000);
 			}
 			return heuristique;
 		}
@@ -532,36 +530,31 @@ public class UtilsIA {
 		Random r = new Random();
 		Noeud a = new Noeud(); // construction de l'arbre des configurations
 		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>();
-		if(minimaxA(a,memo,0,plateauclone,id) > -1000) {
-			LinkedList<Noeud> cp;
-			for(int i = 0;i < a.fils().size();i++) {
-				System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
-				//System.out.println("tableau du fils"+ i+" : ");
-				//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)a.fils().get(i).listcoup().clone(),plateau.clone()));
-			}	
-			if(( a.filsTaggue().size()) != 0) {
-				cp = a.clone().filsTaggue(); //recuperations des solutions
-			}
-			else {
-				System.out.println("coup facile1 :(");
-				return jouerCoupFacile(plateau,id);
-			}
-			System.out.println("taille fils racine apres : "+cp.size());
-			if(cp.size() != 0) {
-				int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
-				//System.out.println("et la ? "+ cp.get(rand).listcoup());
-				System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
-	
-				return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
-			}else {
-				System.out.println("coup facile3 :(");
-				return jouerCoupFacile(plateau,id);
-			}	
-		} else {
-			System.out.println("coup facile2 :(");
+		minimaxA(a,memo,0,plateauclone,id);
+		LinkedList<Noeud> cp;
+		for(int i = 0;i < a.fils().size();i++) {
+			System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
+			//System.out.println("tableau du fils"+ i+" : ");
+			//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)a.fils().get(i).listcoup().clone(),plateau.clone()));
+		}	
+		if(( a.filsTaggue().size()) != 0) {
+			cp = a.clone().filsTaggue(); //recuperations des solutions
+		}
+		else {
+			System.out.println("coup facile1 :(");
 			return jouerCoupFacile(plateau,id);
 		}
+		System.out.println("taille fils racine apres : "+cp.size());
+		if(cp.size() != 0) {
+			int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
+			//System.out.println("et la ? "+ cp.get(rand).listcoup());
+			System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
 
+			return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
+		}else {
+			System.out.println("coup facile3 :(");
+			return jouerCoupFacile(plateau,id);
+		}	
 	}
 	
 	///////////////////////////////////////////:

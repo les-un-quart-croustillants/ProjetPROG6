@@ -25,7 +25,7 @@ public class JoueurIA extends Joueur {
 			case MOYEN:
 				return 500;
 			case DIFFICILE:
-				return 0;
+				return 2000;
 			default:
 				return 0;
 		}
