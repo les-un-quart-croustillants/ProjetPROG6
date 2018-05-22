@@ -13,7 +13,7 @@ public class ConfigMenu extends VBox {
 	private static ConfigMenu instance = null;
 	Integer dim = 8;
 	VBox listJoueurs;
-	Button retour, map_customization;
+	Button retour, map_customization, jouer;
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
@@ -183,8 +183,10 @@ public class ConfigMenu extends VBox {
 		
 		map_customization = new Button("Configuration du terrain");
 		retour = new Button("Retour");
+		jouer = new Button("JOUER");
 		
 		// Configuration
+		jouer.getStyleClass().add("textbutton");
 		map_customization.getStyleClass().add("textbutton");
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
@@ -212,7 +214,7 @@ public class ConfigMenu extends VBox {
 				new JoueurConfig(listJoueurs));
 		normalize();
 		
-		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, retour);
+		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, jouer, retour);
 	}
 	
 	GameConfig create_config() {
