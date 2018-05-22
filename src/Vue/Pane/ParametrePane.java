@@ -1,6 +1,9 @@
 package Vue.Pane;
 
 import Vue.Donnees;
+import Vue.InterfaceGraphique;
+import Modele.Moteurs.*;
+import Modele.Moteurs.MoteurApp.Action;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
