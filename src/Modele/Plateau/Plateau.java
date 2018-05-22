@@ -77,7 +77,7 @@ public class Plateau implements Serializable {
 		}
 		while (nb_1 <= borne) {
 			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
-			if (this.tab[p.i()][p.j()].getFish() != 1) {
+			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
 				this.tab[p.i()][p.j()].setFish(1);
 				nb_1++;
 			}
