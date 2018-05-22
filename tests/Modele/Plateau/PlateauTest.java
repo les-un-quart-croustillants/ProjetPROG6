@@ -49,11 +49,12 @@ public class PlateauTest {
 			sujet = new Plateau(size, nb_pingouins);
 			for (int j = 0; j < size; j++) {
 				for (int k = 0; k < size; k++) {
-					if (sujet.getCellule(new Position(j,k)).getFish() == 1)
+					Cellule c = sujet.getCellule(new Position(j,k));
+					if (!c.isDestroyed() && c.getFish() == 1)
 						nb_cases1++;
 				}
 			}
-			Assert.assertTrue(nb_cases1 >= nb_pingouins);
+			Assert.assertTrue("initTab_nb_pingouin failed with config : " +  nb_cases1  + " < " + nb_pingouins + " on \n" + sujet.pretty(), nb_cases1 >= nb_pingouins);
 		}
 	}
 

@@ -9,7 +9,7 @@ import javafx.scene.text.*;
 public class TerrainMenu extends VBox {	
 	private static TerrainMenu instance = null;
 	Integer dim = 8;
-	Button retour;
+	Button retour, jouer;
 	
 	public static TerrainMenu getInstance() {
 		if(instance == null)
@@ -31,8 +31,11 @@ public class TerrainMenu extends VBox {
 		HBox dimBox = new HBox();
 		Button plusDim = new Button();
 		Button minusDim = new Button();
+		retour = new Button("Retour");
+		jouer = new Button("JOUER");		
 		
 		GridPane poissonsLyt = new GridPane();
+		jouer.getStyleClass().add("textbutton");
 		Label poissons1 = new Label("1 poissons");
 		Label poissons2 = new Label("2 poissons");
 		Label poissons3 = new Label("3 poissons");
@@ -41,6 +44,7 @@ public class TerrainMenu extends VBox {
 		TextField tf_p3 = new TextField("");
 		
 		// Configuration
+		retour.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
 		LblDim2.getStyleClass().addAll("smaller");
@@ -77,6 +81,6 @@ public class TerrainMenu extends VBox {
 		
 		poissonsLyt.getChildren().addAll(poissons1, poissons2, poissons3, tf_p1, tf_p2, tf_p3);
 		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
-		this.getChildren().addAll(dimBox, poissonsLyt);
+		this.getChildren().addAll(dimBox, poissonsLyt, jouer, retour);
 	}
 }

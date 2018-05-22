@@ -40,7 +40,7 @@ public class Menu extends StackPane {
 	}
 	
 	private Plateau create_plateau() {
-		Plateau p = new Plateau(ConfigMenu.getInstance().dim, 4);
+		Plateau p = new Plateau(TerrainMenu.getInstance().dim, 4);
 		return p;
 	}
 	
@@ -70,12 +70,37 @@ public class Menu extends StackPane {
 		mainMenuBehaviour();
 		newGameBehaviour();
 		configMenuBehaviour();
+		terrainMenuBehaviour();
+	}
+	
+	private void terrainMenuBehaviour() {
+		TerrainMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().remove(TerrainMenu.getInstance());
+			}
+		});
+		
+		TerrainMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
+				mApp.transition(Action.NOUVELLE_PARTIE);
+				ig.graphic_state();
+			}
+		});
 	}
 	
 	private void configMenuBehaviour() {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
+			}
+		});
+		
+		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
+				mApp.transition(Action.NOUVELLE_PARTIE);
+				ig.graphic_state();
 			}
 		});
 		
