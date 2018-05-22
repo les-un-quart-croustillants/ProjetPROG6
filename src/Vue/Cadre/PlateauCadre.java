@@ -75,7 +75,7 @@ public class PlateauCadre extends Cadre {
 	public void start() {
 		this.joueurCourantGraphique.setText(
 				"Joueur " + (1 + moteur.indexJoueurCourant()) + "(" + moteur.joueurCourant().scoreFish() + ")");
-		this.joueurCourantGraphique.setCouleur(Donnees.COULEURS_JOUEURS[moteur.indexJoueurCourant()]);
+		this.joueurCourantGraphique.setCouleur(Donnees.getCouleur(moteur.indexJoueurCourant()));
 		new AnimationTimer() {
 			@Override
 			public void handle(long currentNanoTime) {

@@ -35,7 +35,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
 						GamePane.getPlateauCadre().gameObjects.get(1).add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
-										pc.plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
+										pc.plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
 						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 					}
 				}

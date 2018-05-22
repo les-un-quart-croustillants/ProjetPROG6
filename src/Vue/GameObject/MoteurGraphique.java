@@ -138,9 +138,13 @@ public class MoteurGraphique extends GameObject {
 		int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().poserPingouin(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))){
+				System.out.println("Plus de place pour poser les pingouins");
+				System.exit(1);
+			}
 			GamePane.getPlateauCadre().gameObjects.get(1)
 					.add(new PingouinGraphique(GamePane.moteur().plateau().getCellule(p).pingouin(),
-							GamePane.getPlateauCadre().plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
+							GamePane.getPlateauCadre().plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
 			currentState = StateGraph.CHANGER_JOUEUR_GRAPH;
 		} else {
 
@@ -154,7 +158,7 @@ public class MoteurGraphique extends GameObject {
 					.setText("Joueur " + (1 + GamePane.moteur().joueurCourant().id()) + "("
 							+ GamePane.moteur().joueurCourant().scoreFish() + ")");
 			GamePane.getPlateauCadre().joueurCourantGraphique
-					.setCouleur(Donnees.COULEURS_JOUEURS[GamePane.moteur().joueurCourant().id()]);
+					.setCouleur(Donnees.getCouleur(GamePane.moteur().joueurCourant().id()%4));
 		}
 		currentState = StateGraph.ATTENDRE_MOTEUR;
 	}

@@ -71,7 +71,7 @@ public class ScorePane extends PopupPane {
 			Label l;
 			//nom
 			l = nom_joueur(j.nom());
-			l.setTextFill(Donnees.COULEURS_JOUEURS[j.id()]);
+			l.setTextFill(Donnees.getCouleur(j.id()));
 			GridPane.setColumnIndex(l,0);			
 			GridPane.setRowIndex(l,i+1);
 			gp.getChildren().add(l);
