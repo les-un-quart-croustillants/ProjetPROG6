@@ -1,5 +1,11 @@
 package Modele.Moteur;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -523,6 +529,36 @@ public class Moteur implements Serializable {
 		} else {
 			return null;
 		}
+	}
+	
+	public boolean sauvegarder(String filename) {
+		try {
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(filename));
+			stream.writeObject(this);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	static public Moteur charger(String filename) {
+		Moteur m;
+		try {
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(filename));
+			m = (Moteur) stream.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			m = null;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			m = null;
+		}
+		return m;
 	}
 
 }
