@@ -31,6 +31,7 @@ public class TerrainMenu extends VBox {
 		HBox dimBox = new HBox();
 		Button plusDim = new Button();
 		Button minusDim = new Button();
+		retour = new Button("Retour");
 		
 		GridPane poissonsLyt = new GridPane();
 		Label poissons1 = new Label("1 poissons");
@@ -41,6 +42,7 @@ public class TerrainMenu extends VBox {
 		TextField tf_p3 = new TextField("");
 		
 		// Configuration
+		retour.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
 		LblDim2.getStyleClass().addAll("smaller");
@@ -77,6 +79,6 @@ public class TerrainMenu extends VBox {
 		
 		poissonsLyt.getChildren().addAll(poissons1, poissons2, poissons3, tf_p1, tf_p2, tf_p3);
 		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
-		this.getChildren().addAll(dimBox, poissonsLyt);
+		this.getChildren().addAll(dimBox, poissonsLyt, retour);
 	}
 }

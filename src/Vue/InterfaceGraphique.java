@@ -9,8 +9,8 @@ import Vue.Pane.GamePane;
 import Modele.Moteurs.MoteurApp;
 
 public class InterfaceGraphique extends Application {	
-	private static MoteurApp m;
-	private static Stage stage;
+	public static MoteurApp m;
+	public static Stage stage;
 	
 	static public float dt = 1f/60f;
 	
@@ -31,7 +31,7 @@ public class InterfaceGraphique extends Application {
 		stage.setMinWidth(600);
 	}
 	
-	public void graphic_state() {
+	public static void graphic_state() {
 		switch(m.currentState()) {
 		case MENU:
 			stage.setScene(new Scene(Menu.getInstance(), 1000, 800));

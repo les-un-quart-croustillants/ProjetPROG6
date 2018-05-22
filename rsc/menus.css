@@ -23,7 +23,7 @@
 	-fx-text-fill: white;
 	-fx-padding: 0px;
 	-fx-font-size: 25px;
-	-fx-max-width: 125px;
+	-fx-max-width: 205px;
 }
 
 .iconbutton {
@@ -73,7 +73,7 @@
 .scroll-pane {
 	-fx-background-color: transparent;
 	-fx-pref-height: 213px;
-	-fx-max-width: 460px;
+	-fx-max-width: 560px;
 	-fx-fit-to-height: true;
 	-fx-fit-to-width: false;
 }

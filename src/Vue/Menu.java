@@ -70,6 +70,15 @@ public class Menu extends StackPane {
 		mainMenuBehaviour();
 		newGameBehaviour();
 		configMenuBehaviour();
+		terrainMenuBehaviour();
+	}
+	
+	private void terrainMenuBehaviour() {
+		TerrainMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().remove(TerrainMenu.getInstance());
+			}
+		});
 	}
 	
 	private void configMenuBehaviour() {
