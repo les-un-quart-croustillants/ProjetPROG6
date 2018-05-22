@@ -27,7 +27,7 @@ public class Plateau implements Serializable {
 		this(3, 1);
 	}
 	public Plateau(int size) {
-		this(size, 8);
+		this(size, 2);
 	}
 
 	public Plateau(int size, int nb_pingouin) {
@@ -387,6 +387,7 @@ public class Plateau implements Serializable {
 			pingouin.setPosition(target);
 			targetCell.setPenguin(pingouin);
 			res = targetCell.getFish();
+			targetCell.setFish(0);
 		}
 		return res;
 	}

@@ -105,7 +105,10 @@ public class PlateauTest {
 		getNeighbours_test1(nb_test);
 		getNeighbours_test2(nb_test);
 		getNeighbours_test3(nb_test);
-		Plateau vide = new Plateau(1);
+		Plateau vide = new Plateau(2);
+		vide.getCellule(new Position(0,1)).destroy();
+		vide.getCellule(new Position(1,0)).destroy();
+		vide.getCellule(new Position(1,1)).destroy();
 		Assert.assertTrue("getNeighbours test #4/" + nb_test + " failed", vide.getNeighbours(new Position(0,0)).isEmpty());
 	}
 	private void getNeighbours_test1(int nb_test) {
