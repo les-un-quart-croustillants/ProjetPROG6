@@ -159,7 +159,8 @@ public class ConfigMenu extends VBox {
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
 		for(Node jc : listJoueurs.getChildren()) {
-			((JoueurConfig)jc).editNbPenguins(nbpenguins);
+			if(!((JoueurConfig)jc).type_editted)
+				((JoueurConfig)jc).editNbPenguins(nbpenguins);
 			if(!first_visited) {
 				if(!((JoueurConfig)jc).type_editted)
 					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
