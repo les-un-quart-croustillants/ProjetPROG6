@@ -1,5 +1,11 @@
 package Modele.Moteur;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -186,6 +192,10 @@ public class Moteur implements Serializable {
 		}
 	}
 
+	public boolean undoRedoAutorise() {
+		return this.undoRedoAutorise;
+	}
+	
 	public State currentState() {
 		return this.currentState;
 	}
@@ -307,8 +317,10 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-		} while (this.joueurCourant().estElimine());
-
+			System.out.println("SAUT");
+		} while (this.joueurCourant().estElimine() || ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size()) && this.currentState == State.POSER_PINGOUIN));
+		System.out.println("OK");
+		
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
 		} else {
@@ -360,12 +372,13 @@ public class Moteur implements Serializable {
 			}
 			// Si la pose reussis
 			if (this.joueurCourant().posePingouin(this.plateau, tmp)) {
-				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
 				if (pingouinsPoses()) {
 					transition(Action.PINGOUINPOSES);
+					this.indexJoueurCourant = 0;
 				} else {
 					transition(Action.SELECTION_VALIDE);
+					this.joueurSuivant();
 				}
 				return tmp;
 			} else {
@@ -521,6 +534,38 @@ public class Moteur implements Serializable {
 		} else {
 			return null;
 		}
+	}
+	
+	public boolean sauvegarder(String filename) {
+		try {
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(filename));
+			stream.writeObject(this);
+			stream.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	static public Moteur charger(String filename) {
+		Moteur m;
+		try {
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(filename));
+			m = (Moteur) stream.readObject();
+			stream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			m = null;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			m = null;
+		}
+		return m;
 	}
 
 }

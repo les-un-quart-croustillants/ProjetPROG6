@@ -1,6 +1,13 @@
 package Vue;
 
 import javafx.scene.layout.*;
+import Modele.Moteur.*;
+import Modele.Joueurs.*;
+import Modele.Plateau.*;
+import Utils.GameConfig;
+import Vue.Pane.GamePane;
+
+import java.util.*;
 import javafx.event.*;
 import Modele.Moteurs.*;
 import Modele.Moteurs.MoteurApp.*;
@@ -32,6 +39,33 @@ public class Menu extends StackPane {
 		button_behaviour();
 	}
 	
+	private Plateau create_plateau() {
+		Plateau p = new Plateau(ConfigMenu.getInstance().dim, 4);
+		return p;
+	}
+	
+	private ArrayList<Joueur> create_joueurs() {
+		GameConfig gc = ConfigMenu.getInstance().create_config();
+		ArrayList<Joueur> j = new ArrayList<Joueur>();
+		int ids = 0;
+		for(GameConfig.ConfigJoueur cj : gc.joueurs) {
+			if(cj.type == GameConfig.TypeJoueur.HUMAIN) {
+				j.add(new JoueurPhysique(ids, cj.nb_pingouins, cj.name));
+			} else {
+				Joueur.Difficulte d;
+				switch(cj.difficulte_ia) {
+				case FACILE:	d = Joueur.Difficulte.FACILE;		break;
+				case MOYEN:		d = Joueur.Difficulte.MOYEN;		break;
+				case DIFFICILE:	d = Joueur.Difficulte.DIFFICILE;	break;
+				default:		d = Joueur.Difficulte.PHYSIQUE;		break; // inaccessible
+				}
+				j.add(new JoueurIA(ids, cj.nb_pingouins, cj.name, d));
+			}
+			ids++;
+		}
+		return j;
+	}
+	
 	private void button_behaviour() {
 		mainMenuBehaviour();
 		newGameBehaviour();
@@ -42,7 +76,12 @@ public class Menu extends StackPane {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
-				System.out.println(ConfigMenu.getInstance().create_config());
+			}
+		});
+		
+		ConfigMenu.getInstance().map_customization.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().add(TerrainMenu.getInstance());
 			}
 		});
 	}
@@ -105,6 +144,7 @@ public class Menu extends StackPane {
 		
 		NewGameMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}

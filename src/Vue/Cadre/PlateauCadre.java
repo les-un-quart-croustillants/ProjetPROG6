@@ -13,7 +13,10 @@ import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.ParticleSystem;
 import Vue.GameObject.PlateauGraphique;
 import Vue.GameObject.ScoresGraphique;
+import Vue.Pane.GamePane;
+import Vue.Pane.ParametrePane;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -72,7 +75,7 @@ public class PlateauCadre extends Cadre {
 	public void start() {
 		this.joueurCourantGraphique.setText(
 				"Joueur " + (1 + moteur.indexJoueurCourant()) + "(" + moteur.joueurCourant().scoreFish() + ")");
-		this.joueurCourantGraphique.setCouleur(Donnees.COULEURS_JOUEURS[moteur.indexJoueurCourant()]);
+		this.joueurCourantGraphique.setCouleur(Donnees.getCouleur(moteur.indexJoueurCourant()));
 		new AnimationTimer() {
 			@Override
 			public void handle(long currentNanoTime) {
@@ -101,18 +104,25 @@ public class PlateauCadre extends Cadre {
 	
 	private Button creer_bouton_quitter() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('bouton_quitter.png'); -fx-background-color: transparent; -fx-padding: 0 0 0 0;");
+		b.setStyle("-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0 0 0 0;");
 
 		b.setOnMouseEntered(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('bouton_quitter_hover.png'); -fx-background-color: transparent; -fx-padding: 0;");
+				b.setStyle("-fx-graphic: url('bouton_parametre_hover.png'); -fx-background-color: transparent; -fx-padding: 0;");
 			}
 		});
 		b.setOnMouseExited(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('bouton_quitter.png'); -fx-background-color: transparent; -fx-padding: 0;");
+				b.setStyle("-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0;");
+			}
+		});
+		
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				GamePane.getInstance().getChildren().add(new ParametrePane());
 			}
 		});
 
