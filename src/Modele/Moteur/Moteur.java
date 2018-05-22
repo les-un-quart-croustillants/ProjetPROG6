@@ -186,6 +186,10 @@ public class Moteur implements Serializable {
 		}
 	}
 
+	public boolean undoRedoAutorise() {
+		return this.undoRedoAutorise;
+	}
+	
 	public State currentState() {
 		return this.currentState;
 	}
