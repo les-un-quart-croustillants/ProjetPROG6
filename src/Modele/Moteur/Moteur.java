@@ -315,7 +315,7 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-		} while (this.joueurCourant().estElimine());
+		} while (this.joueurCourant().estElimine() && this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size());
 
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
@@ -535,6 +535,7 @@ public class Moteur implements Serializable {
 		try {
 			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(filename));
 			stream.writeObject(this);
+			stream.close();
 			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -549,6 +550,7 @@ public class Moteur implements Serializable {
 		try {
 			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(filename));
 			m = (Moteur) stream.readObject();
+			stream.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
