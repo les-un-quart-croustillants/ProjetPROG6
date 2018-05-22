@@ -36,7 +36,7 @@ public class JoueurIA extends Joueur {
 	public Couple<Position,Position> prochainCoup(Plateau plateau) {
 		switch(super.difficulte) {
 			case FACILE:
-				return UtilsIA.jouerCoupDifficile(plateau,super.id());
+				return UtilsIA.jouerCoupFacile(plateau,super.id());
 			case MOYEN:
 				return UtilsIA.jouerCoupFacile(plateau,super.id());
 			case DIFFICILE:
