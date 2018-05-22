@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.text.*;
 
 public class MainMenu extends VBox {
-	Button new_game, highscores, quit, quickgame, load_game;
+	Button new_game, highscores, quit, load_game;
 	
 	private static MainMenu instance = null;
 	
@@ -24,20 +24,17 @@ public class MainMenu extends VBox {
 	
 	private void create_buttons() {
 		// Allocations
-		quickgame = new Button("Partie rapide");
 		new_game = new Button("Nouvelle partie");
 		load_game = new Button("Charger une partie");
 		highscores = new Button("Scores");
 		quit = new Button("Quitter");
 		
-		quickgame.getStyleClass().add("textbutton");
 		new_game.getStyleClass().add("textbutton");
 		load_game.getStyleClass().add("textbutton");
 		highscores.getStyleClass().add("textbutton");
 		quit.getStyleClass().add("textbutton");
 		
-		this.getChildren().addAll(	quickgame,
-									new_game,
+		this.getChildren().addAll(	new_game,
 									load_game,
 									highscores,
 									quit);

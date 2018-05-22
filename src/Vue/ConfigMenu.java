@@ -173,11 +173,6 @@ public class ConfigMenu extends VBox {
 	
 	private void create_elements() {
 		// Allocations
-		Label dimLbl = new Label("Dimension du plateau");
-		Label dimLblNb = new Label(dim.toString());
-		Label x = new Label("x");
-		Label dimLblNb2 = new Label(dim.toString());
-		HBox dimensionsBox = new HBox();
 		listJoueurs = new VBox();
 		Label configLbl = new Label("CONFIG.");
 		ScrollPane joueursPane = new ScrollPane();
@@ -190,7 +185,6 @@ public class ConfigMenu extends VBox {
 		
 		// Configuration
 		map_customization.getStyleClass().add("textbutton");
-		dimensionsBox.getStyleClass().add("hbox");
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
 		configLbl.getStyleClass().add("title");
@@ -199,21 +193,7 @@ public class ConfigMenu extends VBox {
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
 		
-		plusDim.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				dim++;
-				dimLblNb.setText(dim.toString());
-				dimLblNb2.setText(dim.toString());
-			}
-		});
-		
-		minusDim.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				dim = dim-1 <= 0 ? 1 : dim-1;
-				dimLblNb.setText(dim.toString());
-				dimLblNb2.setText(dim.toString());
-			}
-		});
+
 		
 		newJoueur.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
@@ -231,7 +211,6 @@ public class ConfigMenu extends VBox {
 				new JoueurConfig(listJoueurs));
 		normalize();
 		
-		dimensionsBox.getChildren().addAll(dimLbl, new Label(), minusDim, dimLblNb, x, dimLblNb2, plusDim);
 		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, retour);
 	}
 	
