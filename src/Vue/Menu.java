@@ -1,9 +1,12 @@
 package Vue;
 
 import javafx.scene.layout.*;
+import Modele.Moteur.*;
 import Modele.Joueurs.*;
 import Modele.Plateau.*;
 import Utils.GameConfig;
+import Vue.Pane.GamePane;
+
 import java.util.*;
 import javafx.event.*;
 import Modele.Moteurs.*;
@@ -58,6 +61,7 @@ public class Menu extends StackPane {
 				}
 				j.add(new JoueurIA(ids, cj.nb_pingouins, cj.name, d));
 			}
+			ids++;
 		}
 		return j;
 	}
@@ -72,7 +76,12 @@ public class Menu extends StackPane {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
-				System.out.println(ConfigMenu.getInstance().create_config());
+			}
+		});
+		
+		ConfigMenu.getInstance().map_customization.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				instance.getChildren().add(TerrainMenu.getInstance());
 			}
 		});
 	}
@@ -93,13 +102,6 @@ public class Menu extends StackPane {
 		MainMenu.getInstance().quit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				mApp.transition(Action.QUITTER_APPLI);
-				ig.graphic_state();
-			}
-		});
-		
-		MainMenu.getInstance().quickgame.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
 		});
@@ -142,6 +144,7 @@ public class Menu extends StackPane {
 		
 		NewGameMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
