@@ -9,6 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -44,20 +45,43 @@ public class PlateauTest {
 		Random r = new Random();
 		int size, nb_cases1, nb_pingouins;
 		Plateau sujet;
-		for (int i = 0; i < 100; i++) {
-			nb_cases1 = 0;
-			size = r.nextInt(97) + 3;
-			nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
-			sujet = new Plateau(size, nb_pingouins);
-			for (int j = 0; j < size; j++) {
-				for (int k = 0; k < size; k++) {
-					Cellule c = sujet.getCellule(new Position(j,k));
-					if (!c.isDestroyed() && c.getFish() == 1)
-						nb_cases1++;
-				}
+		nb_cases1 = 0;
+		size = r.nextInt(47) + 3;
+		nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
+		sujet = new Plateau(size, nb_pingouins);
+		for (int j = 0; j < size; j++) {
+			for (int k = 0; k < size; k++) {
+				Cellule c = sujet.getCellule(new Position(j,k));
+				if (!c.isDestroyed() && c.getFish() == 1)
+					nb_cases1++;
 			}
-			Assert.assertTrue("initTab_nb_pingouin failed with config : " +  nb_cases1  + " < " + nb_pingouins + " on \n" + sujet.pretty(), nb_cases1 >= nb_pingouins);
 		}
+		Assert.assertTrue("initTab_nb_pingouin failed with config : " +  nb_cases1  + " < " + nb_pingouins + " on \n" + sujet.pretty(), nb_cases1 >= nb_pingouins);
+	}
+
+	@Test
+	public void initTab_proportionnel() {
+		Random r = new Random();
+		int size, nb_cases;
+		int[] nb = new int[3],
+			ref = new int[3];
+		Arrays.fill(nb,0);
+		Plateau sujet;
+		size = r.nextInt(47) + 3;
+		nb_cases = (size * size) - (size + 1) / 2;
+		ref[0] = r.nextInt(nb_cases - 1) + 1;
+		ref[1] = r.nextInt(nb_cases - ref[0]);
+		ref[2] = r.nextInt(nb_cases - ref[0] - ref[1]);
+		sujet = new Plateau(size, ref[0], ref[1], ref[2]);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (i % 2 != 0 || j != size - 1)
+					nb[sujet.getCellule(i,j).getFish() - 1]++;
+			}
+		}
+		Assert.assertTrue("initTab_propotionnel : nb_1 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[0] <= nb[0]);
+		Assert.assertTrue("initTab_propotionnel : nb_2 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[1] <= nb[1]);
+		Assert.assertTrue("initTab_propotionnel : nb_3 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[2] <= nb[2]);
 	}
 
 	@Test
