@@ -22,6 +22,17 @@ public class InstanceList implements Serializable {
 		this.instances.remove(g);
 	}
 
+	synchronized public Couple<String,Integer> get(String name){
+		for(Couple<String,Integer> c: this.instances) {
+			if(c.gauche().equals(name)) {
+				return c;
+			}
+		}
+		System.out.println("SALUT");
+		System.out.flush();
+		return null;
+	}
+	
 	synchronized public ArrayList<Couple<String, Integer>> getInstances() {
 		return this.instances;
 	}

@@ -18,6 +18,7 @@ public class GameInstance implements Runnable {
 	public GameInstance(String name, InstanceList instances, String host) {
 		this.name = name;
 		this.host = host;
+		this.instances = instances;
 		(new Thread(this)).start();
 	}
 
@@ -31,12 +32,13 @@ public class GameInstance implements Runnable {
 				ip = socket.getLocalAddress().getHostAddress();
 			}
 			this.instances.add(new Couple<String, Integer>(this.name, serverSocket.getLocalPort())); // L'instance s'ajoute aux instances
+			/* 
 			System.out.println("Game instance on server " + ip + " listening on port " + serverSocket.getLocalPort());
 			System.out.println("Waiting fort game-master " + this.host);
 			this.socket = serverSocket.accept();
 			
 			System.out.println("Connected to "+this.socket.getInetAddress());
-			
+			*/
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

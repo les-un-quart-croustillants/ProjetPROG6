@@ -58,10 +58,11 @@ public class LobbyThread implements Runnable {
 				case "C": // Connect to instance
 					String name = splited[1];
 					Integer port = Integer.parseInt(splited[2]);
-					System.out.println("Client asking for connection to the game instance at" + name + ":" + port);
+					System.out.println("Client asking for connection to the game instance at " + name + ":" + port);
 					if (this.instances.exists(name, port)) {
 						System.out.println(name + ":" + port + " in data base : access granted");
 						this.out.println("C ok");
+						System.out.println("oui");
 					} else {
 						System.out.println(name + ":" + port + " not in data base : access denied");
 						this.out.println("C error");
@@ -69,10 +70,19 @@ public class LobbyThread implements Runnable {
 					break;
 				case "H": // Create instance
 					String instanceName = splited[1];
-					new GameInstance(instanceName, this.instances, this.socket.getRemoteSocketAddress().toString());
+					System.out.println("Client asking to create new game instance named "+instanceName); 
+					if(instances.get("bob") == null) {
+						new GameInstance(instanceName, this.instances, this.socket.getRemoteSocketAddress().toString());
+						this.out.println("H ok");
+						System.out.println("Instance created");
+						System.out.flush();
+					} else {
+						this.out.println("H error");
+						System.out.println("Instance already exists");
+					}
 					break;
-				default:
-					this.out.println("Bye");
+				default: 
+					//this.out.println("Bye");
 					break;
 				}
 			}

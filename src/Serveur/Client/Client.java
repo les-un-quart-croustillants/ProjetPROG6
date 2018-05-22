@@ -59,6 +59,8 @@ public class Client implements Runnable {
 			// le client
 			// Lecture du flus de donnees provenant du serveur
 			while (inputLine != "Bye") {
+				System.out.println(State.toString(cap.currentState()));
+				System.out.flush();
 				if (cap.currentState() == State.DEFAULT) { // Si le client est en attente d'un message
 					inputLine = "none";
 					outputLine = cap.processInputString(inputLine);

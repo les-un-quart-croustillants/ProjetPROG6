@@ -42,17 +42,22 @@ public class ClientAnwserProtocol {
 	 * @return
 	 */
 	synchronized public String processInputString(String input) {
-		while (this.ihmMessage == null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
+		if(this.currentState == State.DEFAULT) {
+			while (this.ihmMessage == null) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 		String res = this.ihmMessage;
 		if(res == "I") {
 			this.currentState = State.WAITFORINSTANCES;	
-		} else {
+		} else if (this.currentState == State.DEFAULT) {
+			System.out.println(this.ihmMessage+"|"+input);
 			this.currentState = State.WAITFORANWSER;
+		} else {
+			this.currentState = State.DEFAULT;
 		}
 		this.serverMessage = input;
 		this.ihmMessage = null;
@@ -66,8 +71,10 @@ public class ClientAnwserProtocol {
 			this.instances = (InstanceList) input;
 			this.currentState = State.DEFAULT;
 			this.ihmMessage = "K";
+			this.serverMessage = null;
 			return this.ihmMessage;
 		default:
+			this.serverMessage = null;
 			this.ihmMessage = null;
 			return this.ihmMessage;
 		}
@@ -81,7 +88,7 @@ public class ClientAnwserProtocol {
 			}
 		}
 		String res = this.serverMessage;
-		this.currentState = State.DEFAULT;
+		instances = null;
 		this.serverMessage = null;
 		return res;
 	}
@@ -95,12 +102,12 @@ public class ClientAnwserProtocol {
 		}
 		InstanceList tmp = instances;
 		instances = null;
+		this.serverMessage = null;
 		return tmp;
 	}
 
 	synchronized public void instances() {
 		this.ihmMessage = "I";
-		this.currentState = State.DEFAULT;
 		notifyAll();
 	}
 
