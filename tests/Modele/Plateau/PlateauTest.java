@@ -487,6 +487,7 @@ public class PlateauTest {
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
 			os.writeObject(sujet);
+			os.close();
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
@@ -498,6 +499,7 @@ public class PlateauTest {
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
 			Plateau sujet_lecture = (Plateau) is.readObject();
+			is.close();
 			Assert.assertEquals(sujet, sujet_lecture);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());

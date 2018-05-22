@@ -39,6 +39,7 @@ public class Plateau implements Serializable {
 		initTab(nb_pingouin);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
 		this.size = tab.length;
 		this.tab = new Cellule[this.size][this.size];
@@ -413,7 +414,7 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 
-		return new Couple(fishAte,pingouin.employeur());
+		return new Couple<>(fishAte,pingouin.employeur());
 	}
 
 	/**
