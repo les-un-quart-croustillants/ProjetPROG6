@@ -21,7 +21,9 @@ public class Case extends GameObject {
 	private PlateauGraphique pg;
 
 	public PingouinGraphique pingouinGraphique;
-	public Color couleur;
+	public Color couleurSelected = new Color(210f/255f,110f/255f,0,1);
+	public Color couleurSelectedB;
+
 	public Position posPlateau;
 	
 	private int currentFrame = 0;
@@ -40,6 +42,7 @@ public class Case extends GameObject {
 		position.y = pg.tailleCase;
 		posPlateau = new Position(i, j);
 		currentFrame = new Random().nextInt(7);
+		couleurSelectedB = new Color(couleurSelected.getRed(),couleurSelected.getGreen(),couleurSelected.getBlue(),0.5);
 	}
 
 	@Override
@@ -94,7 +97,8 @@ public class Case extends GameObject {
 		gc.drawImage(sprite, position.x, position.y, pg.tailleCase,
 				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
 		if (selected) {
-			gc.setStroke(new Color(1, 1, 0, 1));
+			gc.setStroke(couleurSelected);
+			gc.setFill(couleurSelectedB);
 			gc.setLineWidth(5);
 			if(miseEnValeur)
 				gc.setGlobalAlpha((Math.cos(0.01*System.currentTimeMillis())+1)/2);
@@ -109,7 +113,8 @@ public class Case extends GameObject {
 				dpx[i] = polygon.xpoints[i];
 				dpy[i] = polygon.ypoints[i];
 			}
-			// gc.fillPolygon(dpx, dpy, polygon.npoints);
+			if(selected)
+				gc.fillPolygon(dpx, dpy, polygon.npoints);
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}
 		gc.restore();

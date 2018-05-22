@@ -18,7 +18,7 @@ public class Brume extends GameObject {
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-		gc.setGlobalAlpha(0.6);
+		gc.setGlobalAlpha(0.5);
 		gc.drawImage(Donnees.IMG_BRUME, position.x, position.y,GamePane.getPlateauCadre().getWidth(),GamePane.getPlateauCadre().getHeight());
 		gc.drawImage(Donnees.IMG_BRUME, position.x+GamePane.getPlateauCadre().getWidth(), position.y,GamePane.getPlateauCadre().getWidth(),GamePane.getPlateauCadre().getHeight());
 		gc.setGlobalAlpha(1);

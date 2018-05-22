@@ -47,6 +47,8 @@ public class PingouinGraphique extends GameObject {
 		gc.setGlobalAlpha(0.5);
 		gc.fillOval(position.x-pg.tailleCase*0.3*f, position.y-pg.tailleCase*0.2*f, pg.tailleCase*0.6*f, pg.tailleCase*0.3*f);
 		gc.setGlobalAlpha(1);
+		gc.setStroke(couleur);
+		gc.strokeOval(position.x-pg.tailleCase*0.3*f, position.y-pg.tailleCase*0.2*f, pg.tailleCase*0.6*f, pg.tailleCase*0.3*f);
 		gc.drawImage(Donnees.IMG_PINGOUIN_FACE, position.x+offset.x, position.y+offset.y, width, height);
 	}
 	
