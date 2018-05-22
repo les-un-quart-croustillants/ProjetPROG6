@@ -106,7 +106,7 @@ public class JeuConsole {
 				System.out.println("|rang |joueur |poissons |cases detruites |");
 				System.out.println("|_____|_______|_________|________________|");
 				try {
-					for (ArrayList<Integer> j : m.scores(true)) {
+					for (ArrayList<Integer> j : m.podium()) {
 						i++;
 						System.out.println("|" + i + "    |" + colorbg_joueurs[j.get(0)] + "       " + RESET + "|"
 								+ j.get(1) + "       |" + j.get(2) + "              |");

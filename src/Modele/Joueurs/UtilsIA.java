@@ -248,6 +248,7 @@ public class UtilsIA {
 		}
 		return current;
 	}
+
 	
 	
 
@@ -332,8 +333,8 @@ public class UtilsIA {
 	 * @param valeur
 	 * @return
 	 */
-	public static int evaluerA(Noeud n,Plateau p, int id) {
-		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id);
+	public static int evaluerA(Noeud n,Plateau p, int id,Plateau debase) {
+		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase);
 	}
 	
 	/**
@@ -342,8 +343,8 @@ public class UtilsIA {
 	 * @param valeur
 	 * @return
 	 */
-	public static int evaluerB(Noeud n,Plateau p, int id) {
-		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id);
+	public static int evaluerB(Noeud n,Plateau p, int id,Plateau debase) {
+		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase);
 	}
 	
 	public static Plateau plateaucoup(LinkedList<Couple<Position,Position>> l, Plateau p) {
@@ -357,17 +358,7 @@ public class UtilsIA {
 		return pclone.clone();
 	}
 	
-	public static int evaluerProfondeur(int facteur){
-		if(facteur > 40)
-			return 2;
-		if(facteur > 30)
-			return 3;
-		if(facteur > 20)
-			return 4;
-		if(facteur > 10)
-			return 5;
-		return 10;
-	}
+
 	
 	
 	
@@ -389,64 +380,52 @@ public class UtilsIA {
 	 * @param n racine de l'arbre des configurations
 	 * @return true si la configuration est gagnante pour le joueur A false sinon
 	 */
-	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id) {
+	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax) {
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
 
-		if (n.estFeuille() || profondeur == 2) {
+		if (n.estFeuille() || profondeur == 3) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
 			
-			heuristique = evaluerA(n,plateau,id); 
+			heuristique = evaluerA(n,plateau,id,debase); 
 		
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			return heuristique;
 		} else {
 			// Le joueur A doit jouer
-			heuristique = -1000;
+			heuristique = -10000;
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			// On parcours l'ensemble des coups jouables par A
 			Plateau pcurr = plateaucoup((LinkedList<Couple<Position,Position>>)n.listcoup().clone(), plateau.clone());
 			for(int i =0; i < n.fils().size() ;i++) {
 				
-				LinkedList<Position> composantePingouin = composanteConnexePingouin(pcurr,pcurr.getCellule(n.fils().get(i).listcoup().get(0).gauche()).pingouin());
-				int nbpingouinennemiscomposante = 0;
-				for(int j =0; j < composantePingouin.size();j++) {
-					if(pcurr.getCellule(composantePingouin.get(j)).aPingouin() && pcurr.getCellule(composantePingouin.get(j)).pingouin().employeur() != id)
-						nbpingouinennemiscomposante++;
-						
+				
+				
+				Noeud filsclone = n.fils().get(i).clone();
+				int curr = minimaxB(filsclone, r, profondeur+1,pcurr,id,debase,pmax);
+				n.fils().get(i).setHeuristic(curr);
+				/*
+				//elagage alpha beta
+				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.fils().get(i).heuristique() > n.pere().heuristique()) {
+					heuristique = filsclone.heuristique();
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
+					return heuristique;
+				}*/
+				
+				
+				// Si fils n'as pas encore ete calcule, le faire et mettre a jour r
+				r.put(n.fils().get(i).listcoup(), curr);
+				
+				if(heuristique < r.get(n.fils().get(i).listcoup())) {
+					heuristique = r.get(n.fils().get(i).listcoup());
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
 				}
-				if(nbpingouinennemiscomposante != 0) {
-					Noeud filsclone = n.fils().get(i).clone();
-					int curr = minimaxB(filsclone, r, profondeur+1,pcurr,id);
-					n.fils().get(i).setHeuristic(curr);
-					/*
-					//elagage alpha beta
-					if(profondeur > 0 && n.pere().heuristique() != -100000 && n.fils().get(i).heuristique() > n.pere().heuristique()) {
-						heuristique = filsclone.heuristique();
-						r.put(n.listcoup(), heuristique);
-						n.setHeuristic(heuristique);
-						return heuristique;
-					}*/
 					
-					
-					// Si fils n'as pas encore ete calcule, le faire et mettre a jour r
-					if(!r.containsKey(n.fils().get(i).listcoup())) {
-						r.put(n.fils().get(i).listcoup(), curr);
-					}
-					
-					if(heuristique < r.get(n.fils().get(i).listcoup())) {
-						heuristique = r.get(n.fils().get(i).listcoup());
-						r.put(n.listcoup(), heuristique);
-						n.setHeuristic(heuristique);
-					}
-				}
-				else {
-					System.out.println("pingouin tout seul");
-					heuristique = Math.min(heuristique,-1000000);
-				}
 			}
 			return heuristique;
 		}
@@ -466,14 +445,14 @@ public class UtilsIA {
 	 * @param n racine de l'arbre des configurations
 	 * @return true si la configuration est gagnante pour le joueur A false sinon
 	 */
-	public static int minimaxB(Noeud n,HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id) {
+	public static int minimaxB(Noeud n,HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax) {
 		//System.out.println("valeur heuristique du pere "+n.pere().heuristique());
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
-		if (n.estFeuille() || profondeur == 2 ) {
+		if (n.estFeuille() || profondeur == pmax ) {
 			// la configuration ne permet pas de jouer
 			// le joueur A gagne
-			heuristique = evaluerB(n,plateau,id);
+			heuristique = evaluerB(n,plateau,id,debase);
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			return heuristique;
@@ -487,140 +466,142 @@ public class UtilsIA {
 			Plateau pcurr = plateaucoup((LinkedList<Couple<Position,Position>>)n.listcoup().clone(), plateau.clone());
 			for(int i =0; i < n.fils().size() ;i++) {
 				
-				LinkedList<Position> composantePingouin = composanteConnexePingouin(pcurr,pcurr.getCellule(n.fils().get(i).listcoup().get(0).gauche()).pingouin());
-				int nbpingouincomposante = 0;
-				for(int j =0; j < composantePingouin.size();j++) {
-					if(pcurr.getCellule(composantePingouin.get(j)).aPingouin())
-						nbpingouincomposante++;	
-				}
+
+				Noeud filsclone = n.fils().get(i).clone();
+				int curr = minimaxA(n.fils().get(i), r, profondeur+1,pcurr,id,debase,pmax);
+				n.fils().get(i).setHeuristic(curr);
 				
-				if(nbpingouincomposante != 1) {
-					Noeud filsclone = n.fils().get(i).clone();
-					int curr = minimaxA(n.fils().get(i), r, profondeur+1,pcurr,id);
-					n.fils().get(i).setHeuristic(curr);
-					
-					/*
-					//elagage alpha beta
-					if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.fils().get(i).heuristique() < n.pere().heuristique()) {
-						heuristique = filsclone.heuristique();
-						r.put(n.listcoup(), heuristique);
-						n.setHeuristic(heuristique);
-						return heuristique;
-					}*/
-					
-					// Si fils n'as pas encore ete calcule , le faire et mettre a jour r
-					if(! r.containsKey(n.fils().get(i).listcoup())) {
-						r.put(n.fils().get(i).listcoup(), curr);
-					}
-					if(heuristique > r.get(n.fils().get(i).listcoup())) {
-						heuristique = r.get(n.fils().get(i).listcoup());
-						r.put(n.listcoup(), heuristique);
-						n.setHeuristic(heuristique);
-					}
+				/*
+				//elagage alpha beta
+				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.fils().get(i).heuristique() < n.pere().heuristique()) {
+					heuristique = filsclone.heuristique();
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
+					return heuristique;
+				}*/
+				
+				// Si fils n'as pas encore ete calcule , le faire et mettre a jour r
+				r.put(n.fils().get(i).listcoup(), curr);
+				
+				if(heuristique > r.get(n.fils().get(i).listcoup())) {
+					heuristique = r.get(n.fils().get(i).listcoup());
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
 				}
-				else
-					heuristique = Math.min(heuristique,1000000);
+
+				
 			}
 			return heuristique;
 		}
 	}
-
+	public static int evaluerProfondeur(Plateau plateau){
+		int val = 3;
+		LinkedList<LinkedList<Position>> composanteConnexe = listeConnexeComposante(plateau);
+		if(composanteConnexe.size() > 1)
+			val = val+2;
+		
+		
+		
+		return val;
+	}
 	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id) {
 		Plateau plateauclone = plateau.clone();
 		Random r = new Random();
 		Noeud a = new Noeud(); // construction de l'arbre des configurations
 		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>();
-		minimaxA(a,memo,0,plateauclone,id);
-		LinkedList<Noeud> cp;
-		for(int i = 0;i < a.fils().size();i++) {
-			System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
-			//System.out.println("tableau du fils"+ i+" : ");
-			//afficher_etat(plateaucoup((LinkedList<Couple<Position,Position>>)a.fils().get(i).listcoup().clone(),plateau.clone()));
-		}	
-		if(( a.filsTaggue().size()) != 0) {
-			cp = a.clone().filsTaggue(); //recuperations des solutions
+		
+		minimaxA(a,memo,0,plateauclone,id,plateau.clone(),evaluerProfondeur(plateau));
+		
+		if(a.heuristique() != -1000) { // au moins un pingouin pas isole
+			LinkedList<Noeud> cp;
+			if(( a.filsTaggue().size()) != 0) {
+				cp = a.clone().filsTaggue(); //recuperations des solutions
+			}
+			else {
+				System.out.println("coup facile1 :(");
+				return jouerCoupFacile(plateau,id);
+			}
+			//for(int i = 0;i < a.fils().size();i++) {
+			//	System.out.println("heuristique du fils "+i+" : "+a.fils().get(i).heuristique()+" et sa liste de coups : "+a.fils().get(i).listcoup());
+			//}
+			if(cp.size() != 0) {
+				int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
+				//System.out.println("et la ? "+ cp.get(rand).listcoup());
+				System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
+				return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
+			}else {
+				System.out.println("pas de solution de meme heuristique que la racine, coup facile");
+				return jouerCoupFacile(plateau,id);
+			}	
 		}
-		else {
-			System.out.println("coup facile1 :(");
-			return jouerCoupFacile(plateau,id);
-		}
-		System.out.println("taille fils racine apres : "+cp.size());
-		if(cp.size() != 0) {
-			int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
-			//System.out.println("et la ? "+ cp.get(rand).listcoup());
-			System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
+		else { // cas ou tout les pingouins sont isoles (parcours eulerien)
+			
+			LinkedList<Pingouin> mesPingouinsdeplacables = new LinkedList<Pingouin>();
+			for (int i = 0; i < plateau.getSize();i++) {
+				for (int j = 0; j < plateau.getSize();j++) {
+					if(plateau.getCellule(new Position(i,j)).aPingouin() && plateau.getCellule(new Position(i,j)).pingouin().employeur() == id && !plateau.estIsolee(new Position(i,j)))
+						mesPingouinsdeplacables.add(plateau.getCellule(new Position(i,j)).pingouin());                                                                                            
+				}
+			}
+			LinkedList< LinkedList<Position> > meschemins= new LinkedList< LinkedList<Position> >();
+			Stack<Position> stack = new Stack<Position>();
+			LinkedList<Position> current = new LinkedList<Position>();
+			LinkedList<Position> currentaccessible = new LinkedList<Position>();
+			
+			current.add(mesPingouinsdeplacables.get(0).position());
+			meschemins.addLast((LinkedList<Position>) current.clone());
+			current.clear();
 
-			return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
-		}else {
-			System.out.println("coup facile3 :(");
-			return jouerCoupFacile(plateau,id);
-		}	
-	}
-	
-	///////////////////////////////////////////:
-	static char[] sym_joueurs = { 'M', 'A', 'B', 'C' };
-	static void afficher_etat(Plateau plat){
-		ArrayList<ArrayList<Pingouin> > pingouins = new ArrayList<ArrayList<Pingouin> >();
-		pingouins.add(new ArrayList<Pingouin>());
-		pingouins.add(new ArrayList<Pingouin>());
-		pingouins.add(new ArrayList<Pingouin>());
-		pingouins.add(new ArrayList<Pingouin>());
-		for(int i=0;i<plat.getSize();i++){
-			for(int j=0;j<plat.getSize();j++){
-				Position p = new Position(i, j);
-				if(!plat.getCellule(p).isDestroyed() && plat.getCellule(p).aPingouin()){
-					pingouins.get(plat.getCellule(p).pingouin().employeur()).add(plat.getCellule(p).pingouin());
+			for (int i = 0;i < meschemins.size();i++) {
+				current = (LinkedList<Position>) meschemins.get(i).clone();
+				
+				Plateau platclone = plateau.clone();
+				for (int k = 0;k < current.size();k++) {
+					platclone.getCellule(current.get(k)).destroy();
 				}
-				if(plat.getCellule(p).isDestroyed()){
-					if(j==0 && i%2==0)
-						System.out.print("	");
-					else
-						System.out.print("	");
+				Position curr = current.getLast().clone();
+				currentaccessible = platclone.accessible(curr);
+				for (int j = 0;j < currentaccessible.size();j++) {
+					if(!current.contains(currentaccessible.get(j) ) ) {
+						current.addLast(currentaccessible.get(j));
+						meschemins.add( (LinkedList<Position>) current.clone());
+						current.removeLast();
+					}	
 				}
-				else if(i%2==1){
-					if(plat.getCellule(p).aPingouin())
-						System.out.print(sym_joueurs[plat.getCellule(p).pingouin().employeur()]+"   ");
-					else
-						System.out.print(plat.getCellule(p).getFish()+"   ");
+				current.clear();
+			}
+			
+			for (int i = 0;i < meschemins.size();i++) {
+				System.out.println(meschemins.get(i));
+			}
+			
+			//return new Couple<Position,Position>(mesPingouinsdeplacables.get(0).position(),plateau.accessible(mesPingouinsdeplacables.get(0).position() ).get(0) );
+			LinkedList<Integer> poid = new LinkedList<Integer>();
+			Integer taillecourante;
+			for (int i = 0;i < meschemins.size();i++) {
+				taillecourante = 0;
+				for (int j = 0;j < meschemins.get(i).size();j++) {
+					taillecourante = taillecourante +  plateau.getCellule(meschemins.get(i).get(j)).getFish();
 				}
-				else{
-					if(j==0){
-						if(plat.getCellule(p).aPingouin())
-							System.out.print("  "+sym_joueurs[plat.getCellule(p).pingouin().employeur()]);
-						else
-							System.out.print("  "+plat.getCellule(p).getFish());
-					}
-					else{
-						if(plat.getCellule(p).aPingouin())
-							System.out.print("   "+sym_joueurs[plat.getCellule(p).pingouin().employeur()]);
-						else
-							System.out.print("   "+plat.getCellule(p).getFish());
-					}
+				poid.add(taillecourante);
+			}
+
+			Integer maxcourant = 0;
+			for (int i = 1;i < poid.size();i++) {
+				if(poid.get(i) > poid.get(maxcourant)) {
+					maxcourant = i;
 				}
 			}
-			System.out.println();
+			System.out.println("max : "+maxcourant);
+
+			System.out.println("le couple choisit : "+new Couple<Position,Position>(meschemins.get(maxcourant).get(0),meschemins.get(maxcourant).get(1)));
+			return new Couple<Position,Position>(meschemins.get(maxcourant).get(0),meschemins.get(maxcourant).get(1));
+				
+			
+			
+			
 		}
-		
-		for(int i=0;i<4;i++){
-			if(pingouins.get(i).size()>0){
-				System.out.print("["+sym_joueurs[i]+"] Pingouins: ");
-				for (Pingouin p : pingouins.get(i)) {
-					System.out.print(p.position()+" ");
-				}
-				System.out.println();
-			}
-		}
-		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

@@ -1,7 +1,5 @@
 package Modele.Joueurs;
 
-import java.util.ArrayList;
-
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
@@ -34,7 +32,7 @@ public class JoueurIA extends Joueur {
 	}
 	
 	
-	//@Override
+	@Override
 	public Couple<Position,Position> prochainCoup(Plateau plateau) {
 		switch(super.difficulte) {
 			case FACILE:
@@ -46,7 +44,6 @@ public class JoueurIA extends Joueur {
 			default :
 				return UtilsIA.jouerCoupFacile(plateau,super.id());
 		}
-
 	}
 	
 	@Override

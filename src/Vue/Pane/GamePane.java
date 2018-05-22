@@ -42,9 +42,8 @@ public class GamePane extends StackPane{
 	
 	private GamePane(){
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
-		joueurs.add(new JoueurPhysique(0,2,"Joueur 1"));
-		//joueurs.add(new JoueurIA(0,"Loukavocat",Difficulte.FACILE));
-		//joueurs.add(new JoueurIA(1,3,"Loukavocat",Difficulte.FACILE));
+		//joueurs.add(new JoueurPhysique(0,2,"Joueur 1"));
+		joueurs.add(new JoueurIA(1,2,"Loukavocat",Difficulte.FACILE));
 		//joueurs.add(new JoueurIA(2,3,"Loukanape",Difficulte.FACILE));
 		
 		joueurs.add(new JoueurIA(2,2,"Loukanape",Difficulte.DIFFICILE));
