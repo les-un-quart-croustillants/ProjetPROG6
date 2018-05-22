@@ -393,6 +393,24 @@ public class Plateau implements Serializable {
 	}
 
 	/**
+	 * undoPossible : si un undo est possible
+	 * @return vrai si l'historique n'est pas vide et que l'on peut undo
+	 * faux sinon
+	 */
+	public boolean undoPossible() {
+		return !this.history.isEmpty();
+	}
+
+	/**
+	 * redoPossible : si un redo est possible
+	 * @return vrai si l'undoList n'est pas vide et que l'on peut redo
+	 * faux sinon
+	 */
+	public boolean redoPossible() {
+		return !this.undoList.isEmpty();
+	}
+
+	/**
 	 * undo : Annule le coup précédent si possible
 	 * @return : un couple composé de la valeur du coup annulé, -1 si aucun coup annulé
 	 * et de l'id du joueur, -1 si aucun coup annulé
