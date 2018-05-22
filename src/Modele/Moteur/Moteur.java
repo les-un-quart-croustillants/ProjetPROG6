@@ -195,15 +195,15 @@ public class Moteur implements Serializable {
 	}
 
 	public boolean undoPossible() {
-		return this.undoRedoAutorise;
+		return this.plateau.undoPossible() || this.undoRedoAutorise;
 	}
 	
 	public boolean redoPossible() {
-		return this.plateau.undoPossible || this.undoRedoAutorise;
+		return this.plateau.redoPossible() || this.undoRedoAutorise;
 	}
 	
 	public State currentState() {
-		return this.plateau.redoPossible || this.currentState;
+		return this.currentState;
 	}
 
 	public void setCurrentState(State s) {
