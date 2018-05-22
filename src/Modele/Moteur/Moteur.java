@@ -1,5 +1,6 @@
 package Modele.Moteur;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -315,9 +316,7 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-			System.out.println("SAUT");
 		} while (this.joueurCourant().estElimine() || ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size()) && this.currentState == State.POSER_PINGOUIN));
-		System.out.println("OK");
 		
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
@@ -479,11 +478,7 @@ public class Moteur implements Serializable {
 				res = plateau.undo();
 				if (res.gauche() >= 0) {
 					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
-						System.out.println("Avant: "+joueurCourant() + " | " +indexJoueurCourant());
-						System.out.flush();
 						joueurCourant().undo(res.gauche());
-						System.out.println("Apres: "+joueurCourant() + " | "+ indexJoueurCourant());
-						System.out.flush();
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -536,7 +531,10 @@ public class Moteur implements Serializable {
 	
 	public boolean sauvegarder(String filename) {
 		try {
-			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(filename));
+			File file = new File("rsc/save/"+filename);
+			file.getParentFile().mkdirs();
+			file.createNewFile(); // if file already exists will do nothing 
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file,false));
 			stream.writeObject(this);
 			stream.close();
 			return true;
@@ -545,13 +543,14 @@ public class Moteur implements Serializable {
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 	
 	static public Moteur charger(String filename) {
 		Moteur m;
 		try {
-			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(filename));
+			File file = new File("rsc/save/"+filename);
+			file.getParentFile().mkdirs();
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
 			m = (Moteur) stream.readObject();
 			stream.close();
 		} catch (IOException e) {
