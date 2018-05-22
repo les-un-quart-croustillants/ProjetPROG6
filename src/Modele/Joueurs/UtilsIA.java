@@ -383,7 +383,6 @@ public class UtilsIA {
 	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax) {
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
-
 		if (n.estFeuille() || profondeur == 3) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
