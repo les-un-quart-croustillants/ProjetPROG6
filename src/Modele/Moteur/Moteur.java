@@ -315,8 +315,10 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-		} while (this.joueurCourant().estElimine() && this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size());
-
+			System.out.println("SAUT");
+		} while (this.joueurCourant().estElimine() || ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size()) && this.currentState == State.POSER_PINGOUIN));
+		System.out.println("OK");
+		
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
 		} else {
@@ -368,12 +370,13 @@ public class Moteur implements Serializable {
 			}
 			// Si la pose reussis
 			if (this.joueurCourant().posePingouin(this.plateau, tmp)) {
-				this.joueurSuivant();
 				// Si tout les pingouins ont ete poses
 				if (pingouinsPoses()) {
 					transition(Action.PINGOUINPOSES);
+					this.indexJoueurCourant = 0;
 				} else {
 					transition(Action.SELECTION_VALIDE);
+					this.joueurSuivant();
 				}
 				return tmp;
 			} else {
