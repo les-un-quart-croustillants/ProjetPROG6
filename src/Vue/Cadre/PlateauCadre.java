@@ -13,7 +13,10 @@ import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.ParticleSystem;
 import Vue.GameObject.PlateauGraphique;
 import Vue.GameObject.ScoresGraphique;
+import Vue.Pane.GamePane;
+import Vue.Pane.ParametrePane;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -113,6 +116,13 @@ public class PlateauCadre extends Cadre {
 			@Override
 			public void handle(Event event) {
 				b.setStyle("-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0;");
+			}
+		});
+		
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				GamePane.getInstance().getChildren().add(new ParametrePane());
 			}
 		});
 

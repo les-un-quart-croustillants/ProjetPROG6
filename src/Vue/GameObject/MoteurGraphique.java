@@ -1,8 +1,8 @@
 package Vue.GameObject;
 
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Utils.Position;
+import Modele.Moteur.Moteur.State;
 import Vue.Donnees;
 import Vue.Pane.GamePane;
 import Vue.Pane.ScorePane;
@@ -83,7 +83,7 @@ public class MoteurGraphique extends GameObject {
 				currentState = StateGraph.POSER_PINGOUIN_GRAPH;
 			}
 			else
-				GamePane.getPlateauCadre().infoGraphique.setText("Cliquez sur une case à 1 poisson pour poser un pingouin");
+				GamePane.getPlateauCadre().infoGraphique.setText("Cliquez sur une case ï¿½ 1 poisson pour poser un pingouin");
 			break;
 		case SELECTIONNER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
