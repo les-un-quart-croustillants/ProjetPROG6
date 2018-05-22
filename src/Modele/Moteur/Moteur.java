@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
+import Modele.Joueurs.UtilsIA;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -193,12 +194,16 @@ public class Moteur implements Serializable {
 		}
 	}
 
-	public boolean undoRedoAutorise() {
+	public boolean undoPossible() {
 		return this.undoRedoAutorise;
 	}
 	
+	public boolean redoPossible() {
+		return this.plateau.undoPossible || this.undoRedoAutorise;
+	}
+	
 	public State currentState() {
-		return this.currentState;
+		return this.plateau.redoPossible || this.currentState;
 	}
 
 	public void setCurrentState(State s) {
@@ -469,6 +474,11 @@ public class Moteur implements Serializable {
 		}
 	}
 
+	/**
+	 * Reviens au coup precedent, s'arrete au premier joueur physique
+	 * @return
+	 * @throws Exception
+	 */
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
@@ -500,6 +510,10 @@ public class Moteur implements Serializable {
 
 	}
 
+	/**
+	 * Rejoue le coup qui a ete undo en dernier
+	 * @return
+	 */
 	public Joueur redo() {
 
 		if (this.undoRedoAutorise) {
@@ -529,6 +543,11 @@ public class Moteur implements Serializable {
 		}
 	}
 	
+	/**
+	 * sauvegarde l'etat courant du moteur dans rsc/save/filename
+	 * @param filename
+	 * @return
+	 */
 	public boolean sauvegarder(String filename) {
 		try {
 			File file = new File("rsc/save/"+filename);
@@ -545,6 +564,15 @@ public class Moteur implements Serializable {
 		}
 	}
 	
+	public boolean sauvegarder() {
+		return sauvegarder("newSave");
+	}
+	
+	/**
+	 * charge un moteur depuis rsc/save/filename et le renvois
+	 * @param filename
+	 * @return le moteur charge
+	 */
 	static public Moteur charger(String filename) {
 		Moteur m;
 		try {
@@ -564,5 +592,12 @@ public class Moteur implements Serializable {
 		}
 		return m;
 	}
-
+	
+	public Moteur charger() {
+		return charger("newSave");
+	}
+	
+	public Couple<Position,Position> sugestion() {
+		 return UtilsIA.jouerCoupDifficile(this.plateau,joueurCourant().id());
+	}
 }
