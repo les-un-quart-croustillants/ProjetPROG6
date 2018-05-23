@@ -1,5 +1,6 @@
 package Modele.Plateau;
 
+import Modele.Plateau.Construct.KingOfTheHillConstruct;
 import Utils.Couple;
 import Utils.Position;
 import org.junit.Assert;
@@ -529,5 +530,11 @@ public class PlateauTest {
 			e.printStackTrace();
 			Assert.fail();
 		}
+	}
+
+	@Test
+	public void testKignOfTheHillConstruct() {
+		Plateau sujet = new Plateau(20, new KingOfTheHillConstruct(20));
+		System.out.println(sujet.pretty());
 	}
 }
