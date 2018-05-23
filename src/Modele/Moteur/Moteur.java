@@ -116,7 +116,7 @@ public class Moteur implements Serializable {
 			}
 		}
 
-		currentState = State.INIT;
+		currentState = State.POSER_PINGOUIN;
 		initTransitions();
 	}
 

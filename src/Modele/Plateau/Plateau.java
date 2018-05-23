@@ -385,7 +385,7 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Position current, Position target) {
 		try {
-			int res = jouer_exp(current,target);
+			int res = jouer_pr(current,target);
 			if (res >= 0)
 				clearUndoList();
 			return res;
@@ -404,7 +404,7 @@ public class Plateau implements Serializable {
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
 		try {
-			int res = jouer_exp(current,target);
+			int res = jouer_pr(current,target);
 			if (res >= 0)
 				clearUndoList();
 			return res;
@@ -417,14 +417,14 @@ public class Plateau implements Serializable {
 	/* Implementation pour Plateau.redo() */
 	private int jouer(Move m) {
 		try {
-			return jouer_exp(m.getFrom(), m.getTo());
+			return jouer_pr(m.getFrom(), m.getTo());
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
 		}
 	}
 
-	private int jouer_exp(Position current, Position target) throws PlateauException {
+	private int jouer_pr(Position current, Position target) throws PlateauException {
 		int res = -1;
 		Cellule currentCell, targetCell;
 		Pingouin pingouin;
@@ -506,7 +506,7 @@ public class Plateau implements Serializable {
 		Move m = undoList.removeLast();
 		int res;
 		if (m.getFrom().equals(Plateau.source))
-			res = (poserPingouin(m.getTo(),m.getPingouin())) ? 1 : -1;
+			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
 		else
 			res = jouer(m);
 		return res;
@@ -534,14 +534,27 @@ public class Plateau implements Serializable {
 		tab[p.i()][p.j()].destroy();
 	}
 
-	// TODO : ajout wrapper qui clear la undoList
+	/**
+	 * Pose un pingouin sur un case si les lunes sont alignées
+	 * Efface la undoList si la pose du pingouin s'est bien passée
+	 * @param p position ou ajouter le pingouin
+	 * @return true si tout c'est bien passe false sinon
+	 * @author Louka Soret, Gaëtan Sorin
+	 */
+	public boolean poserPingouin(Position p, Pingouin pingouin) {
+		boolean b = poserPingouin_pr(p, pingouin);
+		if (b)
+			clearUndoList();
+		return b;
+	}
+
 	/**
 	 * Pose un pingouin sur un case si les lunes sont alignées
 	 * @param p position ou ajouter le pingouin
 	 * @return true si tout c'est bien passe false sinon
-	 * @author Louka Soret
+	 * @author Louka Soret, Gaëtan Sorin
 	 */
-	public boolean poserPingouin(Position p, Pingouin pingouin) {
+	private boolean poserPingouin_pr(Position p, Pingouin pingouin) {
 		// Si la case en p n'est pas fondue et n'a pas de pingouin
 		if(isInTab(p) && !this.getCellule(p).isObstacle()) {
 			//Si la case en p a un seul poisson
