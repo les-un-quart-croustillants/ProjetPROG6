@@ -26,12 +26,7 @@ public class ConfigMenu extends VBox {
 		private int nb_Penguin;
 		
 		GameConfig.ConfigJoueur getConfig() {
-			String name = typeJoueur.getText();
-			System.out.println(type_joueur.toString());
-			if(type_joueur == GameConfig.TypeJoueur.IA && name.equals("IA")) {
-				name += " " + diff_IA.toString();
-			}
-			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, name);
+			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, typeJoueur.getText());
 		}
 		
 		public void editNbPenguins(int newnb) {
