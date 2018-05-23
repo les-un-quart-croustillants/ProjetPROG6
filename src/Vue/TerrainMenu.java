@@ -30,9 +30,12 @@ public class TerrainMenu extends VBox {
 	}
 	
 	private void update_proportions() {
-		lblS1.setText(Integer.toString(Double.valueOf(proportions_pingouins.getFirstSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim).intValue()));
-		lblS2.setText(Integer.toString(Double.valueOf(proportions_pingouins.getSecondSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim).intValue()));
-		lblS3.setText(Integer.toString(Double.valueOf(proportions_pingouins.getThirdSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim).intValue()));
+		Double minPosition = ConfigMenu.getInstance().create_config().nb_pingouins().doubleValue()/(dim*dim);
+		if(proportions_pingouins.getDividers().get(0).getPosition() < minPosition)
+			proportions_pingouins.getDividers().get(0).setPosition(minPosition);
+		lblS1.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getFirstSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
+		lblS2.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getSecondSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
+		lblS3.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getThirdSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
 	}
 	
 	private void create_elements() {
