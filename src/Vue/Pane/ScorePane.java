@@ -3,7 +3,9 @@ package Vue.Pane;
 import java.util.ArrayList;
 
 import Modele.Joueurs.Joueur;
+import Modele.Moteurs.MoteurApp.Action;
 import Vue.Donnees;
+import Vue.InterfaceGraphique;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -49,7 +51,8 @@ public class ScorePane extends PopupPane {
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("J'ai pas compris comment on fait les transitions entre menus.");
+				InterfaceGraphique.transition(Action.RETOUR_MENU);
+				InterfaceGraphique.graphic_state();
 			}
 		});
 		
