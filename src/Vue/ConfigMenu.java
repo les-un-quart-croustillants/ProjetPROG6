@@ -27,7 +27,6 @@ public class ConfigMenu extends VBox {
 		
 		GameConfig.ConfigJoueur getConfig() {
 			String name = typeJoueur.getText();
-			System.out.println(type_joueur.toString());
 			if(type_joueur == GameConfig.TypeJoueur.IA && name.equals("IA")) {
 				name += " " + diff_IA.toString();
 			}
