@@ -53,7 +53,8 @@ public class PlateauCadre extends Cadre {
 	private void init(Moteur m) {
 		this.moteur = m;
 		this.plateau = m.plateau();
-		this.plateauGraphique = new PlateauGraphique(plateau, this);
+		//this.plateauGraphique = new PlateauGraphique(plateau, this);
+		construire_plateau();
 		this.gameObjects.get(0).add(plateauGraphique);
 		this.gameObjects.get(3).add(new Brume());
 		this.gameObjects.get(4).add(new BackgroundGraphique());
