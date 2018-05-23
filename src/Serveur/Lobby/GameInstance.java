@@ -23,11 +23,7 @@ public class GameInstance implements Runnable {
 	private String name;
 	private String host;
 	private InstanceList instances;
-	private ArrayList<Socket> joueurs;
-	private ArrayList<BufferedReader> in = null;
-	private ArrayList<PrintWriter> out = null;
-	private ArrayList<ObjectOutputStream> outObj = null;
-	private ArrayList<ObjectInputStream> inObj = null;
+
 
 	public GameInstance(String name, InstanceList instances, String host) {
 		this.name = name;
@@ -82,21 +78,5 @@ public class GameInstance implements Runnable {
 			e.printStackTrace();
 		}
 
-	}
-
-	public void acceptJoueur() {
-		try {
-			this.joueurs.add(serverSocket.accept());
-			int index = this.joueurs.size()-1;
-			this.out.add(new PrintWriter(joueurs.get(index).getOutputStream(), true));
-			this.in.add(new BufferedReader(new InputStreamReader(joueurs.get(index).getInputStream())));
-			this.outObj.add(new ObjectOutputStream(joueurs.get(index).getOutputStream()));
-			outObj.get(0).flush();
-			this.inObj.add(new ObjectInputStream(new BufferedInputStream(joueurs.get(index).getInputStream())));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
+	}	
 }
