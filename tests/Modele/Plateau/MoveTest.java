@@ -1,13 +1,10 @@
 package Modele.Plateau;
 
 import Utils.Position;
-import javafx.geometry.Pos;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Random;
-
-import static org.junit.Assert.*;
 
 public class MoveTest {
 	@Test
