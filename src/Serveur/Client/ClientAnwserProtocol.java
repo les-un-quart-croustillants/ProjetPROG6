@@ -1,6 +1,7 @@
 package Serveur.Client;
 
 import Serveur.Lobby.InstanceList;
+import Utils.Couple;
 
 public class ClientAnwserProtocol {
 	private String ihmMessage;
@@ -128,6 +129,18 @@ public class ClientAnwserProtocol {
 			}
 		}
 		this.ihmMessage = "C " + hostName + " " + port;
+		notifyAll();
+	}
+	
+	synchronized public void connect(Couple<String,Integer> c) {
+		while (this.serverMessage != null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
+		this.ihmMessage = "C " + c.gauche() + " " + c.droit();
+		
 		notifyAll();
 	}
 

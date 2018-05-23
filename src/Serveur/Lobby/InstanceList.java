@@ -18,8 +18,8 @@ public class InstanceList implements Serializable {
 		this.instances.add(g);
 	}
 
-	synchronized public void remove(Couple<String, Integer> g) {
-		this.instances.remove(g);
+	synchronized public void remove(String g) {
+		this.instances.remove(this.get(g));
 	}
 
 	synchronized public Couple<String,Integer> get(String name){

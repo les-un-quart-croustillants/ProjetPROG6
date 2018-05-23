@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import Serveur.Client.ClientAnwserProtocol.State;
+import Utils.Couple;
 
 public class Client implements Runnable {
 
@@ -52,6 +53,8 @@ public class Client implements Runnable {
 	@Override
 	public void run() {
 		String inputLine = null, outputLine = null;
+		String[] splited;
+		Couple<String,Integer> connectionInfo = null;
 		Object inputObj;
 		
 		try {
@@ -62,9 +65,16 @@ public class Client implements Runnable {
 				if (cap.currentState() == State.DEFAULT) { // Si le client est en attente d'un message
 					inputLine = "none";
 					outputLine = cap.processInputString(inputLine);
+					splited = outputLine.split("\\s+");
+					if(splited[0].equals("C")) {
+						connectionInfo = new Couple<String,Integer>(splited[0],Integer.parseInt(splited[1]));
+					}
 				} else if(cap.currentState() == State.WAITFORANWSER) {
 					inputLine = in.readLine();
 					outputLine = cap.processInputString(inputLine);
+					if(inputLine.equals("C ok")) {
+						connectToLobby(connectionInfo);
+					}
 				} else { // Si le client est en attente de donnees
 					inputObj = inObj.readObject();
 					outputLine = cap.processInputObject(inputObj);
@@ -87,5 +97,28 @@ public class Client implements Runnable {
 			System.out.println("Exception levee lors de la fermeture du socket client.");
 			e.printStackTrace();
 		}
+	}
+
+	private void connectToLobby(Couple<String, Integer> c) {
+		try {
+			this.clientSocket.close();
+		} catch (IOException e) {
+			System.out.println("Exception levee lors de la fermeture du socket client.");
+			e.printStackTrace();
+		}
+		
+		try {
+			this.clientSocket = new Socket(c.gauche(), c.droit());
+			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			this.outObj = new ObjectOutputStream(clientSocket.getOutputStream());
+			outObj.flush();
+			this.inObj = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+		} catch (IOException e) {
+			System.err.println("Connection a " + c.gauche() + ":" + c.droit() + " a echouee");
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
