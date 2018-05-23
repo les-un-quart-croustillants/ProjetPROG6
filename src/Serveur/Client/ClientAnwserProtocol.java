@@ -53,8 +53,7 @@ public class ClientAnwserProtocol {
 		String res = this.ihmMessage;
 		if(res == "I") {
 			this.currentState = State.WAITFORINSTANCES;	
-		} else if (this.currentState == State.DEFAULT) {
-			System.out.println(this.ihmMessage+"|"+input);
+		} else if (this.currentState == State.DEFAULT && !this.ihmMessage.equals("K")) {
 			this.currentState = State.WAITFORANWSER;
 		} else {
 			this.currentState = State.DEFAULT;
@@ -70,18 +69,20 @@ public class ClientAnwserProtocol {
 		case WAITFORINSTANCES:
 			this.instances = (InstanceList) input;
 			this.currentState = State.DEFAULT;
-			this.ihmMessage = "K";
+			this.ihmMessage = null;
 			this.serverMessage = null;
+			notifyAll();
 			return this.ihmMessage;
 		default:
 			this.serverMessage = null;
 			this.ihmMessage = null;
+			notifyAll();
 			return this.ihmMessage;
 		}
 	}
 
 	synchronized public String reponseServeurString() {
-		while (this.serverMessage == null) {
+		while (this.serverMessage == null || this.serverMessage=="none") {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -90,6 +91,7 @@ public class ClientAnwserProtocol {
 		String res = this.serverMessage;
 		instances = null;
 		this.serverMessage = null;
+		notifyAll();
 		return res;
 	}
 
@@ -103,20 +105,39 @@ public class ClientAnwserProtocol {
 		InstanceList tmp = instances;
 		instances = null;
 		this.serverMessage = null;
+		notifyAll();
 		return tmp;
 	}
 
 	synchronized public void instances() {
+		while (this.serverMessage != null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
 		this.ihmMessage = "I";
 		notifyAll();
 	}
 
 	synchronized public void connecte(String hostName, int port) {
+		while (this.serverMessage != null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
 		this.ihmMessage = "C " + hostName + " " + port;
 		notifyAll();
 	}
 
 	synchronized public void heberger(String name) {
+		while (this.serverMessage != null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
 		this.ihmMessage = "H " + name;
 		notifyAll();
 	}

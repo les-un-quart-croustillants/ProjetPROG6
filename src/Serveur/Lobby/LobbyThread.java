@@ -62,7 +62,6 @@ public class LobbyThread implements Runnable {
 					if (this.instances.exists(name, port)) {
 						System.out.println(name + ":" + port + " in data base : access granted");
 						this.out.println("C ok");
-						System.out.println("oui");
 					} else {
 						System.out.println(name + ":" + port + " not in data base : access denied");
 						this.out.println("C error");
