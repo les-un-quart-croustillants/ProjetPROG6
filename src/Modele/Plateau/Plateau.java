@@ -18,6 +18,7 @@ import java.util.Random;
 import static java.lang.Integer.max;
 
 public class Plateau implements Serializable {
+	static final Position source = new Position(-1,-1);
 	private int size;
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
@@ -380,7 +381,7 @@ public class Plateau implements Serializable {
 		targetCell = getCellule(target);
 
 		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
-			history.addLast(new Move(target, current, targetCell.getFish()));
+			history.addLast(new Move(target, current, targetCell.getFish(), pingouin));
 			currentCell = getCellule(current);
 			currentCell.destroy();
 			currentCell.setPenguin(null);
@@ -416,25 +417,27 @@ public class Plateau implements Serializable {
 	 * et de l'id du joueur, -1 si aucun coup annulé
 	 */
 	public Couple<Integer,Integer> undo() {
-		if(history.isEmpty())
-			return new Couple<>(-1,-1);
-		Move lastMove = history.removeLast();
-		Position from = lastMove.getFrom(),
-				to = lastMove.getTo();
+		if (history.isEmpty())
+			return new Couple<>(-1, -1);
 
-		Pingouin pingouin = getCellule(to).pingouin();
-		int fishAte = lastMove.getFishAte();
+		Move m = history.removeLast();
+		Position from = m.getFrom(),
+				to = m.getTo();
+		boolean undoPosePingouin = from.equals(Plateau.source);
+		Pingouin pingouin = m.getPingouin();
+		int fishAte = m.getFishAte();
 
-		this.undoList.addLast(lastMove);
-
-		tab[from.i()][from.j()].setDestroyed(false); // Restore old cell
+		this.undoList.addLast(m);
+		if (!undoPosePingouin) // Si from != (-1,-1)
+			tab[from.i()][from.j()].setDestroyed(false); // Restore old cell
 		getCellule(to).setPenguin(null); // remove pingouin from its current cell
 		tab[to.i()][to.j()].setFish(fishAte); // restore fish on left cell
 		pingouin.setPosition(from); // set pingouin to old position
-		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-
-		return new Couple<>(fishAte,pingouin.employeur());
+		if (!undoPosePingouin) // Si from != (-1,-1)
+			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
+		return new Couple<>(fishAte, pingouin.employeur());
 	}
+
 
 	/**
 	 * redo : ré-exécute le dernier coup annulé, si il y en a
@@ -444,7 +447,13 @@ public class Plateau implements Serializable {
 	public int redo() {
 		if (undoList.isEmpty())
 			return -1;
-		return jouer(undoList.removeLast());
+		Move m = undoList.removeLast();
+		int res;
+		if (m.getFrom().equals(Plateau.source))
+			res = (poserPingouin(m.getTo(),m.getPingouin())) ? 1 : -1;
+		else
+			res = jouer(m);
+		return res;
 	}
 
 	/**
@@ -482,6 +491,7 @@ public class Plateau implements Serializable {
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);
 				pingouin.setPosition(p);
+				history.addLast(new Move(p, pingouin));
 				return true;
 			}
 		}
