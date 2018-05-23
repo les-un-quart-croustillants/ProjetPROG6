@@ -75,6 +75,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					}
 				}
 			}
+			GamePane.getPlateauCadre().actualiser_undo_redo();
 		}
 		
 	}
