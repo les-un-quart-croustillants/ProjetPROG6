@@ -27,7 +27,7 @@ public class Plateau implements Serializable {
 		this(3, 1);
 	}
 	public Plateau(int size) {
-		this(size, 8);
+		this(size, 2);
 	}
 
 	public Plateau(int size, int nb_pingouin) {
@@ -39,6 +39,7 @@ public class Plateau implements Serializable {
 		initTab(nb_pingouin);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
 		this.size = tab.length;
 		this.tab = new Cellule[this.size][this.size];
@@ -387,8 +388,27 @@ public class Plateau implements Serializable {
 			pingouin.setPosition(target);
 			targetCell.setPenguin(pingouin);
 			res = targetCell.getFish();
+			targetCell.setFish(0);
 		}
 		return res;
+	}
+
+	/**
+	 * undoPossible : si un undo est possible
+	 * @return vrai si l'historique n'est pas vide et que l'on peut undo
+	 * faux sinon
+	 */
+	public boolean undoPossible() {
+		return !this.history.isEmpty();
+	}
+
+	/**
+	 * redoPossible : si un redo est possible
+	 * @return vrai si l'undoList n'est pas vide et que l'on peut redo
+	 * faux sinon
+	 */
+	public boolean redoPossible() {
+		return !this.undoList.isEmpty();
 	}
 
 	/**
@@ -414,7 +434,7 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 
-		return new Couple(fishAte,pingouin.employeur());
+		return new Couple<>(fishAte,pingouin.employeur());
 	}
 
 	/**
