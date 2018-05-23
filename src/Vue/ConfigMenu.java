@@ -26,7 +26,12 @@ public class ConfigMenu extends VBox {
 		private int nb_Penguin;
 		
 		GameConfig.ConfigJoueur getConfig() {
-			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, typeJoueur.getText());
+			String name = typeJoueur.getText();
+			System.out.println(type_joueur.toString());
+			if(type_joueur == GameConfig.TypeJoueur.IA && name.equals("IA")) {
+				name += " " + diff_IA.toString();
+			}
+			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, name);
 		}
 		
 		public void editNbPenguins(int newnb) {
@@ -160,11 +165,10 @@ public class ConfigMenu extends VBox {
 		int size = listJoueurs.getChildren().size();
 		boolean first_visited = false;
 		int nbpenguins;
-		if(size <= 4) {
-			nbpenguins = size;
-		} else {
+		if(size == 3)
+			nbpenguins = 3;
+		else 
 			nbpenguins = 4;
-		}
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
 		for(Node jc : listJoueurs.getChildren()) {
