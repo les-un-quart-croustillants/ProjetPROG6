@@ -116,6 +116,7 @@ public class Plateau implements Serializable {
 		}
 		return new Plateau(tab, new LinkedList<>(), new LinkedList<>());
 	}
+
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param p : la position
@@ -123,10 +124,21 @@ public class Plateau implements Serializable {
 	 * faux sinon.
 	 */
 	public boolean isInTab(Position p) {
-		return 0 <= p.i()
-				&& p.i() < size
-				&& 0 <= p.j()
-				&& p.j() < size;
+		return isInTab(p.i(),p.j());
+	}
+
+	/**
+	 * isInTab : si une position est dans le tableau
+	 * @param i : la ligne
+	 * @param j : la colonn
+	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
+	 * faux sinon.
+	 */
+	public boolean isInTab(int i, int j) {
+		return 0 <= i
+				&& i < size
+				&& 0 <= j
+				&& j < size;
 	}
 
 	/**
@@ -135,9 +147,20 @@ public class Plateau implements Serializable {
 	 * @return : l'objet Cellule
 	 */
 	public Cellule getCellule(Position p) {
+		return getCellule(p.i(), p.j());
+	}
+
+	/**
+	 * getCellule : recupère une cellule à la position (i,j)
+	 * @param i : la ligne
+	 * @param j : la colonne
+	 * @return la Cellule si la position est dans le tablea
+	 * null sinon.
+	 */
+	public Cellule getCellule(int i, int j) {
 		Cellule res = null;
-		if (isInTab(p))
-			res = tab[p.i()][p.j()];
+		if (isInTab(i,j))
+			res = tab[i][j];
 		return res;
 	}
 
@@ -180,7 +203,7 @@ public class Plateau implements Serializable {
 	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
 		if (isInTab(candidat)) {
 			if ((mode == -1 && !getCellule(candidat).isObstacle())
-					|| (mode == -2 && getCellule(candidat).isDestroyed())
+					|| (mode == -2 && !getCellule(candidat).isDestroyed())
 					|| (mode >= 0 && getCellule(candidat).pingouin().employeur() != mode)) {
 				if (!l.contains(candidat))
 					l.add(candidat);
@@ -326,6 +349,11 @@ public class Plateau implements Serializable {
 		return candidat.equals(target);
 	}
 
+	private void clearUndoList() {
+		if (!this.undoList.isEmpty())
+			this.undoList = new LinkedList<>();
+	}
+
 	/**
 	 * jouer : déplace un pingouin si possible
 	 * @param current : position du pingouin à déplacer
@@ -335,8 +363,10 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Position current, Position target) {
 		try {
-			// TODO : clear undoList
-			return jouer_exp(current,target);
+			int res = jouer_exp(current,target);
+			if (res >= 0)
+				clearUndoList();
+			return res;
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
@@ -352,8 +382,10 @@ public class Plateau implements Serializable {
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
 		try {
-			// TODO : clear undoList
-			return jouer_exp(current, target);
+			int res = jouer_exp(current,target);
+			if (res >= 0)
+				clearUndoList();
+			return res;
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
