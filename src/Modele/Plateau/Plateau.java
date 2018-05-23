@@ -335,6 +335,7 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Position current, Position target) {
 		try {
+			// TODO : clear undoList
 			return jouer_exp(current,target);
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
@@ -351,6 +352,7 @@ public class Plateau implements Serializable {
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
 		try {
+			// TODO : clear undoList
 			return jouer_exp(current, target);
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
