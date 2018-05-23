@@ -46,7 +46,7 @@ public class Moteur implements Serializable {
 	 * @author Louka Soret
 	 *
 	 */
-	public enum State {
+	public enum State implements Serializable {
 		INIT, // Etat du moteur apres initialisation
 		POSER_PINGOUIN, // Phase de pose des pingouins
 		SELECTIONNER_PINGOUIN, // Deroulement du jeu: selection pingouin
@@ -77,7 +77,7 @@ public class Moteur implements Serializable {
 	 * @author Louka Soret
 	 *
 	 */
-	public enum Action {
+	public enum Action implements Serializable{
 		MAUVAIS_ETAT, // La machine a etat a deraillee
 		SELECTION_VALIDE, // La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
