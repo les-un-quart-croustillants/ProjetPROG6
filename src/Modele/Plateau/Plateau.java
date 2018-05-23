@@ -349,6 +349,11 @@ public class Plateau implements Serializable {
 		return candidat.equals(target);
 	}
 
+	private void clearUndoList() {
+		if (!this.undoList.isEmpty())
+			this.undoList = new LinkedList<>();
+	}
+
 	/**
 	 * jouer : déplace un pingouin si possible
 	 * @param current : position du pingouin à déplacer
@@ -358,8 +363,10 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Position current, Position target) {
 		try {
-			// TODO : clear undoList
-			return jouer_exp(current,target);
+			int res = jouer_exp(current,target);
+			if (res >= 0)
+				clearUndoList();
+			return res;
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
@@ -375,8 +382,10 @@ public class Plateau implements Serializable {
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
 		try {
-			// TODO : clear undoList
-			return jouer_exp(current, target);
+			int res = jouer_exp(current,target);
+			if (res >= 0)
+				clearUndoList();
+			return res;
 		} catch (PlateauException e) {
 			System.err.println(e.getMessage());
 			return -1;
