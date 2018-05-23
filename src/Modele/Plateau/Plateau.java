@@ -469,12 +469,13 @@ public class Plateau implements Serializable {
 
 	/**
 	 * undo : Annule le coup précédent si possible
-	 * @return : un couple composé de la valeur du coup annulé, -1 si aucun coup annulé
-	 * et de l'id du joueur, -1 si aucun coup annulé
+	 * @return : un couple de boolean et couple <integer, integer>
+	 *     boolean : si on a undo la pose d'un pingouin
+	 *     couple<integer,integer> : le nombre de poissons mangés et l'id du pingouin
 	 */
-	public Couple<Integer,Integer> undo() {
+	public Couple<Boolean, Couple<Integer,Integer>> undo() {
 		if (history.isEmpty())
-			return new Couple<>(-1, -1);
+			return new Couple<>(false, new Couple<>(-1, -1));
 
 		Move m = history.removeLast();
 		Position from = m.getFrom(),
@@ -491,9 +492,8 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-		return new Couple<>(fishAte, pingouin.employeur());
+		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
 	}
-
 
 	/**
 	 * redo : ré-exécute le dernier coup annulé, si il y en a
