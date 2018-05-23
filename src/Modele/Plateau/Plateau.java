@@ -180,7 +180,7 @@ public class Plateau implements Serializable {
 	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
 		if (isInTab(candidat)) {
 			if ((mode == -1 && !getCellule(candidat).isObstacle())
-					|| (mode == -2 && getCellule(candidat).isDestroyed())
+					|| (mode == -2 && !getCellule(candidat).isDestroyed())
 					|| (mode >= 0 && getCellule(candidat).pingouin().employeur() != mode)) {
 				if (!l.contains(candidat))
 					l.add(candidat);
