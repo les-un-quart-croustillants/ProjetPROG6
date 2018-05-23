@@ -73,7 +73,7 @@ public class HeuristiqueB {
 
 					//si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique - nbPoissonsComposanteList.get(i);
+						heuristique = heuristique + nbPoissonsComposanteList.get(i);
 					}
 					
 					//si une portion du plateau est laissee a l'ennemi

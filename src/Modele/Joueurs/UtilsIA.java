@@ -362,7 +362,22 @@ public class UtilsIA {
 	
 	
 	
-	
+	public static int[][] valcases(Plateau p,int id){
+		int[][] res = new int[p.getSize()][p.getSize()];
+		
+		for(int i = 0 ; i < p.getSize() ; i++ ) {
+			for(int j = 0 ; j < p.getSize(); j++) {
+				if( p.getCellule(new Position(i,j)).aPingouin() && p.getCellule(new Position(i,j)).pingouin().employeur() != id) {
+					LinkedList<Position> acc = p.accessible(new Position(i,j));
+					for(int k = 0; k < acc.size() ; k++) {
+						res[acc.get(k).i()][acc.get(k).j()] = res[acc.get(k).i()][acc.get(k).j()] + 4;
+					}
+				}
+			}
+		}
+		
+		return res;
+	}
 	
 	
 	
@@ -381,9 +396,10 @@ public class UtilsIA {
 	 * @return true si la configuration est gagnante pour le joueur A false sinon
 	 */
 	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax) {
+		System.out.println("minmaxA");
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
-		if (n.estFeuille() || profondeur == 3) {
+		if (n.estFeuille() || profondeur == pmax) {
 			// la configuration ne permet pas de jouer,
 			// le joueur B gagne
 			
@@ -393,6 +409,10 @@ public class UtilsIA {
 			n.setHeuristic(heuristique);
 			return heuristique;
 		} else {
+			int [][] tableauval = new int[plateau.getSize()][plateau.getSize()];
+			if(profondeur == 0) {
+				tableauval = valcases(plateau,id);
+			}
 			// Le joueur A doit jouer
 			heuristique = -10000;
 			r.put(n.listcoup(), heuristique);
@@ -401,20 +421,15 @@ public class UtilsIA {
 			Plateau pcurr = plateaucoup((LinkedList<Couple<Position,Position>>)n.listcoup().clone(), plateau.clone());
 			for(int i =0; i < n.fils().size() ;i++) {
 				
-				
+			
 				
 				Noeud filsclone = n.fils().get(i).clone();
 				int curr = minimaxB(filsclone, r, profondeur+1,pcurr,id,debase,pmax);
+				if(profondeur == 0) {
+					//System.out.println("ajout de "+tableauval[n.fils().get(i).listcoup().get(0).droit().i()][n.fils().get(i).listcoup().get(0).droit().j()]+" a "+curr);
+					curr = curr + tableauval[n.fils().get(i).listcoup().get(0).droit().i()][n.fils().get(i).listcoup().get(0).droit().j()];
+				}
 				n.fils().get(i).setHeuristic(curr);
-				/*
-				//elagage alpha beta
-				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.fils().get(i).heuristique() > n.pere().heuristique()) {
-					heuristique = filsclone.heuristique();
-					r.put(n.listcoup(), heuristique);
-					n.setHeuristic(heuristique);
-					return heuristique;
-				}*/
-				
 				
 				// Si fils n'as pas encore ete calcule, le faire et mettre a jour r
 				r.put(n.fils().get(i).listcoup(), curr);
@@ -424,6 +439,16 @@ public class UtilsIA {
 					r.put(n.listcoup(), heuristique);
 					n.setHeuristic(heuristique);
 				}
+				
+				//elagage alpha beta
+				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.heuristique() > n.pere().heuristique()) {
+					heuristique = filsclone.heuristique();
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
+					return heuristique;
+				}
+				
+
 					
 			}
 			return heuristique;
@@ -446,6 +471,8 @@ public class UtilsIA {
 	 */
 	public static int minimaxB(Noeud n,HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax) {
 		//System.out.println("valeur heuristique du pere "+n.pere().heuristique());
+		System.out.println("minmaxB");
+
 		calculFils(n,id,plateau);	//calcul des fils
 		int heuristique;
 		if (n.estFeuille() || profondeur == pmax ) {
@@ -470,25 +497,22 @@ public class UtilsIA {
 				int curr = minimaxA(n.fils().get(i), r, profondeur+1,pcurr,id,debase,pmax);
 				n.fils().get(i).setHeuristic(curr);
 				
-				/*
-				//elagage alpha beta
-				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.fils().get(i).heuristique() < n.pere().heuristique()) {
-					heuristique = filsclone.heuristique();
-					r.put(n.listcoup(), heuristique);
-					n.setHeuristic(heuristique);
-					return heuristique;
-				}*/
-				
 				// Si fils n'as pas encore ete calcule , le faire et mettre a jour r
-				r.put(n.fils().get(i).listcoup(), curr);
 				
+				r.put(n.fils().get(i).listcoup(), curr);
 				if(heuristique > r.get(n.fils().get(i).listcoup())) {
 					heuristique = r.get(n.fils().get(i).listcoup());
 					r.put(n.listcoup(), heuristique);
 					n.setHeuristic(heuristique);
 				}
-
-				
+				/*
+				//elagage alpha beta
+				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.heuristique() < n.pere().heuristique()) {
+					heuristique = filsclone.heuristique();
+					r.put(n.listcoup(), heuristique);
+					n.setHeuristic(heuristique);
+					return heuristique;
+				}*/
 			}
 			return heuristique;
 		}
@@ -497,7 +521,7 @@ public class UtilsIA {
 		int val = 3;
 		LinkedList<LinkedList<Position>> composanteConnexe = listeConnexeComposante(plateau);
 		if(composanteConnexe.size() > 1)
-			val = val+2;
+			val = val+1;
 		
 		
 		
@@ -510,8 +534,10 @@ public class UtilsIA {
 		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>();
 		
 		minimaxA(a,memo,0,plateauclone,id,plateau.clone(),evaluerProfondeur(plateau));
-		
+
 		if(a.heuristique() != -1000) { // au moins un pingouin pas isole
+			System.out.println("fin de minmaxA");
+
 			LinkedList<Noeud> cp;
 			if(( a.filsTaggue().size()) != 0) {
 				cp = a.clone().filsTaggue(); //recuperations des solutions
@@ -527,6 +553,7 @@ public class UtilsIA {
 				int rand = r.nextInt(cp.size()); //choix d'une solution admissible aleatoire
 				//System.out.println("et la ? "+ cp.get(rand).listcoup());
 				System.out.println("l'heurstique du coup pris "+ cp.get(rand).heuristique());
+
 				return cp.get(rand).listcoup().get(0); //renvoie du coup joue dans le fils
 			}else {
 				System.out.println("pas de solution de meme heuristique que la racine, coup facile");
@@ -534,7 +561,7 @@ public class UtilsIA {
 			}	
 		}
 		else { // cas ou tout les pingouins sont isoles (parcours eulerien)
-			
+			System.out.println("parcours eulerien");
 			LinkedList<Pingouin> mesPingouinsdeplacables = new LinkedList<Pingouin>();
 			for (int i = 0; i < plateau.getSize();i++) {
 				for (int j = 0; j < plateau.getSize();j++) {

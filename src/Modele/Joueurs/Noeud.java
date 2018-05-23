@@ -10,7 +10,6 @@ public class Noeud {
 		private int heuristique = -100000;
 		private Noeud pere ;
 		private LinkedList<Noeud> fils;
-		private int valancetre = -100000;
 
 		
 		public Noeud() {
@@ -37,14 +36,6 @@ public class Noeud {
 			this.heuristique = heur;
 			this.pere = pere;
 			this.fils = lfils;
-		}
-		
-		public void setvalancetre(int a) {
-			this.valancetre = a;
-		}
-		
-		public int getvalancetre() {
-			return this.valancetre;
 		}
 		
 		/**
