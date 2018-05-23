@@ -91,7 +91,7 @@ public class MoteurGraphique extends GameObject {
 				currentState = StateGraph.POSER_PINGOUIN_GRAPH_INIT;
 			}
 			else{
-				GamePane.getPlateauCadre().infoGraphique.setText("Cliquez sur une case � 1 poisson pour poser un pingouin");
+				GamePane.getPlateauCadre().infoGraphique.setText("Poser un pingouin sur une case");
 				sel_desel_case_un_poisson(true);
 			}
 			break;

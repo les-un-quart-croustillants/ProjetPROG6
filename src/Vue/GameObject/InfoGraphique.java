@@ -23,7 +23,7 @@ public class InfoGraphique extends GameObject {
 		effect.setSurfaceScale(3);
 		effect.setDiffuseConstant(3);
 		gc.setEffect(effect);
-		gc.setFont(Donnees.FONT_SCORE);
+		gc.setFont(Donnees.FONT_TEXT);
 		gc.setFill(Color.CORNFLOWERBLUE);
 		gc.fillText(str, GamePane.getPlateauCadre().getWidth()/2, GamePane.getPlateauCadre().getHeight()*0.06);
 		gc.restore();
