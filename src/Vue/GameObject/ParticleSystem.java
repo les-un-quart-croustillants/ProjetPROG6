@@ -35,7 +35,7 @@ public class ParticleSystem extends GameObject {
 			setSpawn(0, 0, (int) GamePane.getPlateauCadre().getWidth(), (int) GamePane.getPlateauCadre().getHeight());
 			for (int i = 0; i < emission * InterfaceGraphique.dt; i++) {
 				rw = (int) (r.nextInt(zoneSpawn.width+1) + position.x + zoneSpawn.x);
-				rh = (int) (r.nextInt(zoneSpawn.height+1) + position.y + zoneSpawn.y);
+                rh = (int) (r.nextInt(zoneSpawn.height+1) + position.y + zoneSpawn.y);
 				Particle p = new Particle(sprite, rw, rh);
 				p.setSize(0.02f);
 				GamePane.getPlateauCadre().gameObjects.get(3).add(p);

@@ -81,6 +81,8 @@ public class ParametrePane extends PopupPane{
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				InterfaceGraphique.transition(Action.RETOUR_MENU);
+				InterfaceGraphique.graphic_state();
 				System.out.println("TODO: Retour au menu");
 			}
 		});

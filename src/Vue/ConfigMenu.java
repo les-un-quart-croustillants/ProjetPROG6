@@ -47,6 +47,16 @@ public class ConfigMenu extends VBox {
 			}
 		}
 		
+		public void editIA(GameConfig.difficulte diff) {
+			diff_IA = diff;
+			switch(diff_IA) {
+			case FACILE:	difficulte.setText("FACILE");		break;
+			case MOYEN:		difficulte.setText("MOYEN");		break;
+			case DIFFICILE:	difficulte.setText("DIFFICILE");	break;
+			default: break;
+			}
+		}
+		
 		public JoueurConfig(VBox parent) {
 			type_joueur = GameConfig.TypeJoueur.HUMAIN;
 			diff_IA = GameConfig.difficulte.FACILE;
@@ -119,12 +129,11 @@ public class ConfigMenu extends VBox {
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
 					objet.type_editted = true;
-					if(difficulte.getText() == "FACILE") {
-						difficulte.setText("MOYEN");
-					} else if(difficulte.getText() == "MOYEN") {
-						difficulte.setText("DIFFICILE");
-					} else {
-						difficulte.setText("FACILE");
+					switch(diff_IA) {
+					case FACILE:	editIA(GameConfig.difficulte.MOYEN);	break;
+					case MOYEN:		editIA(GameConfig.difficulte.DIFFICILE);break;
+					case DIFFICILE:	editIA(GameConfig.difficulte.FACILE);	break;
+					default: break;
 					}
 				}
 			});
@@ -191,7 +200,7 @@ public class ConfigMenu extends VBox {
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
 		configLbl.getStyleClass().add("title");
-		retour.getStyleClass().add("textbutton"); 
+		retour.getStyleClass().add("textbutton");
 		joueursPane.setContent(listJoueurs);
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
