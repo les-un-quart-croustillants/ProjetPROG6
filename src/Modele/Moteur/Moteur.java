@@ -195,11 +195,19 @@ public class Moteur implements Serializable {
 	}
 
 	public boolean undoPossible() {
-		return this.plateau.undoPossible() || this.undoRedoAutorise;
+		if(this.undoRedoAutorise) {
+			return this.plateau.undoPossible();	
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean redoPossible() {
-		return this.plateau.redoPossible() || this.undoRedoAutorise;
+		if(this.undoRedoAutorise) {
+			return this.plateau.redoPossible();
+		} else {
+			return false;
+		}
 	}
 	
 	public State currentState() {
