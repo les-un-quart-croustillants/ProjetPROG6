@@ -46,7 +46,7 @@ public class Moteur implements Serializable {
 	 * @author Louka Soret
 	 *
 	 */
-	public enum State {
+	public enum State implements Serializable {
 		INIT, // Etat du moteur apres initialisation
 		POSER_PINGOUIN, // Phase de pose des pingouins
 		SELECTIONNER_PINGOUIN, // Deroulement du jeu: selection pingouin
@@ -77,7 +77,7 @@ public class Moteur implements Serializable {
 	 * @author Louka Soret
 	 *
 	 */
-	public enum Action {
+	public enum Action implements Serializable{
 		MAUVAIS_ETAT, // La machine a etat a deraillee
 		SELECTION_VALIDE, // La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
@@ -116,7 +116,7 @@ public class Moteur implements Serializable {
 			}
 		}
 
-		currentState = State.INIT;
+		currentState = State.POSER_PINGOUIN;
 		initTransitions();
 	}
 
@@ -490,17 +490,13 @@ public class Moteur implements Serializable {
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
-			Couple<Integer, Integer> res;
+			Couple<Boolean,Couple<Integer, Integer>> res;
 
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
-				if (res.gauche() >= 0) {
-					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
-						if(this.currentState == State.POSER_PINGOUIN) {
-							joueurCourant().undo(res.gauche(),true);
-						} else {
-							joueurCourant().undo(res.gauche(),false);	
-						}
+				if (res.droit().gauche() >= 0) {
+					if ((indexJoueurCourant = indexJoueur(res.droit().droit())) >= 0) {
+						joueurCourant().undo(res.droit().gauche(),res.gauche());
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -509,7 +505,7 @@ public class Moteur implements Serializable {
 				}
 			} while (joueurCourant().estIA());
 
-			if (pingouinsPoses()) {
+			if (!res.gauche()) {
 				transition(Action.UNDO);
 			} else {
 				transition(Action.UNDOPHASEMODIFIER);
