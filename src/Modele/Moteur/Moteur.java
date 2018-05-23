@@ -1,5 +1,6 @@
 package Modele.Moteur;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
+import Modele.Joueurs.UtilsIA;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -192,8 +194,20 @@ public class Moteur implements Serializable {
 		}
 	}
 
-	public boolean undoRedoAutorise() {
-		return this.undoRedoAutorise;
+	public boolean undoPossible() {
+		if(this.undoRedoAutorise) {
+			return this.plateau.undoPossible();	
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean redoPossible() {
+		if(this.undoRedoAutorise) {
+			return this.plateau.redoPossible();
+		} else {
+			return false;
+		}
 	}
 	
 	public State currentState() {
@@ -315,9 +329,7 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-			System.out.println("SAUT");
 		} while (this.joueurCourant().estElimine() || ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size()) && this.currentState == State.POSER_PINGOUIN));
-		System.out.println("OK");
 		
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
@@ -470,6 +482,11 @@ public class Moteur implements Serializable {
 		}
 	}
 
+	/**
+	 * Reviens au coup precedent, s'arrete au premier joueur physique
+	 * @return
+	 * @throws Exception
+	 */
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
@@ -479,11 +496,11 @@ public class Moteur implements Serializable {
 				res = plateau.undo();
 				if (res.gauche() >= 0) {
 					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
-						System.out.println("Avant: "+joueurCourant() + " | " +indexJoueurCourant());
-						System.out.flush();
-						joueurCourant().undo(res.gauche());
-						System.out.println("Apres: "+joueurCourant() + " | "+ indexJoueurCourant());
-						System.out.flush();
+						if(this.currentState == State.POSER_PINGOUIN) {
+							joueurCourant().undo(res.gauche(),true);
+						} else {
+							joueurCourant().undo(res.gauche(),false);	
+						}
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -505,6 +522,10 @@ public class Moteur implements Serializable {
 
 	}
 
+	/**
+	 * Rejoue le coup qui a ete undo en dernier
+	 * @return
+	 */
 	public Joueur redo() {
 
 		if (this.undoRedoAutorise) {
@@ -534,9 +555,17 @@ public class Moteur implements Serializable {
 		}
 	}
 	
+	/**
+	 * sauvegarde l'etat courant du moteur dans rsc/save/filename
+	 * @param filename
+	 * @return
+	 */
 	public boolean sauvegarder(String filename) {
 		try {
-			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(filename));
+			File file = new File("rsc/save/"+filename);
+			file.getParentFile().mkdirs();
+			file.createNewFile(); // if file already exists will do nothing 
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file,false));
 			stream.writeObject(this);
 			stream.close();
 			return true;
@@ -545,13 +574,23 @@ public class Moteur implements Serializable {
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 	
+	public boolean sauvegarder() {
+		return sauvegarder("newSave");
+	}
+	
+	/**
+	 * charge un moteur depuis rsc/save/filename et le renvois
+	 * @param filename
+	 * @return le moteur charge
+	 */
 	static public Moteur charger(String filename) {
 		Moteur m;
 		try {
-			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(filename));
+			File file = new File("rsc/save/"+filename);
+			file.getParentFile().mkdirs();
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
 			m = (Moteur) stream.readObject();
 			stream.close();
 		} catch (IOException e) {
@@ -565,5 +604,12 @@ public class Moteur implements Serializable {
 		}
 		return m;
 	}
-
+	
+	public Moteur charger() {
+		return charger("newSave");
+	}
+	
+	public Couple<Position,Position> sugestion() {
+		 return UtilsIA.jouerCoupDifficile(this.plateau,joueurCourant().id());
+	}
 }

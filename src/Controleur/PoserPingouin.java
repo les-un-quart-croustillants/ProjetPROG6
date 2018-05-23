@@ -39,6 +39,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 					}
 				}
+				GamePane.getPlateauCadre().moteurGraphique.sel_desel_case_un_poisson(false);
 			} else if (GamePane.moteur().currentState() == State.SELECTIONNER_PINGOUIN) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
@@ -74,6 +75,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					}
 				}
 			}
+			GamePane.getPlateauCadre().actualiser_undo_redo();
 		}
 		
 	}

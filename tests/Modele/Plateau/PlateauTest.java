@@ -105,7 +105,10 @@ public class PlateauTest {
 		getNeighbours_test1(nb_test);
 		getNeighbours_test2(nb_test);
 		getNeighbours_test3(nb_test);
-		Plateau vide = new Plateau(1);
+		Plateau vide = new Plateau(2);
+		vide.getCellule(new Position(0,1)).destroy();
+		vide.getCellule(new Position(1,0)).destroy();
+		vide.getCellule(new Position(1,1)).destroy();
 		Assert.assertTrue("getNeighbours test #4/" + nb_test + " failed", vide.getNeighbours(new Position(0,0)).isEmpty());
 	}
 	private void getNeighbours_test1(int nb_test) {
@@ -326,24 +329,24 @@ public class PlateauTest {
 				j = 0;
 		Cellule c = p.getCellule(new Position(i, j));
 		Position pos;
-		for (int k = 0; k < 100; k++) {
-			while (!test) {
-				while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
-					j++;
-					if (j == p.getSize()) {
-						j = 0;
-						i++;
-					}
-					c = p.getCellule(new Position(i, j));
+		while (!test) {
+			while (i < p.getSize() && j < p.getSize() && c.getFish() != 1) {
+				j++;
+				if (j == p.getSize()) {
+					j = 0;
+					i++;
 				}
-				if (i < p.getSize() && j < p.getSize()) {
-					test = true;
-					pos = new Position(i, j);
-					pingouin.setPosition(pos);
-					Assert.assertTrue(p.poserPingouin(pos, pingouin));
-					Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
-					Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
-				}
+				c = p.getCellule(new Position(i, j));
+			}
+			if (i < p.getSize() && j < p.getSize()) {
+				test = true;
+				pos = new Position(i, j);
+				pingouin.setPosition(pos);
+				Assert.assertTrue(p.poserPingouin(pos, pingouin));
+				Assert.assertEquals(pingouin, p.getCellule(pos).pingouin());
+				Assert.assertEquals(pingouin, p.getTab()[i][j].pingouin());
+				Assert.assertFalse(p.getHistory().isEmpty());
+				Assert.assertEquals(new Move(pos, pingouin), p.getHistory().getLast());
 			}
 		}
 		pos = new Position(0,2);
@@ -406,7 +409,8 @@ public class PlateauTest {
 		Assert.assertFalse(sujet.getUndoList().isEmpty());
 		Assert.assertTrue(sujet.getHistory().isEmpty());
 		Assert.assertEquals(1, sujet.getUndoList().size());
-		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish())));
+
+		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish(), pingouin)));
 		Assert.assertTrue(p.tabEquals(sujet.getTab()));
 		Assert.assertFalse(p.getCellule(to).aPingouin());
 		Assert.assertTrue(p.getCellule(from).aPingouin());
@@ -421,14 +425,15 @@ public class PlateauTest {
 				to1 = new Position(0,1),
 				from2 = to1.clone(),
 				to2 = new Position(1,2);
-		Move m1 = new Move(to1, from1, p.getCellule(to1).getFish()),
-			m2 = new Move(to2, from2, p.getCellule(to2).getFish());
 		Pingouin pingouin1 = new Pingouin(0,from1),
 				pingouin2 = new Pingouin(0, from2),
 				pingouin3 = new Pingouin(0, to2);
+		Move m1 = new Move(to1, from1, p.getCellule(to1).getFish(), pingouin1),
+				m2 = new Move(to2, from2, p.getCellule(to2).getFish(), pingouin2);
 		p.getCellule(from1).setPenguin(pingouin1);
 		Plateau sujet1 = p.clone(),
 				sujet2;
+
 		sujet1.jouer(from1,to1);
 		sujet2 = sujet1.clone();
 		sujet2.jouer(from2,to2);
@@ -454,8 +459,10 @@ public class PlateauTest {
 		Assert.assertFalse(sujet2.getUndoList().isEmpty());
 		Assert.assertEquals(1, sujet2.getUndoList().size());
 		Assert.assertEquals(1,sujet2.getHistory().size());
-		Assert.assertTrue(sujet2.getHistory().contains(m1));
+		Move m3 = new Move(m1.getTo(), m1.getFrom(), m1.getFishAte(), pingouin2);
+		Assert.assertTrue(sujet2.getHistory().contains(m3));
 		Assert.assertTrue(sujet2.getUndoList().contains(m2));
+
 		Assert.assertTrue(sujet1.tabEquals(sujet2.getTab()));
 		Assert.assertFalse(sujet2.getCellule(to2).aPingouin());
 		Assert.assertTrue(sujet2.getCellule(from2).aPingouin());
@@ -464,8 +471,10 @@ public class PlateauTest {
 		Assert.assertTrue(sujet2.getUndoList().isEmpty());
 		Assert.assertFalse(sujet2.getHistory().isEmpty());
 		Assert.assertEquals(2, sujet2.getHistory().size());
-		Assert.assertTrue(sujet2.getHistory().contains(m2));
-		Assert.assertTrue(sujet2.getHistory().contains(m1));
+		Move m4 = new Move(m2.getTo(), m2.getFrom(), m2.getFishAte(), pingouin3);
+		Assert.assertTrue(sujet2.getHistory().contains(m4));
+		Move m5 = new Move(m1.getTo(), m1.getFrom(), m1.getFishAte(), pingouin3);
+		Assert.assertTrue(sujet2.getHistory().contains(m5));
 		Assert.assertFalse(sujet2.getCellule(from1).aPingouin());
 		Assert.assertFalse(sujet2.getCellule(from2).aPingouin());
 		Assert.assertFalse(sujet2.getCellule(to1).aPingouin());
@@ -487,6 +496,7 @@ public class PlateauTest {
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(filename));
 			os.writeObject(sujet);
+			os.close();
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
 			Assert.fail();
@@ -498,6 +508,7 @@ public class PlateauTest {
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(filename));
 			Plateau sujet_lecture = (Plateau) is.readObject();
+			is.close();
 			Assert.assertEquals(sujet, sujet_lecture);
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());

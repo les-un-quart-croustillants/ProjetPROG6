@@ -21,6 +21,8 @@ public class JeuConsole {
 	private static Position error = new Position(-1, -1);
 	private static Position undo = new Position(-1, 0);
 	private static Position redo = new Position(-1, 1);
+	private static Position save = new Position(-1,2);
+	private static Position load = new Position(-1,3);
 	/* Couleurs */
 	public static final String RESET = "\033[0m";
 	public static final String BLACK = "\033[30m";
@@ -50,7 +52,8 @@ public class JeuConsole {
 	private static String[] color_joueurs = { YELLOW, BLUE, PURPLE, CYAN };
 	private static String[] colorbg_joueurs = { YELLOW_BG, BLUE_BG, PURPLE_BG, CYAN_BG };
 	private static Scanner sc = new Scanner(System.in);
-
+	private static String filename;
+	
 	public static void main(String[] args) throws Exception {
 
 		Position res;
@@ -81,7 +84,7 @@ public class JeuConsole {
 					System.out.println("Poser un pingouin:");
 				}
 				res = getInput(sc);
-				processInput(m, res);
+				processInput(res);
 			} else if (m.currentState() == State.SELECTIONNER_PINGOUIN) {
 				if (!m.joueurCourant().estIA()) {
 					System.out.println("Selectionner un pingouin:");
@@ -90,14 +93,14 @@ public class JeuConsole {
 
 				}
 				res = getInput(sc);
-				processInput(m, res);
+				processInput(res);
 			} else if (m.currentState() == State.SELECTIONNER_DESTINATION) {
 				if (!m.joueurCourant().estIA()) {
 					System.out.println("Selectionner une destination pour le pingouin en ("
 							+ m.pingouinSelection().position().i() + "," + m.pingouinSelection().position().j() + "):");
 				}
 				res = getInput(sc);
-				processInput(m, res);
+				processInput(res);
 			} else if (m.currentState() == State.RESULTATS) {
 				int i = 0;
 				System.out.println();
@@ -154,6 +157,12 @@ public class JeuConsole {
 						return new Position(-1, 0);
 					} else if (splited[0].equals("redo")) {
 						return new Position(-1, 1);
+					} else if(splited[0].equals("save")) {
+						filename = splited[1];
+						return new Position(-1,2);
+					} else if(splited[0].equals("load")) {
+						filename = splited[1];
+						return new Position(-1,3);
 					} else if (splited[0].equals("quit")) {
 						System.exit(0);
 					} else {
@@ -174,7 +183,9 @@ public class JeuConsole {
 	 * @param input
 	 * @throws Exception
 	 */
-	private static void processInput(Moteur m, Position input) throws Exception {
+	private static void processInput(Position input) throws Exception {
+		Moteur tmp;
+		
 		if (input.equals(undo)) {
 			if(m.undo() == null) {
 				System.out.println("Undo impossible.");	
@@ -182,6 +193,17 @@ public class JeuConsole {
 		} else if (input.equals(redo)) {
 			if(m.redo() == null) {
 				System.out.println("Redo impossible.");	
+			}
+		} else if(input.equals(save)) {
+			if(! m.sauvegarder(filename)) {
+				System.out.println("Sauvegarde impossible.");
+			}
+		} else if(input.equals(load)) {
+			if((tmp = Moteur.charger(filename)) != null) {
+				m = tmp;
+				System.out.println("OK");
+			} else {
+				System.out.println("Chargement impossible.");
 			}
 		} else if (m.currentState() == State.POSER_PINGOUIN) {
 			if (!(input = m.poserPingouin(input)).equals(error)) {

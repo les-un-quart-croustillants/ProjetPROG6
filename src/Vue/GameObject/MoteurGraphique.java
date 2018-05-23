@@ -4,13 +4,14 @@ import Modele.Moteur.Moteur;
 import Utils.Position;
 import Modele.Moteur.Moteur.State;
 import Vue.Donnees;
+import Vue.Cadre.PlateauCadre;
 import Vue.Pane.GamePane;
 import Vue.Pane.ScorePane;
 
 public class MoteurGraphique extends GameObject {
 
 	public enum StateGraph {
-		ATTENDRE_MOTEUR, POSER_PINGOUIN_GRAPH, SELECTIONNER_PINGOUIN_GRAPH, SELECTIONNER_DESTINATION_GRAPH, CHANGER_JOUEUR_GRAPH, FIN;
+		ATTENDRE_MOTEUR, POSER_PINGOUIN_GRAPH, SELECTIONNER_PINGOUIN_GRAPH, SELECTIONNER_DESTINATION_GRAPH, CHANGER_JOUEUR_GRAPH, POSER_PINGOUIN_GRAPH_INIT, FIN;
 
 		static public String toString(StateGraph s) {
 			switch (s) {
@@ -20,6 +21,8 @@ public class MoteurGraphique extends GameObject {
 				return "POSER_PINGOUIN_GRAPH";
 			case SELECTIONNER_PINGOUIN_GRAPH:
 				return "SELECTIONNER_PINGOUIN_GRAPH";
+			case POSER_PINGOUIN_GRAPH_INIT:
+				return "POSER_PINGOUIN_GRAPH_INIT";
 			case SELECTIONNER_DESTINATION_GRAPH:
 				return "SELECTIONNER_DESTINATION_GRAPH";
 			case CHANGER_JOUEUR_GRAPH:
@@ -37,7 +40,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 1000;
+	private double delay = 100;
 
 	@Override
 	public void update() {
@@ -50,6 +53,12 @@ public class MoteurGraphique extends GameObject {
 			if (time + 250 < System.currentTimeMillis()) {
 				onStateCHANGER_JOUEUR_GRAPH();
 			}
+			break;
+		case POSER_PINGOUIN_GRAPH_INIT:
+			if(!GamePane.moteur().joueurCourant().estIA()){
+				sel_desel_case_un_poisson(true);
+			}
+			currentState = StateGraph.POSER_PINGOUIN_GRAPH;
 			break;
 		case POSER_PINGOUIN_GRAPH:
 			if (time + delay < System.currentTimeMillis()) {
@@ -80,10 +89,12 @@ public class MoteurGraphique extends GameObject {
 		case POSER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
 				GamePane.getPlateauCadre().infoGraphique.setText("Attendez votre tour");
-				currentState = StateGraph.POSER_PINGOUIN_GRAPH;
+				currentState = StateGraph.POSER_PINGOUIN_GRAPH_INIT;
 			}
-			else
-				GamePane.getPlateauCadre().infoGraphique.setText("Cliquez sur une case � 1 poisson pour poser un pingouin");
+			else{
+				GamePane.getPlateauCadre().infoGraphique.setText("Poser un pingouin sur une case");
+				sel_desel_case_un_poisson(true);
+			}
 			break;
 		case SELECTIONNER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
@@ -169,5 +180,19 @@ public class MoteurGraphique extends GameObject {
 
 	public void setCurrentState(StateGraph sg) {
 		currentState = sg;
+	}
+	
+	public void sel_desel_case_un_poisson(boolean select){
+		PlateauCadre pc = GamePane.getPlateauCadre();
+		for(int i=0;i<pc.plateau.getSize();i++){
+			for(int j=0;j<pc.plateau.getSize();j++){
+				if(pc.plateau.getCellule(new Position(i,j)).getFish()==1){
+					if(select && !pc.plateau.getCellule(new Position(i,j)).aPingouin())
+						pc.plateauGraphique.cases[i][j].select();
+					else
+						pc.plateauGraphique.cases[i][j].deselect();
+				}
+			}
+		}
 	}
 }
