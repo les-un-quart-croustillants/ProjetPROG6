@@ -23,7 +23,7 @@ public class ConfigMenu extends VBox {
 		public TextField typeJoueur;
 		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
 		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
-		private int nb_Penguin;
+		private int nb_Penguin = 4;
 		
 		GameConfig.ConfigJoueur getConfig() {
 			String name = typeJoueur.getText();
@@ -163,7 +163,6 @@ public class ConfigMenu extends VBox {
 	private void normalize() {
 		// Nb pingouins
 		int size = listJoueurs.getChildren().size();
-		boolean first_visited = false;
 		int nbpenguins;
 		if(size == 3)
 			nbpenguins = 3;
@@ -172,15 +171,8 @@ public class ConfigMenu extends VBox {
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
 		for(Node jc : listJoueurs.getChildren()) {
-			if(!((JoueurConfig)jc).type_editted)
+			if(!((JoueurConfig)jc).type_editted) {
 				((JoueurConfig)jc).editNbPenguins(nbpenguins);
-			if(!first_visited) {
-				if(!((JoueurConfig)jc).type_editted)
-					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
-				first_visited = true;
-			} else {
-				if(!((JoueurConfig)jc).type_editted)
-					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
 			}
 		}
 	}
@@ -221,11 +213,13 @@ public class ConfigMenu extends VBox {
 		});
 		
 		// Ajout
-		listJoueurs.getChildren().addAll(new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs));
-		normalize();
+		listJoueurs.getChildren().add(new JoueurConfig(listJoueurs));
+		for(int i = 0; i < 3; ++i) {
+			JoueurConfig jc = new JoueurConfig(listJoueurs);
+			jc.editPlayerType(GameConfig.TypeJoueur.IA);
+			listJoueurs.getChildren().add(jc);
+			
+		}
 		
 		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, jouer, retour);
 	}
