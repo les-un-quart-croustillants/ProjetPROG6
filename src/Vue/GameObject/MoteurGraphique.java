@@ -55,8 +55,9 @@ public class MoteurGraphique extends GameObject {
 			}
 			break;
 		case POSER_PINGOUIN_GRAPH_INIT:
-			if(!GamePane.moteur().joueurCourant().estIA())
+			if(!GamePane.moteur().joueurCourant().estIA()){
 				sel_desel_case_un_poisson(true);
+			}
 			currentState = StateGraph.POSER_PINGOUIN_GRAPH;
 			break;
 		case POSER_PINGOUIN_GRAPH:

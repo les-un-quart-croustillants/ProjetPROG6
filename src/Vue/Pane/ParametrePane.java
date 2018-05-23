@@ -4,8 +4,10 @@ import Vue.Donnees;
 import Vue.InterfaceGraphique;
 import Modele.Moteurs.*;
 import Modele.Moteurs.MoteurApp.Action;
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
 public class ParametrePane extends PopupPane{
@@ -29,7 +31,7 @@ public class ParametrePane extends PopupPane{
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("TODO: sauvegarder");
+				GamePane.moteur().sauvegarder();
 			}
 		});
 		return b;
@@ -41,7 +43,9 @@ public class ParametrePane extends PopupPane{
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("TODO: charger");
+				GamePane.getInstance().getChildren().remove(ParametrePane.this);
+				GamePane.newInstance(GamePane.moteur().charger());
+				InterfaceGraphique.stage.setScene(new Scene(GamePane.getInstance()));
 			}
 		});
 		return b;
@@ -77,6 +81,8 @@ public class ParametrePane extends PopupPane{
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				InterfaceGraphique.transition(Action.RETOUR_MENU);
+				InterfaceGraphique.graphic_state();
 				System.out.println("TODO: Retour au menu");
 			}
 		});

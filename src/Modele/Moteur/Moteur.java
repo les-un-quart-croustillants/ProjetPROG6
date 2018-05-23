@@ -496,7 +496,11 @@ public class Moteur implements Serializable {
 				res = plateau.undo();
 				if (res.gauche() >= 0) {
 					if ((indexJoueurCourant = indexJoueur(res.droit())) >= 0) {
-						joueurCourant().undo(res.gauche());
+						if(this.currentState == State.POSER_PINGOUIN) {
+							joueurCourant().undo(res.gauche(),true);
+						} else {
+							joueurCourant().undo(res.gauche(),false);	
+						}
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}

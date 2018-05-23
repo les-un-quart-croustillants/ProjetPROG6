@@ -45,10 +45,23 @@ public class Pingouin implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return ((Pingouin) obj).employeur == this.employeur
-				&& ((Pingouin) obj).nbPoissonManges == this.nbPoissonManges
-				&& ((this.position != null) && this.position.equals(((Pingouin) obj).position));
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Pingouin)) return false;
+
+		Pingouin pingouin = (Pingouin) o;
+
+		if (employeur != pingouin.employeur) return false;
+		if (nbPoissonManges != pingouin.nbPoissonManges) return false;
+		return position.equals(pingouin.position);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = employeur;
+		result = 31 * result + nbPoissonManges;
+		result = 31 * result + position.hashCode();
+		return result;
 	}
 
 	@Override

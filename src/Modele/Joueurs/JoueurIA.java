@@ -37,6 +37,7 @@ public class JoueurIA extends Joueur {
 	@Override
 
 	public Couple<Position,Position> prochainCoup(Plateau plateau,ArrayList<ArrayList<Integer>> scores) {
+<<<<<<< HEAD
 		switch(this.difficulte) {
 			case FACILE:
 				System.out.println("facile");
@@ -54,6 +55,10 @@ public class JoueurIA extends Joueur {
 
 				return UtilsIA.jouerCoupFacile(plateau,super.id());
 		}
+=======
+		System.out.println(this.difficulte);
+		return UtilsIA.jouerCoupFacile(plateau,super.id());
+>>>>>>> dev
 	}
 	
 	@Override
