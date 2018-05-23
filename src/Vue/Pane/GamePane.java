@@ -1,13 +1,18 @@
 package Vue.Pane;
 
+import java.util.ArrayList;
+
+import Modele.Joueurs.Joueur;
+import Modele.Joueurs.Joueur.Difficulte;
+import Modele.Joueurs.JoueurIA;
+import Modele.Joueurs.JoueurPhysique;
 import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Plateau;
 import Vue.Cadre.PlateauCadre;
-import javafx.animation.AnimationTimer;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
-public class GamePane extends Pane{
+public class GamePane extends StackPane{
 	private static GamePane instance = null;
 	private PlateauCadre plateauCadre;
 	private Moteur moteur;
@@ -27,28 +32,26 @@ public class GamePane extends Pane{
 	 * init : initialisation (appel�e par les constructeurs)
 	 */
 	private void init(){
+		this.plateauCadre = new PlateauCadre(moteur);
+		this.plateauCadre.prefWidthProperty().bind(this.widthProperty());
+		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
-		this.moteur = new Moteur(plateauCadre.plateau,2);
 		this.moteur.setCurrentState(State.POSER_PINGOUIN);
-		new AnimationTimer() {
-			@Override
-			public void handle(long currentNanoTime) {
-				plateauCadre.update();
-				plateauCadre.draw();
-			}
-		}.start();
+		plateauCadre.start();
 	}
 	
 	private GamePane(){
-		this.plateauCadre = new PlateauCadre(new Plateau(8));
-		plateauCadre.prefWidthProperty().bind(this.widthProperty());
-		plateauCadre.prefHeightProperty().bind(this.heightProperty());
+		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
+		joueurs.add(new JoueurPhysique(0,3,"Joueur 1"));
+		//joueurs.add(new JoueurIA(0,"Loukavocat",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(1,3,"Loukavocat",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(2,3,"Loukanape",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(3,3,"Loukasscouilles",Difficulte.FACILE));
+		this.moteur = new Moteur(new Plateau(8),joueurs);
 		init();
 	}
-	private GamePane(Plateau p){
-		GamePane.getInstance().plateauCadre = new PlateauCadre(p);
-		plateauCadre.prefWidthProperty().bind(this.widthProperty());
-		plateauCadre.prefHeightProperty().bind(this.heightProperty());
+	private GamePane(Moteur m){
+		this.moteur = m;
 		init();
 	}
 	
@@ -56,8 +59,8 @@ public class GamePane extends Pane{
 	 * newInstance : remplace l'instance du singleton par une nouvelle (permet de changer le plateau)
 	 * @param p : le plateau
 	 */
-	public static void newInstance(Plateau p){
-		GamePane.instance = new GamePane(p);
+	public static void newInstance(Moteur m){
+		GamePane.instance = new GamePane(m);
 	}
 	
 	public static PlateauCadre getPlateauCadre(){

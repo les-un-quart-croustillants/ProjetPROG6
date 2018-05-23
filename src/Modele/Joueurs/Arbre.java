@@ -1,7 +1,8 @@
 package Modele.Joueurs;
 
 import java.util.LinkedList;
-import Modele.Plateau.Plateau;
+import Utils.Position;
+import Utils.Couple;
 
 public class Arbre {
 	private Noeud racine;
@@ -16,7 +17,7 @@ public class Arbre {
 	 * Constructeur pour une feuille
 	 * @param  p : le plateau a donner en racine 
 	 */
-	public Arbre(Plateau p) {
+	public Arbre(LinkedList<Couple<Position,Position>> p) {
 		this.racine = new Noeud(p);
 	}
 
@@ -25,7 +26,7 @@ public class Arbre {
 	 * @param p plateau du noeud a la racine
 	 * @param l liste des fils de la racine
 	 */
-	public Arbre(Plateau p, LinkedList<Noeud> l) {
+	public Arbre(LinkedList<Couple<Position,Position>> p, LinkedList<Noeud> l) {
 		this.racine = new Noeud(p);
 		racine.setFils(l);
 	}

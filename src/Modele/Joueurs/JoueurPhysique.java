@@ -3,11 +3,9 @@ package Modele.Joueurs;
 
 public class JoueurPhysique extends Joueur {
 	
-	public JoueurPhysique(int id){
-		super(id);
-	}
-	
-	public JoueurPhysique(int id,int p){
-		super(id,p);
+	private static final long serialVersionUID = 3573725365540215957L;
+
+	public JoueurPhysique(int id,int nbP,String n){
+		super(id,nbP,n,Difficulte.PHYSIQUE);
 	}
 }

@@ -2,16 +2,16 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Pingouin {
+import java.io.Serializable;
+
+public class Pingouin implements Serializable {
 	private int employeur;
 	private int nbPoissonManges;
 	private Position position;
 
 
 	public Pingouin(int e){
-		this.employeur = e;
-		this.nbPoissonManges = 0;
-		this.position = new Position(0,0);
+		this(e, new Position(0,0));
 	}
 
 	public Pingouin(int e, Position p){
@@ -45,10 +45,23 @@ public class Pingouin {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return ((Pingouin) obj).employeur == this.employeur
-				&& ((Pingouin) obj).nbPoissonManges == this.nbPoissonManges
-				&& ((this.position != null) && this.position.equals(((Pingouin) obj).position));
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Pingouin)) return false;
+
+		Pingouin pingouin = (Pingouin) o;
+
+		if (employeur != pingouin.employeur) return false;
+		if (nbPoissonManges != pingouin.nbPoissonManges) return false;
+		return position.equals(pingouin.position);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = employeur;
+		result = 31 * result + nbPoissonManges;
+		result = 31 * result + position.hashCode();
+		return result;
 	}
 
 	@Override

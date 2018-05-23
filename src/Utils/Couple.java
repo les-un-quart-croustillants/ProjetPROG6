@@ -1,6 +1,10 @@
 package Utils;
 
-public class Couple<G,D> {
+import java.io.Serializable;
+
+public class Couple<G,D> implements Serializable {
+
+	private static final long serialVersionUID = 68420662405752506L;
 	private G i;
 	private D j;
 	
@@ -38,5 +42,11 @@ public class Couple<G,D> {
 	public String toString() {
 		return "(" + i.toString() + "," + j.toString() + ')';
 	}
-	
+
+	@Override
+	public int hashCode() {
+	    int hash = this.i.hashCode();
+	    hash = hash * 31 + this.j.hashCode();
+	    return hash;
+	}
 }

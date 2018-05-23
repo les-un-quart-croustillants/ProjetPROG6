@@ -2,7 +2,9 @@ package Modele.Plateau;
 
 import Utils.Position;
 
-public class Cellule {
+import java.io.Serializable;
+
+public class Cellule implements Serializable {
 	private Position position;
 	private boolean destroyed;
 	private int fish;
@@ -10,9 +12,6 @@ public class Cellule {
 
 	public Cellule() {
 		this(new Position(0,0), false, 0, null);
-	}
-	public Cellule(Position position, boolean destroyed) {
-		this(position, destroyed, 0, null);
 	}
 	public Cellule(Position position, int fish) {
 		this(position, false, fish, null);

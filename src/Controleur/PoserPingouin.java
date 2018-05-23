@@ -4,12 +4,12 @@ import java.awt.Point;
 import java.util.LinkedList;
 
 import Modele.Moteur.Moteur.State;
-import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.Cadre.PlateauCadre;
 import Vue.GameObject.Case;
 import Vue.GameObject.PingouinGraphique;
+import Vue.GameObject.MoteurGraphique.StateGraph;
 import Vue.Pane.GamePane;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -24,50 +24,51 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 
 	@Override
 	public void handle(MouseEvent event) {
-		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+		if(GamePane.moteur().joueurCourant().estIA()){
+			return;
+		}
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED && pc.moteurGraphique.getCurrentState()==StateGraph.ATTENDRE_MOTEUR) {
 			if (GamePane.moteur().currentState() == State.POSER_PINGOUIN) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
 					int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
-					if (GamePane.moteur().poserPingouin(c.posPlateau)) {
-						System.out.println("Le joueur " + GamePane.moteur().indexJoueurCourant() + "pose un pinguin en "
-								+ c.posPlateau);
-						GamePane.getPlateauCadre().gameObjects.add(
+					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
+						GamePane.getPlateauCadre().gameObjects.get(1).add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
-										pc.plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
-					} else {
-						System.out.println("Le joueur " + GamePane.moteur().indexJoueurCourant()
-								+ " ne peut pas poser un pinguin en " + c.posPlateau + " car la case est occupée");
+										pc.plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
+						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 					}
 				}
+				GamePane.getPlateauCadre().moteurGraphique.sel_desel_case_un_poisson(false);
 			} else if (GamePane.moteur().currentState() == State.SELECTIONNER_PINGOUIN) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
-					if (GamePane.moteur().selectionnerPingouin(c.posPlateau)) {
+					if (!GamePane.moteur().selectionnerPingouin(c.posPlateau).equals(new Position(-1, -1))) {
 						for (Position pos : pc.plateau.accessible(c.posPlateau)) {
 							if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 								pc.plateauGraphique.cases[pos.i()][pos.j()].select();
 						}
+						GamePane.getPlateauCadre().infoGraphique.setText("Selectionnez une destination");
 					}
 				}
 			}
 			else if(GamePane.moteur().currentState() == State.SELECTIONNER_DESTINATION) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				Position lastSelection = GamePane.moteur().pingouinSelection().position();
-				Pingouin ping = GamePane.moteur().pingouinSelection();
-				System.out.println(ping);
 				LinkedList<Position> lastaccessibles = pc.plateau.accessible(lastSelection);
-				if (c != null && GamePane.moteur().selectionnerDestination(c.posPlateau)) {
-					System.out.println("truc");
+				Position p = new Position(-1,-1);
+				if(c!=null)
+					p = c.posPlateau;
+				if (!GamePane.moteur().selectionnerDestination(p).equals(new Position(-1,-1))) {
+					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(p);
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].detruire();
 					for (Position pos : lastaccessibles) {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
 					}
-					System.out.println(ping);
+					pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 				}
 				else {
-					System.out.println(GamePane.moteur().currentState());
 					for (Position pos : lastaccessibles) {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
@@ -75,7 +76,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				}
 			}
 		}
-
+		
 	}
 
 }
