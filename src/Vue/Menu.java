@@ -60,6 +60,7 @@ public class Menu extends StackPane {
 				default:		d = Joueur.Difficulte.PHYSIQUE;		break; // inaccessible
 				}
 				j.add(new JoueurIA(ids, cj.nb_pingouins, cj.name, d));
+				System.out.println(cj.toString());
 			}
 			ids++;
 		}
