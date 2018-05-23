@@ -36,7 +36,7 @@ public class GamePane extends StackPane{
 		this.plateauCadre.prefWidthProperty().bind(this.widthProperty());
 		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
-		this.moteur.setCurrentState(State.POSER_PINGOUIN);
+		//this.moteur.setCurrentState(State.POSER_PINGOUIN);
 		plateauCadre.start();
 	}
 	

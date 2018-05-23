@@ -1,9 +1,11 @@
 package Modele.Plateau;
 
+import Modele.Plateau.Construct.KingOfTheHillConstruct;
 import Utils.Couple;
 import Utils.Position;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
@@ -395,7 +397,7 @@ public class PlateauTest {
 
 	@Test
 	public void undo() {
-		Couple<Integer, Integer> res;
+		Couple<Boolean, Couple<Integer, Integer>> res;
 		Position from= new Position(0,0),
 				to = new Position(0,1);
 		Pingouin pingouin = new Pingouin(0, from);
@@ -415,8 +417,8 @@ public class PlateauTest {
 		Assert.assertFalse(p.getCellule(to).aPingouin());
 		Assert.assertTrue(p.getCellule(from).aPingouin());
 		Assert.assertEquals(pingouin, p.getCellule(from).pingouin());
-		Assert.assertEquals((Integer) p.getCellule(to).getFish(), res.gauche());
-		Assert.assertEquals((Integer) pingouin.employeur(), res.droit());
+		Assert.assertEquals((Integer) p.getCellule(to).getFish(), res.droit().gauche());
+		Assert.assertEquals((Integer) pingouin.employeur(), res.droit().droit());
 	}
 
 	@Test
@@ -529,5 +531,12 @@ public class PlateauTest {
 			e.printStackTrace();
 			Assert.fail();
 		}
+	}
+
+	@Ignore
+	@Test
+	public void testKignOfTheHillConstruct() {
+		Plateau sujet = new Plateau(20, new KingOfTheHillConstruct(20));
+		System.out.println(sujet.pretty());
 	}
 }
