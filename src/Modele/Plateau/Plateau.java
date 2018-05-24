@@ -25,7 +25,7 @@ public class Plateau implements Serializable {
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
 
-	public Plateau() {
+	Plateau() {
 		this(3, 1);
 	}
 
@@ -52,6 +52,7 @@ public class Plateau implements Serializable {
 		initTab(nb_fish_1, nb_fish_2, nb_fish_3);
 	}
 
+	@Deprecated
 	public Plateau(int size, Construct c) {
 		this(size,1,c);
 	}
