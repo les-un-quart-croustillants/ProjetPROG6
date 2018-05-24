@@ -42,11 +42,15 @@ public class Plateau implements Serializable {
 	}
 
 	public Plateau(int size, Construct c) {
+		this(size,1,c);
+	}
+
+	public Plateau(int size, int nb_pingouins, Construct c) {
 		this.size = size;
 		this.tab = new Cellule[size][size];
 		this.history = new LinkedList<>();
 		this.undoList = new LinkedList<>();
-		initTab(c);
+		initTab(c,nb_pingouins);
 	}
 
 	@SuppressWarnings("unchecked")
