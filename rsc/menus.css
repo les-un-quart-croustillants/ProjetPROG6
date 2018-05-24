@@ -98,3 +98,25 @@
 .joueurconfig {
 	-fx-spacing: 20px;
 }
+
+.trislider .slice {
+	-fx-min-width: 0px;
+	-fx-pref-height: 32px;
+	-fx-alignment:	center;
+}
+
+.trislider {
+	-fx-max-width: 400px;
+}
+
+.trislider-first {
+	-fx-background-color: blue;
+}
+
+.trislider-second {
+	-fx-background-color: green;
+}
+
+.trislider-third {
+	-fx-background-color: red;
+}
