@@ -287,7 +287,7 @@ public class PlateauCadre extends Cadre {
 	
 	private HBox creer_cadre_undo_redo(){
 		HBox hbox = new HBox();
-		hbox.setAlignment(Pos.CENTER);
+		hbox.setAlignment(Pos.CENTER_LEFT);
 		hbox.setSpacing(10);
 		undoBouton = creer_bouton_undo();
 		redoBouton = creer_bouton_redo();
