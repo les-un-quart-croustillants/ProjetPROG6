@@ -28,6 +28,8 @@ public class Plateau implements Serializable {
 	public Plateau() {
 		this(3, 1);
 	}
+
+	@Deprecated /* Pour eviter les effets silencieux -> use Plateau(size, nb_pingouins) or Plateau(size, nb_case_1, nb_case_2, nb_case_3) */
 	public Plateau(int size) {
 		this(size, 2);
 	}

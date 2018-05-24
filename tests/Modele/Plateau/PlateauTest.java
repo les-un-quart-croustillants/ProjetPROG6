@@ -131,7 +131,7 @@ public class PlateauTest {
 		getNeighbours_test1(nb_test);
 		getNeighbours_test2(nb_test);
 		getNeighbours_test3(nb_test);
-		Plateau vide = new Plateau(2);
+		Plateau vide = new Plateau(2,2);
 		vide.getCellule(new Position(0,1)).destroy();
 		vide.getCellule(new Position(1,0)).destroy();
 		vide.getCellule(new Position(1,1)).destroy();
@@ -155,7 +155,7 @@ public class PlateauTest {
 		Assert.assertEquals("getNeighbours test #2/" + nb_test + " failed", expected, p.getNeighbours(new Position(0,0)));
 	}
 	private void getNeighbours_test3(int nb_test) {
-		Plateau sujet = new Plateau(5);
+		Plateau sujet = new Plateau(5,2);
 		LinkedList<Position> expected = new LinkedList<>();
 		expected.add(new Position(1,1));
 		expected.add(new Position(1,2));
@@ -169,7 +169,7 @@ public class PlateauTest {
 	@Test
 	public void accessible() {
 		int nb_tests = 4;
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10,2);
 		Position pos = new Position(5,0);
 		LinkedList<Position> expected = new LinkedList<>();
 
@@ -272,7 +272,7 @@ public class PlateauTest {
 		expected.add(new Position(5,0));
 		Assert.assertEquals("accessible test #3/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
 
-		sujet = new Plateau(8);
+		sujet = new Plateau(8, 2);
 		pos = new Position(4,0);
 		expected = new LinkedList<>();
 
@@ -301,7 +301,7 @@ public class PlateauTest {
 
 	@Test
 	public void estAccessible() {
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10, 2);
 		Position current = new Position(0,0),
 				target = new Position(0,0);
 
@@ -387,14 +387,14 @@ public class PlateauTest {
 		Assert.assertEquals(p,sujet);
 		sujet.getCellule(new Position(0,0)).destroy();
 		Assert.assertFalse(p.equals(sujet));
-		sujet = new Plateau(4);
+		sujet = new Plateau(4, 2);
 		Assert.assertFalse(p.clone().equals(sujet.clone()));
 
 	}
 
 	@Test
 	public void equals() {
-		Plateau sujet = new Plateau(p.getSize());
+		Plateau sujet = new Plateau(p.getSize(), 2);
 		Assert.assertEquals(p,p);
 		Assert.assertFalse(p.equals(sujet));
 	}
@@ -512,7 +512,7 @@ public class PlateauTest {
 	public void serial() {
 		String filename = "tests/rsc/test_serial.bin";
 
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10, 2);
 		Position pos1 = new Position(0,0),
 				pos2 = new Position(0,1);
 		sujet.getCellule(pos1).setPenguin(new Pingouin(0, pos1));
