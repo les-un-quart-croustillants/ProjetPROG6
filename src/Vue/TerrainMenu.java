@@ -31,14 +31,15 @@ public class TerrainMenu extends VBox {
 	}
 	
 	private void update_proportions() {
-		Double minPosition = ConfigMenu.getInstance().create_config().nb_pingouins().doubleValue()/(dim*dim);
+		Integer nbCases = (dim*dim-Double.valueOf(Math.ceil(dim/2)).intValue());
+		Double reste = .0;
+		Double minPosition = ConfigMenu.getInstance().create_config().nb_pingouins().doubleValue()/nbCases;
 		if(proportions_pingouins.getDividers().get(0).getPosition() < minPosition)
 			proportions_pingouins.getDividers().get(0).setPosition(minPosition);
-		Double reste = .0;
-		nbP1 = Double.valueOf(Math.round(proportions_pingouins.getDividers().get(0).getPosition()*(dim*dim))).intValue();
-		reste = proportions_pingouins.getDividers().get(0).getPosition()*(dim*dim)- nbP1.doubleValue();
-		nbP2 = Double.valueOf(Math.round(reste+(proportions_pingouins.getDividers().get(1).getPosition()-proportions_pingouins.getDividers().get(0).getPosition())*(dim*dim))).intValue();
-		nbP3 = (dim*dim)-nbP2-nbP1;
+		nbP1 = Double.valueOf(Math.round(proportions_pingouins.getDividers().get(0).getPosition()*nbCases)).intValue();
+		reste = proportions_pingouins.getDividers().get(0).getPosition()*nbCases- nbP1.doubleValue();
+		nbP2 = Double.valueOf(Math.round(reste+(proportions_pingouins.getDividers().get(1).getPosition()-proportions_pingouins.getDividers().get(0).getPosition())*nbCases)).intValue();
+		nbP3 = nbCases-nbP2-nbP1;
 		lblS1.setText(nbP1.toString());
 		lblS2.setText(nbP2.toString());
 		lblS3.setText(nbP3.toString());
@@ -78,7 +79,7 @@ public class TerrainMenu extends VBox {
 		
 		minusDim.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				dim = (dim-1)*(dim-1) < ConfigMenu.getInstance().create_config().nb_pingouins() ? dim : dim-1;
+				dim = ((dim-1)*(dim-1)-Double.valueOf(Math.ceil((dim-1)/2)).intValue()) < ConfigMenu.getInstance().create_config().nb_pingouins() ? dim : dim-1;
 				LblDim1.setText(dim.toString());
 				LblDim2.setText(dim.toString());
 				update_proportions();
