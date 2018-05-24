@@ -73,7 +73,6 @@ public class Plateau implements Serializable {
 		int tmp,
 			nb_cases = (size * size) - (size + 1) / 2,
 			nb_1 = 0;
-		Position p;
 		Random r = new Random();
 		if (borne > nb_cases )
 			borne = nb_cases;
@@ -90,24 +89,34 @@ public class Plateau implements Serializable {
 				}
 			}
 		}
+		verif_borne(borne, nb_1);
+	}
+
+	private void initTab(Construct c, int borne) {
+		int tmp, nb_1 = 0;
+		for (int i = 0; i < this.size; i++) {
+			for (int j = 0; j < this.size; j++) {
+				if (!(((i % 2) == 0) && (j == (size - 1)))) {
+					tmp = c.getCellValue(i,j);
+					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
+					if (tmp == 1)
+						nb_1++;
+				}
+				else {
+					tab[i][j] = new Cellule(new Position(i,j), true, 0);
+				}
+			}
+		}
+		verif_borne(borne, nb_1);
+	}
+	private void verif_borne(int borne, int nb_1) {
+		Random r = new Random();
+		Position p;
 		while (nb_1 <= borne) {
 			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
 			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
 				this.tab[p.i()][p.j()].setFish(1);
 				nb_1++;
-			}
-		}
-	}
-
-	private void initTab(Construct c) {
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				if (!(((i % 2) == 0) && (j == (size - 1)))) {
-					tab[i][j] = new Cellule(new Position(i,j), false, c.getCellValue(i,j));
-				}
-				else {
-					tab[i][j] = new Cellule(new Position(i,j), true, 0);
-				}
 			}
 		}
 	}
