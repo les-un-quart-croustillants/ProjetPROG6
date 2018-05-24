@@ -1,7 +1,5 @@
 package Vue.Cadre;
 
-import javax.swing.plaf.ActionMapUIResource;
-
 import Controleur.MiseEnEvidenceCase;
 import Controleur.PoserPingouin;
 import Modele.Moteur.Moteur;
@@ -9,6 +7,7 @@ import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 import Vue.Donnees;
+import Vue.InterfaceGraphique;
 import Vue.GameObject.BackgroundGraphique;
 import Vue.GameObject.Brume;
 import Vue.GameObject.InfoGraphique;
@@ -22,6 +21,9 @@ import Vue.GameObject.ScoresGraphique;
 import Vue.Pane.GamePane;
 import Vue.Pane.ParametrePane;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -30,6 +32,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 public class PlateauCadre extends Cadre {
 	public PlateauGraphique plateauGraphique;
@@ -42,7 +45,8 @@ public class PlateauCadre extends Cadre {
 	
 	private Button undoBouton;
 	private Button redoBouton;
-
+	
+	public AnimationTimer animationTimer;
 
 	/**
 	 * init : initialisation (appel�e par les constructeurs)
@@ -73,7 +77,7 @@ public class PlateauCadre extends Cadre {
 		this.getChildren().add(construire_entete());
 	}
 
-	private void deconstruire_plateau() {
+	public void deconstruire_plateau() {
 		// on nettoie l'ancien plateauGraphique et ses pingouins
 		if (plateauGraphique != null)
 			for (int i = 0; i < plateau.getSize(); i++) {
@@ -87,7 +91,7 @@ public class PlateauCadre extends Cadre {
 		plateauGraphique.detruire();
 	}
 
-	private void construire_plateau() {
+	public void construire_plateau() {
 		// on recree un plateau graphique et ses pingouins
 		this.plateauGraphique = new PlateauGraphique(plateau, this);
 		this.gameObjects.get(0).add(plateauGraphique);
@@ -100,6 +104,7 @@ public class PlateauCadre extends Cadre {
 				}
 			}
 		}
+		plateauGraphique.update();
 	}
 
 	public PlateauCadre(Moteur m) {
@@ -112,17 +117,37 @@ public class PlateauCadre extends Cadre {
 		init(m);
 	}
 
+	private StackPane pane_transition;
 	public void start() {
 		this.joueurCourantGraphique.setText(
 				"Joueur " + (1 + moteur.indexJoueurCourant()) + "(" + moteur.joueurCourant().scoreFish() + ")");
 		this.joueurCourantGraphique.setCouleur(Donnees.getCouleur(moteur.indexJoueurCourant()));
-		new AnimationTimer() {
+		animationTimer = new AnimationTimer() {
 			@Override
 			public void handle(long currentNanoTime) {
 				update();
 				draw();
 			}
-		}.start();
+		};
+		
+		//FONDU
+		pane_transition = new StackPane();
+		pane_transition.prefWidthProperty().bind(InterfaceGraphique.stage.getScene().widthProperty());
+		pane_transition.prefHeightProperty().bind(InterfaceGraphique.stage.getScene().heightProperty());
+		pane_transition.setStyle("-fx-background-color: rgb(0,0,0);");
+		GamePane.getInstance().getChildren().add(pane_transition);
+		FadeTransition ft = new FadeTransition(new Duration(500),pane_transition);
+		ft.setFromValue(1);
+		ft.setToValue(0);
+		ft.play();
+		ft.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				GamePane.getInstance().getChildren().remove(pane_transition);
+			}
+		});
+		plateauGraphique.start();
+		animationTimer.start();
 	}
 
 	private HBox construire_entete() {
@@ -133,11 +158,13 @@ public class PlateauCadre extends Cadre {
 		p.prefWidthProperty().bind(hv.widthProperty());
 		p.getChildren().add(creer_bouton_quitter());
 		p.setAlignment(Pos.CENTER_RIGHT);
-		undoBouton = creer_bouton_undo();
-		redoBouton = creer_bouton_redo();
+		
+		HBox cur = creer_cadre_undo_redo();
+		cur.prefWidthProperty().bind(hv.widthProperty().multiply(0.5));
+		hv.getChildren().add(cur);
 		actualiser_undo_redo();
-		hv.getChildren().add(undoBouton);
-		hv.getChildren().add(redoBouton);
+		//hv.getChildren().add(undoBouton);
+		//hv.getChildren().add(redoBouton);
 		hv.getChildren().add(p);
 		hv.setAlignment(Pos.CENTER_LEFT);
 		hv.setPadding(new Insets(0, 20, 0, 20));
@@ -208,18 +235,18 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_undo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+		b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 0 0 5;");
+				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 
@@ -234,18 +261,18 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_redo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+		b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 0 0 5;");
+				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 
@@ -256,6 +283,17 @@ public class PlateauCadre extends Cadre {
 			}
 		});
 				return b;
+	}
+	
+	private HBox creer_cadre_undo_redo(){
+		HBox hbox = new HBox();
+		hbox.setAlignment(Pos.CENTER);
+		hbox.setSpacing(10);
+		undoBouton = creer_bouton_undo();
+		redoBouton = creer_bouton_redo();
+		hbox.getChildren().add(undoBouton);
+		hbox.getChildren().add(redoBouton);
+		return hbox;
 	}
 
 }

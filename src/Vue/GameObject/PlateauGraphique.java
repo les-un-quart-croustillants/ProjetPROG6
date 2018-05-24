@@ -23,18 +23,12 @@ public class PlateauGraphique extends GameObject {
 	}
 
 	@Override
+	public void start() {
+		update();
+	}
+	
+	@Override
 	public void update() {
-		/*
-		 * if (plateauCadre.getWidth() / plateau.getSize() <
-		 * plateauCadre.getHeight() / (plateau.getSize()*0.75)) { tailleCase =
-		 * (int) (plateauCadre.getWidth() * tailleRelative /
-		 * (plateau.getSize()*1.5)); } else { tailleCase = (int)
-		 * (plateauCadre.getHeight() * tailleRelative /
-		 * (plateau.getSize()*0.75*1.5)); } position.x = plateauCadre.getWidth()
-		 * / 2 - plateau.getSize() * tailleCase*0.75; position.y =
-		 * plateauCadre.getHeight() *0.45 - plateau.getSize() * tailleCase * 0;
-		 */
-
 		if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize() * 0.75)) {
 			tailleCase = (int) (plateauCadre.getWidth() * tailleRelative / plateau.getSize());
 		} else {
@@ -86,7 +80,7 @@ public class PlateauGraphique extends GameObject {
 		for (int i = 0; i < plateau.getSize(); i++) {
 			for (int j = 0; j < plateau.getSize() - (1 - i % 2); j++) {
 				Case c = cases[i][j];
-				if (c.collision(p)) {
+				if (!plateau.getCellule(new Position(i,j)).isDestroyed() && c.collision(p)) {
 					return c;
 				}
 			}

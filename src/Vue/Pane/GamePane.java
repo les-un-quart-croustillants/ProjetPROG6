@@ -7,7 +7,6 @@ import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Joueurs.JoueurIA;
 import Modele.Joueurs.JoueurPhysique;
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Plateau;
 import Vue.Cadre.PlateauCadre;
 import javafx.scene.layout.StackPane;
@@ -23,6 +22,7 @@ public class GamePane extends StackPane{
 	public static GamePane getInstance(){
 		if(GamePane.instance==null){
 			GamePane.instance = new GamePane();
+			GamePane.getPlateauCadre().start();
 			return GamePane.instance;
 		}
 		return GamePane.instance;
@@ -37,7 +37,7 @@ public class GamePane extends StackPane{
 		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
 		//this.moteur.setCurrentState(State.POSER_PINGOUIN);
-		plateauCadre.start();
+		//plateauCadre.start();
 	}
 	
 	private GamePane(){
@@ -60,7 +60,10 @@ public class GamePane extends StackPane{
 	 * @param p : le plateau
 	 */
 	public static void newInstance(Moteur m){
+		if(GamePane.instance!=null)
+			GamePane.getPlateauCadre().animationTimer.stop();
 		GamePane.instance = new GamePane(m);
+		GamePane.instance.plateauCadre.start();
 	}
 	
 	public static PlateauCadre getPlateauCadre(){

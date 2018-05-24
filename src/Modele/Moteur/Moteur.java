@@ -2,7 +2,6 @@ package Modele.Moteur;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -411,7 +410,6 @@ public class Moteur implements Serializable {
 	 */
 	public Position selectionnerPingouin(Position p) {
 		Position tmp = p;
-
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
