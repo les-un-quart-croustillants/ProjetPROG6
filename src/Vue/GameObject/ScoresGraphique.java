@@ -22,10 +22,10 @@ public class ScoresGraphique extends GameObject{
 	public void draw(GraphicsContext gc){
 		String nom,score;
 		gc.setFont(Donnees.FONT_SCORES_FINAUX);
-		Lighting l = new Lighting();
+		/*Lighting l = new Lighting();
 		l.setSurfaceScale(3);
 		l.setDiffuseConstant(3);
-		gc.setEffect(l);
+		gc.setEffect(l);*/
 		for(int i=0;i<GamePane.moteur().njoueurs();i++){
 			nom = GamePane.moteur().joueur(i).nom();
 			score = Integer.toString(GamePane.moteur().joueur(i).scoreFish());
@@ -53,7 +53,7 @@ public class ScoresGraphique extends GameObject{
 				y = (int) (GamePane.getPlateauCadre().getHeight()*0.88);
 				gc.drawImage(Donnees.IMG_CADENAS,x,y,w,h);
 			}
-			gc.setEffect(l);
+			//gc.setEffect(l);
 		}		
 		gc.setEffect(null);
 	}
