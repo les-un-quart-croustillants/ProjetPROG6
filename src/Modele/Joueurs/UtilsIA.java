@@ -259,7 +259,7 @@ public class UtilsIA {
 						Position cur = stack.pop();
 						checked.add(cur);
 						current.add(cur);
-						mergeStacks(stack,p.accessiblesanspingouin(cur),checked);
+						mergeStacks(stack,p.accessiblesanspingouin(cur),checked); //sanspingouins
 					}
 					res.add((LinkedList<Position>)current.clone());
 					current.clear();
@@ -377,7 +377,7 @@ public class UtilsIA {
 	 * @return
 	 */
 	public static int evaluerA(Noeud n,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
-		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
+		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
 	}
 	
 	/**
@@ -387,7 +387,7 @@ public class UtilsIA {
 	 * @return
 	 */
 	public static int evaluerB(Noeud n,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
-		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
+		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
 	}
 	
 	public static Plateau plateaucoup(LinkedList<Couple<Position,Position>> l, Plateau p) {
@@ -488,7 +488,7 @@ public class UtilsIA {
 				tableauval = valcases(plateau,id);
 			}
 			// Le joueur A doit jouer
-			heuristique = -1000000;
+			heuristique = -100000000;
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
 			
@@ -524,7 +524,7 @@ public class UtilsIA {
 				}
 				
 				//elagage alpha beta
-				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.heuristique() > n.pere().heuristique()) {
+				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.heuristique() > n.pere().heuristique() && n.heuristique() != 0) {
 					heuristique = filsclone.heuristique();
 					r.put(n.listcoup(), heuristique);
 					n.setHeuristic(heuristique);
@@ -601,12 +601,12 @@ public class UtilsIA {
 				}
 				
 				//elagage alpha beta
-				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.heuristique() < n.pere().heuristique()) {
+				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.heuristique() < n.pere().heuristique() && n.heuristique() != 0) {
 					heuristique = filsclone.heuristique();
 					r.put(n.listcoup(), heuristique);
 					n.setHeuristic(heuristique);
 					return heuristique;
-				}			
+				}		
 
 				scores = (ArrayList<ArrayList<Integer>>)simulescore(false,newscores,id,addscore).clone();
 		
@@ -615,7 +615,7 @@ public class UtilsIA {
 		}
 	}
 	public static int evaluerProfondeur(Plateau plateau){
-		int val = 2;
+		int val = 3;
 		int nbcaselibre = 0;
 		for(int i = 0; i < plateau.getSize();i++) {
 			for(int j = 0; j < plateau.getSize();j++) {
@@ -632,7 +632,7 @@ public class UtilsIA {
 		LinkedList<LinkedList<Position>> composanteConnexe = listeConnexeComposante(plateau);
 		if(composanteConnexe.size() > 1)
 			val = val+1;
-		return 10;
+		return val;
 		
 	}
 	
@@ -648,11 +648,11 @@ public class UtilsIA {
 
 		
 		minimaxA(a,memo,0,plateauclone,id,plateau.clone(),evaluerProfondeur(plateau), scores);
-
-		//for( int i = 0;i<a.fils().size();i++) {
-			//System.out.println("fils "+i+" heuristique : "+a.fils().get(i).heuristique());
-		//}
-		//System.out.println("heuristique de la racine : "+a.heuristique());
+		
+		for( int i = 0;i<a.fils().size();i++) {
+			System.out.println("fils "+i+" heuristique : "+a.fils().get(i).heuristique() +" et ses coups "+a.fils().get(i).listcoup());
+		}
+		System.out.println("heuristique de la racine : "+a.heuristique());
 
 		if(a.fils().size() != 0) { // au moins un pingouin pas isole
 		

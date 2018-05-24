@@ -11,23 +11,21 @@ public class HeuristiqueA {
 			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
 			int heuristique = 50;
 
-			/*LinkedList<Position> composantePingouin = UtilsIA.composanteConnexePingouin(pInitial,pInitial.getCellule(coups.get(0).gauche()).pingouin());
-			
-			int nbpingouinennemiscomposante = 0;
-			for(int j =0; j < composantePingouin.size();j++) {
-				if(pInitial.getCellule(composantePingouin.get(j)).aPingouin() && pInitial.getCellule(composantePingouin.get(j)).pingouin().employeur() != id)
-					nbpingouinennemiscomposante++;
-			}
-			if(nbpingouinennemiscomposante == 0)
-				return -1000;*/
-			
+			int nbPingouins = 0;
+			for(int i = 0; i < debase.getSize();i++) {
+				for(int j = 0; j < debase.getSize();j++) {
+					if(debase.getCellule(new Position(i,j)).aPingouin())
+						nbPingouins++;
+				}
+			}	
+				
 			for(int i = 0; i < scores.size();i++) {
 				if(scores.get(i).get(0) != id) {
-					heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
+					//heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
 				}
 			}
 			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
-			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase);
+			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase.clone());
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
 			boolean finish = true;
@@ -43,19 +41,32 @@ public class HeuristiqueA {
 			boolean gagne = true;
 			for(int i = 0; i < scores.size();i++) {
 				if(scores.get(i).get(0) != id) {
-					if(scores.get(i).get(1) > id) {
+					if(scores.get(i).get(1) > monscore) {
 						gagne = false;
 					}
 				}
 			}
-			if(gagne && finish)
-				return 100000;
+			if(gagne && finish) {
+				//System.out.println("gagnééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé");
+				return 10000;
+			}
+			
+			
 			//ICI ON MAXIMISE CE QU'ON VEUT 
-			
-			
+			/*
+			System.out.println("-----------------------");
+			System.out.println("initial :");
+			for(int i = 0;i< composantesInit.size();i++){
+				System.out.println(composantesInit.get(i));
+			}
+			System.out.println("calculé :");
+			for(int i = 0;i< composantesCalcul.size();i++){
+				System.out.println(composantesCalcul.get(i));
+			}
+			System.out.println("-----------------------");
+*/
 			
 			if(composantesCalcul.size() > composantesInit.size()) {
-
 				
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
@@ -78,16 +89,16 @@ public class HeuristiqueA {
 							if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
 								nbPingouinAllies++;
 								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
-									heuristique = heuristique + 9;
+									heuristique = heuristique + 3;
 								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
-									heuristique = heuristique + 6;
+									heuristique = heuristique + 2;
 							}
 							else if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() != id) {	
 								nbPingouinEnnemis++;
 								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 3)
-									heuristique = heuristique - 9;
+									heuristique = heuristique - 3;
 								if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
-									heuristique = heuristique - 6;
+									heuristique = heuristique - 2;
 							}	
 							nbPoissonsComposante = nbPoissonsComposante + pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish();	
 						}	
@@ -97,10 +108,9 @@ public class HeuristiqueA {
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
 					// TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
 
-					
-					//si une petit ile est laissée seule
+					 //si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique - nbPoissonsComposanteList.get(i)*2;
+						heuristique = heuristique - nbPoissonsComposanteList.get(i)*10;
 					}
 					
 					//si une portion du plateau est laissee a l'ennemi
@@ -108,23 +118,21 @@ public class HeuristiqueA {
 						heuristique = heuristique - nbPoissonsComposanteList.get(i) + 10*nbPingouinEnnemisList.get(i);
 					}
 					//si on a un pingouinennemi est seul sur une grosse partie de banquise
-					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(pInitial)/4) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 1) {
-						heuristique = heuristique - 100;
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/nbPingouins) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 1) {
+						heuristique = heuristique - nbPoissonsComposanteList.get(i);
 					}
 					//si on a un pingouinennemi est seul sur une petite partie de banquise
-					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 1) {
-						heuristique = heuristique + 200;
+					if((nbPoissonsComposanteList.get(i) < UtilsIA.nbPoissonsPlateau(debase)/nbPingouins) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 1) {
+						heuristique = heuristique + nbPoissonsComposanteList.get(i);
 					}
 					// si on est seuls sur la banquise
 					if(nbPingouinAlliesList.get(i) > 0 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique + nbPoissonsComposanteList.get(i) - 4*nbPingouinAlliesList.get(i);
+						heuristique = heuristique + nbPoissonsComposanteList.get(i) - 10*nbPingouinAlliesList.get(i);
 					}
 					//si on a un pingouin seul sur une grosse pasrtie de banquise
-					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(pInitial)/8) && nbPingouinAlliesList.get(i) == 1 && nbPingouinEnnemisList.get(i) == 0) {
-						heuristique = heuristique + 200;
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/nbPingouins) && nbPingouinAlliesList.get(i) == 1 && nbPingouinEnnemisList.get(i) == 0) {
+						heuristique = heuristique + 2*nbPoissonsComposanteList.get(i);
 					}
-					
-
 				}
 			}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
@@ -140,7 +148,7 @@ public class HeuristiqueA {
 								heuristique = heuristique - 3;
 							if (pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish() == 2)
 								heuristique = heuristique - 2;
-						}	
+						}
 						
 					}
 				}
