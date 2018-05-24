@@ -40,7 +40,7 @@ public class Menu extends StackPane {
 	}
 	
 	private Plateau create_plateau() {
-		Plateau p = new Plateau(TerrainMenu.getInstance().dim, ConfigMenu.getInstance().create_config().joueurs.size());
+		Plateau p = new Plateau(TerrainMenu.getInstance().dim, ConfigMenu.getInstance().create_config().nb_pingouins());
 		return p;
 	}
 	
