@@ -271,7 +271,6 @@ public abstract class Joueur implements Serializable {
 		this.addScoreFish(fishRedone);
 		this.addScoreDestroyed(destroyedRedone);
 		if(destroyedRedone == 0 && this.pingouinHistory.size() > 0) {
-			System.out.println(this.pingouinHistory);
 			this.pingouins.add(this.pingouinHistory.get(this.pingouinHistory.size()-1));
 			this.pingouinHistory.remove(this.pingouinHistory.size()-1);
 		}
