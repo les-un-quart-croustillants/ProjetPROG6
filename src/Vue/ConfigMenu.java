@@ -41,11 +41,11 @@ public class ConfigMenu extends VBox {
 		public void editPlayerType(GameConfig.TypeJoueur type) {
 			type_joueur = type;
 			if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
-				typeJoueur.setText("HUMAIN");
+				typeJoueur.setText(type_joueur.toString());
 				if(difficulte.isVisible())
 					difficulte.setVisible(false);
 			} else {
-					typeJoueur.setText("IA");
+					typeJoueur.setText(type_joueur.toString());
 					if(!difficulte.isVisible())
 						difficulte.setVisible(true);		
 			}
@@ -54,9 +54,9 @@ public class ConfigMenu extends VBox {
 		public void editIA(GameConfig.difficulte diff) {
 			diff_IA = diff;
 			switch(diff_IA) {
-			case FACILE:	difficulte.setText("FACILE");		break;
-			case MOYEN:		difficulte.setText("MOYEN");		break;
-			case DIFFICILE:	difficulte.setText("DIFFICILE");	break;
+			case FACILE:	difficulte.setText(diff_IA.toString());		break;
+			case MOYEN:		difficulte.setText(diff_IA.toString());		break;
+			case DIFFICILE:	difficulte.setText(diff_IA.toString());	break;
 			default: break;
 			}
 		}
@@ -66,8 +66,9 @@ public class ConfigMenu extends VBox {
 			diff_IA = GameConfig.difficulte.FACILE;
 			this.getStyleClass().add("joueurconfig");
 			HBox joueurLyt = new HBox();
-			typeJoueur = new TextField("HUMAIN");
-			difficulte = new Button("FACILE");
+			typeJoueur = new TextField(type_joueur.toString());
+			difficulte = new Button(diff_IA.toString());
+			difficulte.setVisible(false);
 			nbPenguin = new Label("x"+nb_Penguin);
 			minusPenguin = new Button();
 			delete = new Button();
@@ -127,8 +128,6 @@ public class ConfigMenu extends VBox {
 					}
 				}
 			});
-			
-
 			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
@@ -199,8 +198,6 @@ public class ConfigMenu extends VBox {
 		joueursPane.setContent(listJoueurs);
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
-		
-
 		
 		newJoueur.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {

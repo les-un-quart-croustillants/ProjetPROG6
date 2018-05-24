@@ -2,58 +2,56 @@ package Vue.Pane;
 
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
-import Modele.Moteurs.*;
+
+import java.io.File;
+
+import Modele.Moteur.Moteur;
 import Modele.Moteurs.MoteurApp.Action;
-import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
-public class ParametrePane extends PopupPane{
+public class ParametrePane extends PopupPane {
 
 	public ParametrePane() {
 		super();
 		remplir_pane_central();
 	}
-	
-	private void remplir_pane_central() {	
+
+	private void remplir_pane_central() {
 		pane.getChildren().add(creer_retour_jeu());
 		pane.getChildren().add(creer_charger());
-		pane.getChildren().add(creer_sauvegarder());
+		pane.getChildren().add(new BoutonSauvegarde());
 		pane.getChildren().add(creer_retour_menu());
-		pane.getChildren().add(creer_quitter());	
+		pane.getChildren().add(creer_quitter());
 	}
-	
-	private Button creer_sauvegarder() {
-		Button b = new Button("Sauvegarder");
-		b.setFont(Donnees.FONT_SCORES_FINAUX);
-		b.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				GamePane.moteur().sauvegarder();
-			}
-		});
-		return b;
-	}
-	
+
 	private Button creer_charger() {
 		Button b = new Button("charger");
 		b.setFont(Donnees.FONT_SCORES_FINAUX);
+		b.setTextFill(Color.BLACK);
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				GamePane.getInstance().getChildren().remove(ParametrePane.this);
-				GamePane.newInstance(GamePane.moteur().charger());
-				InterfaceGraphique.stage.setScene(new Scene(GamePane.getInstance()));
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setInitialDirectory(new File("rsc/save/"));
+				File file = fileChooser.showOpenDialog(InterfaceGraphique.stage);
+				if (file != null) {
+					GamePane.getInstance().getChildren().remove(ParametrePane.this);
+					GamePane.newInstance(Moteur.charger(file));
+					InterfaceGraphique.stage.getScene().setRoot(GamePane.getInstance());
+				}
 			}
 		});
 		return b;
 	}
-	
+
 	private Button creer_retour_jeu() {
 		Button b = new Button("Revenir au jeu");
 		b.setFont(Donnees.FONT_TEXT);
+		b.setTextFill(Color.BLACK);
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -62,10 +60,11 @@ public class ParametrePane extends PopupPane{
 		});
 		return b;
 	}
-	
+
 	private Button creer_quitter() {
 		Button b = new Button("Quitter");
 		b.setFont(Donnees.FONT_SCORES_FINAUX);
+		b.setTextFill(Color.BLACK);
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -74,16 +73,16 @@ public class ParametrePane extends PopupPane{
 		});
 		return b;
 	}
-	
+
 	private Button creer_retour_menu() {
 		Button b = new Button("Retour au Menu");
 		b.setFont(Donnees.FONT_SCORES_FINAUX);
+		b.setTextFill(Color.BLACK);
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				InterfaceGraphique.transition(Action.RETOUR_MENU);
 				InterfaceGraphique.graphic_state();
-				System.out.println("TODO: Retour au menu");
 			}
 		});
 		return b;

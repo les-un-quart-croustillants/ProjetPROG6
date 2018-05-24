@@ -261,7 +261,7 @@ public abstract class Joueur implements Serializable {
 		this.subScoreFish(fishUndone);
 		this.subScoreDestroyed(1);
 		this.ressusciter();
-		if(pingouinModifier) {
+		if(pingouinModifier && this.pingouins.size() > 0) {
 			this.pingouinHistory.add(this.pingouins.get(this.pingouins.size()-1));
 			this.pingouins.remove(this.pingouins.size()-1);
 		}
@@ -270,7 +270,7 @@ public abstract class Joueur implements Serializable {
 	public void redo(int fishRedone, int destroyedRedone) {
 		this.addScoreFish(fishRedone);
 		this.addScoreDestroyed(destroyedRedone);
-		if(destroyedRedone == 0) {
+		if(destroyedRedone == 0 && this.pingouinHistory.size() > 0) {
 			this.pingouins.add(this.pingouinHistory.get(this.pingouinHistory.size()-1));
 			this.pingouinHistory.remove(this.pingouinHistory.size()-1);
 		}
