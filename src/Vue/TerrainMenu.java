@@ -14,12 +14,12 @@ public class TerrainMenu extends VBox {
 	Integer dim = 8;
 	Button retour, jouer;
 	TriSlider proportions_pingouins;
+	Integer nbP1, nbP2, nbP3;
 	Label lblS1, lblS2, lblS3;
 	
 	public static TerrainMenu getInstance() {
 		if(instance == null)
 			instance = new TerrainMenu();
-		instance.update_proportions();
 		return instance;		
 	}
 	
@@ -27,15 +27,21 @@ public class TerrainMenu extends VBox {
 		Font.loadFont(getClass().getResourceAsStream("LuckiestCuy.ttf"), 14);
 		this.getStyleClass().add("menu");
 		create_elements();
+		update_proportions();
 	}
 	
 	private void update_proportions() {
 		Double minPosition = ConfigMenu.getInstance().create_config().nb_pingouins().doubleValue()/(dim*dim);
 		if(proportions_pingouins.getDividers().get(0).getPosition() < minPosition)
 			proportions_pingouins.getDividers().get(0).setPosition(minPosition);
-		lblS1.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getFirstSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
-		lblS2.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getSecondSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
-		lblS3.setText(Integer.toString(Double.valueOf(Math.ceil(proportions_pingouins.getThirdSlice().getWidth() / proportions_pingouins.getWidth() * dim*dim)).intValue()));
+		Double reste = .0;
+		nbP1 = Double.valueOf(Math.round(proportions_pingouins.getDividers().get(0).getPosition()*(dim*dim))).intValue();
+		reste = proportions_pingouins.getDividers().get(0).getPosition()*(dim*dim)- nbP1.doubleValue();
+		nbP2 = Double.valueOf(Math.round(reste+(proportions_pingouins.getDividers().get(1).getPosition()-proportions_pingouins.getDividers().get(0).getPosition())*(dim*dim))).intValue();
+		nbP3 = (dim*dim)-nbP2-nbP1;
+		lblS1.setText(nbP1.toString());
+		lblS2.setText(nbP2.toString());
+		lblS3.setText(nbP3.toString());
 	}
 	
 	private void create_elements() {
@@ -120,6 +126,6 @@ public class TerrainMenu extends VBox {
 		
 		poissonsLyt.getChildren().addAll(poissons1, poissons2, poissons3, tf_p1, tf_p2, tf_p3);
 		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
-		this.getChildren().addAll(dimBox, jouer, retour, proportions_pingouins);
+		this.getChildren().addAll(dimBox, proportions_pingouins, jouer, retour);
 	}
 }
