@@ -25,9 +25,11 @@ public class Plateau implements Serializable {
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
 
-	public Plateau() {
+	Plateau() {
 		this(3, 1);
 	}
+
+	@Deprecated /* Pour eviter les effets silencieux -> use Plateau(size, nb_pingouins) or Plateau(size, nb_case_1, nb_case_2, nb_case_3) */
 	public Plateau(int size) {
 		this(size, 2);
 	}
@@ -41,12 +43,26 @@ public class Plateau implements Serializable {
 		initTab(nb_pingouin);
 	}
 
+	public Plateau(int size, int nb_fish_1, int nb_fish_2, int nb_fish_3) {
+		this.size = size;
+		this.undoList = new LinkedList<>();
+		this.history = new LinkedList<>();
+		this.tab = new Cellule[size][size];
+
+		initTab(nb_fish_1, nb_fish_2, nb_fish_3);
+	}
+
+	@Deprecated
 	public Plateau(int size, Construct c) {
+		this(size,1,c);
+	}
+
+	public Plateau(int size, int nb_pingouins, Construct c) {
 		this.size = size;
 		this.tab = new Cellule[size][size];
 		this.history = new LinkedList<>();
 		this.undoList = new LinkedList<>();
-		initTab(c);
+		initTab(c, nb_pingouins);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,28 +80,78 @@ public class Plateau implements Serializable {
 
 	/**
 	 * initTab : initialise le tableau selon une configuration attendue.
+	 * @param nb_fish_1 : nombre de cases à un poisson
+	 * @param nb_fish_2 : nombre de cases à deux poissons
+	 * @param nb_fish_3 : nombre de cases à 3 poissons
 	 */
-	private void initTab(int borne) {
-		int tmp,
-			nb_cases = (size * size) - (size + 1) / 2,
-			nb_1 = 0;
-		Position p;
+	private void initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3) {
+		int coeff,
+			candidat,
+			borne = nb_fish_1 + nb_fish_2 + nb_fish_3,
+			nb_cases = (size * size) - (size + 1) / 2;
+		int[] nb = new int[3];
+		Arrays.fill(nb, 0);
+
 		Random r = new Random();
-		if (borne > nb_cases )
+		if (borne > nb_cases) {
 			borne = nb_cases;
+			if (nb_fish_1 > borne)
+				nb_fish_1 = borne;
+		}
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				if(i % 2 == 0 && j == this.size-1) { // ligne courte
 					tab[i][j] = new Cellule(new Position(i,j),true, 0);
 				}
 				else {
-					tmp = r.nextInt(3) + 1;
-					if (tmp == 1)
-						nb_1++;
-					tab[i][j] = new Cellule(new Position(i,j), tmp);
+					candidat = -1;
+					while (candidat == -1) {
+						coeff = r.nextInt(borne);
+						if (coeff <= nb_fish_1 && nb[0] < nb_fish_1) {
+							candidat = 1;
+						} else if (coeff <= (nb_fish_1 + nb_fish_2) && nb[1] < nb_fish_2) {
+							candidat = 2;
+						} else if (coeff <= (nb_fish_1 + nb_fish_2 + nb_fish_3)  && nb[2] < nb_fish_3) {
+							candidat = 3;
+						} else {
+							if (nb[0] < nb_fish_1)
+								candidat = 1;
+							else if (nb[1] < nb_fish_2)
+								candidat = 2;
+							else if (nb[2] < nb_fish_3)
+								candidat = 3;
+							else
+								candidat = r.nextInt(3)  + 1;
+						}
+					}
+					nb[candidat - 1]++;
+					tab[i][j] = new Cellule(new Position(i, j), candidat);
 				}
 			}
 		}
+	}
+
+	private void initTab(Construct c, int borne) {
+		int tmp, nb_1 = 0;
+		for (int i = 0; i < this.size; i++) {
+			for (int j = 0; j < this.size; j++) {
+				if (!(((i % 2) == 0) && (j == (size - 1)))) {
+					tmp = c.getCellValue(i,j);
+					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
+					if (tmp == 1)
+						nb_1++;
+				}
+				else {
+					tab[i][j] = new Cellule(new Position(i,j), true, 0);
+				}
+			}
+		}
+		verif_borne(borne, nb_1);
+	}
+
+	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
+		Random r = new Random();
+		Position p;
 		while (nb_1 <= borne) {
 			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
 			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
@@ -95,17 +161,13 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	private void initTab(Construct c) {
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				if (!(((i % 2) == 0) && (j == (size - 1)))) {
-					tab[i][j] = new Cellule(new Position(i,j), false, c.getCellValue(i,j));
-				}
-				else {
-					tab[i][j] = new Cellule(new Position(i,j), true, 0);
-				}
-			}
-		}
+	/**
+	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
+	 * @param nb_pingouin : equibvalent à nb_fish_1
+	 */
+	private void initTab(int nb_pingouin) {
+		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
+		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
 
 	public static Plateau parse(String filename) throws IOException {
@@ -217,7 +279,7 @@ public class Plateau implements Serializable {
 	 * @param candidat : la position à ajouter
 	 * @param mode : l'entier représentant le mode a utilisé
 	 *              0..+ : l'indice du joueur courant,
-	 *              	ce mode ne considère que les pingouins adverses comme obstacles
+	 *                  ce mode ne considère que les pingouins adverses comme obstacles
 	 *              -1 : considère tous les pingouins comme obstacles
 	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
 	 * @return si l'ajout de candidat à été fait ou non.
@@ -226,7 +288,7 @@ public class Plateau implements Serializable {
 		if (isInTab(candidat)) {
 			if ((mode == -1 && !getCellule(candidat).isObstacle())
 					|| (mode == -2 && !getCellule(candidat).isDestroyed())
-					|| (mode >= 0 && getCellule(candidat).pingouin().employeur() != mode)) {
+					|| (mode >= 0 && (getCellule(candidat).aPingouin() && getCellule(candidat).pingouin().employeur() != mode))) {
 				if (!l.contains(candidat))
 					l.add(candidat);
 				return true;
@@ -240,7 +302,7 @@ public class Plateau implements Serializable {
 	 * @param p : la position de départ
 	 * @param mode : l'entier représentant le mode a utilisé
 	 *              0..+ : l'indice du joueur courant,
-	 *              	ce mode ne considère que les pingouins adverses comme obstacles
+	 *                  ce mode ne considère que les pingouins adverses comme obstacles
 	 *              -1 : considère tous les pingouins comme obstacles
 	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
 	 * @return LinkedList des positions accessible depuis p

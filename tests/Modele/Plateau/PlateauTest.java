@@ -9,6 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -44,20 +45,43 @@ public class PlateauTest {
 		Random r = new Random();
 		int size, nb_cases1, nb_pingouins;
 		Plateau sujet;
-		for (int i = 0; i < 100; i++) {
-			nb_cases1 = 0;
-			size = r.nextInt(97) + 3;
-			nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
-			sujet = new Plateau(size, nb_pingouins);
-			for (int j = 0; j < size; j++) {
-				for (int k = 0; k < size; k++) {
-					Cellule c = sujet.getCellule(new Position(j,k));
-					if (!c.isDestroyed() && c.getFish() == 1)
-						nb_cases1++;
-				}
+		nb_cases1 = 0;
+		size = r.nextInt(47) + 3;
+		nb_pingouins = r.nextInt((size*size) - ((size + 1) / 2));
+		sujet = new Plateau(size, nb_pingouins);
+		for (int j = 0; j < size; j++) {
+			for (int k = 0; k < size; k++) {
+				Cellule c = sujet.getCellule(new Position(j,k));
+				if (!c.isDestroyed() && c.getFish() == 1)
+					nb_cases1++;
 			}
-			Assert.assertTrue("initTab_nb_pingouin failed with config : " +  nb_cases1  + " < " + nb_pingouins + " on \n" + sujet.pretty(), nb_cases1 >= nb_pingouins);
 		}
+		Assert.assertTrue("initTab_nb_pingouin failed with config : " +  nb_cases1  + " < " + nb_pingouins + " on \n" + sujet.pretty(), nb_cases1 >= nb_pingouins);
+	}
+
+	@Test
+	public void initTab_proportionnel() {
+		Random r = new Random();
+		int size, nb_cases;
+		int[] nb = new int[3],
+			ref = new int[3];
+		Arrays.fill(nb,0);
+		Plateau sujet;
+		size = r.nextInt(47) + 3;
+		nb_cases = (size * size) - (size + 1) / 2;
+		ref[0] = r.nextInt(nb_cases - 1) + 1;
+		ref[1] = r.nextInt(nb_cases - ref[0]);
+		ref[2] = r.nextInt(nb_cases - ref[0] - ref[1]);
+		sujet = new Plateau(size, ref[0], ref[1], ref[2]);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (i % 2 != 0 || j != size - 1)
+					nb[sujet.getCellule(i,j).getFish() - 1]++;
+			}
+		}
+		Assert.assertTrue("initTab_propotionnel : nb_1 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[0] <= nb[0]);
+		Assert.assertTrue("initTab_propotionnel : nb_2 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[1] <= nb[1]);
+		Assert.assertTrue("initTab_propotionnel : nb_3 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[2] <= nb[2]);
 	}
 
 	@Test
@@ -107,7 +131,7 @@ public class PlateauTest {
 		getNeighbours_test1(nb_test);
 		getNeighbours_test2(nb_test);
 		getNeighbours_test3(nb_test);
-		Plateau vide = new Plateau(2);
+		Plateau vide = new Plateau(2,2);
 		vide.getCellule(new Position(0,1)).destroy();
 		vide.getCellule(new Position(1,0)).destroy();
 		vide.getCellule(new Position(1,1)).destroy();
@@ -131,7 +155,7 @@ public class PlateauTest {
 		Assert.assertEquals("getNeighbours test #2/" + nb_test + " failed", expected, p.getNeighbours(new Position(0,0)));
 	}
 	private void getNeighbours_test3(int nb_test) {
-		Plateau sujet = new Plateau(5);
+		Plateau sujet = new Plateau(5,2);
 		LinkedList<Position> expected = new LinkedList<>();
 		expected.add(new Position(1,1));
 		expected.add(new Position(1,2));
@@ -145,7 +169,7 @@ public class PlateauTest {
 	@Test
 	public void accessible() {
 		int nb_tests = 4;
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10,2);
 		Position pos = new Position(5,0);
 		LinkedList<Position> expected = new LinkedList<>();
 
@@ -248,7 +272,7 @@ public class PlateauTest {
 		expected.add(new Position(5,0));
 		Assert.assertEquals("accessible test #3/"+ nb_tests + "  failed", expected, sujet.accessible(pos));
 
-		sujet = new Plateau(8);
+		sujet = new Plateau(8, 2);
 		pos = new Position(4,0);
 		expected = new LinkedList<>();
 
@@ -277,7 +301,7 @@ public class PlateauTest {
 
 	@Test
 	public void estAccessible() {
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10, 2);
 		Position current = new Position(0,0),
 				target = new Position(0,0);
 
@@ -363,14 +387,14 @@ public class PlateauTest {
 		Assert.assertEquals(p,sujet);
 		sujet.getCellule(new Position(0,0)).destroy();
 		Assert.assertFalse(p.equals(sujet));
-		sujet = new Plateau(4);
+		sujet = new Plateau(4, 2);
 		Assert.assertFalse(p.clone().equals(sujet.clone()));
 
 	}
 
 	@Test
 	public void equals() {
-		Plateau sujet = new Plateau(p.getSize());
+		Plateau sujet = new Plateau(p.getSize(), 2);
 		Assert.assertEquals(p,p);
 		Assert.assertFalse(p.equals(sujet));
 	}
@@ -488,7 +512,7 @@ public class PlateauTest {
 	public void serial() {
 		String filename = "tests/rsc/test_serial.bin";
 
-		Plateau sujet = new Plateau(10);
+		Plateau sujet = new Plateau(10, 2);
 		Position pos1 = new Position(0,0),
 				pos2 = new Position(0,1);
 		sujet.getCellule(pos1).setPenguin(new Pingouin(0, pos1));
@@ -536,7 +560,7 @@ public class PlateauTest {
 	@Ignore
 	@Test
 	public void testKignOfTheHillConstruct() {
-		Plateau sujet = new Plateau(20, new KingOfTheHillConstruct(20));
+		Plateau sujet = new Plateau(20, new KingOfTheHillConstruct(20, 5));
 		System.out.println(sujet.pretty());
 	}
 }

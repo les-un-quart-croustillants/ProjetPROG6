@@ -13,7 +13,7 @@ public class JoueurPhysiqueTest {
 	@Test
 	public void jouerCoup() {
 		JoueurPhysique j = new JoueurPhysique(0,0,"2");
-		Plateau plateau = new Plateau(10);
+		Plateau plateau = new Plateau(10, 2);
 		Position start,goal;
 		int expected;
 

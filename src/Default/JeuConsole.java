@@ -57,7 +57,7 @@ public class JeuConsole {
 	public static void main(String[] args) throws Exception {
 
 		Position res;
-		Plateau p = new Plateau(8);
+		Plateau p = new Plateau(8, 8);
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
 		boolean fin_partie = false;
 
