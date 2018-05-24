@@ -56,17 +56,9 @@ public class TerrainMenu extends VBox {
 		retour = new Button("Retour");
 		jouer = new Button("JOUER");		
 		
-		GridPane poissonsLyt = new GridPane();
-		jouer.getStyleClass().add("textbutton");
-		Label poissons1 = new Label("1 poissons");
-		Label poissons2 = new Label("2 poissons");
-		Label poissons3 = new Label("3 poissons");
-		TextField tf_p1 = new TextField("");
-		TextField tf_p2 = new TextField("");
-		TextField tf_p3 = new TextField("");
-		
 		// Configuration
 		retour.getStyleClass().add("textbutton");
+		jouer.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
 		LblDim2.getStyleClass().addAll("smaller");
@@ -77,7 +69,7 @@ public class TerrainMenu extends VBox {
 		
 		plusDim.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				dim++;
+				dim = dim+1 > 10 ? 10 : dim + 1;
 				LblDim1.setText(dim.toString());
 				LblDim2.setText(dim.toString());
 				update_proportions();
@@ -86,7 +78,7 @@ public class TerrainMenu extends VBox {
 		
 		minusDim.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				dim = dim-1 <= 0 ? 1 : dim-1;
+				dim = (dim-1)*(dim-1) < ConfigMenu.getInstance().create_config().nb_pingouins() ? dim : dim-1;
 				LblDim1.setText(dim.toString());
 				LblDim2.setText(dim.toString());
 				update_proportions();
@@ -94,9 +86,9 @@ public class TerrainMenu extends VBox {
 		});
 		
 		// TriSlider
-		lblS1 = new Label("3");
-		lblS2 = new Label("3");
-		lblS3 = new Label("3");
+		lblS1 = new Label();
+		lblS2 = new Label();
+		lblS3 = new Label();
 		
 		lblS1.getStyleClass().add("smaller");
 		lblS2.getStyleClass().add("smaller");
