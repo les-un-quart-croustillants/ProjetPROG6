@@ -1,12 +1,12 @@
 .menu {
 	-fx-alignment: center;
 	-fx-font-family: "Luckiest Guy";
-	-fx-spacing: 15px;
+	-fx-spacing: 25px;
 }
 
 .playandback {
 	-fx-alignment: center;
-	-fx-spacing: 15px;
+	-fx-spacing: 25px;
 }
 
 .label {
@@ -110,13 +110,13 @@
 }
 
 .trislider-first {
-	-fx-background-color: blue;
+	-fx-background-color: #bbcefd;
 }
 
 .trislider-second {
-	-fx-background-color: green;
+	-fx-background-color: #c9ccd2;
 }
 
 .trislider-third {
-	-fx-background-color: red;
+	-fx-background-color: #d3c173;
 }

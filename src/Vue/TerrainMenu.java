@@ -71,16 +71,6 @@ public class TerrainMenu extends VBox {
 		LblDim1.getStyleClass().addAll("smaller");
 		LblDim2.getStyleClass().addAll("smaller");
 		x.getStyleClass().addAll("smaller");
-		poissonsLyt.setConstraints(poissons1, 0, 0);
-		poissonsLyt.setConstraints(tf_p1, 0, 1);
-		poissonsLyt.setConstraints(poissons2, 1, 0);
-		poissonsLyt.setConstraints(tf_p2, 1, 1);
-		poissonsLyt.setConstraints(poissons3, 2, 0);
-		poissonsLyt.setConstraints(tf_p3, 2, 1);
-		poissons1.getStyleClass().addAll("smaller");
-		poissons2.getStyleClass().addAll("smaller");
-		poissons3.getStyleClass().addAll("smaller");
-		poissonsLyt.getStyleClass().add("center");
 		dimBox.getStyleClass().add("center");
 		plusDim.getStyleClass().addAll("iconbutton", "rightbuttonsmall");
 		minusDim.getStyleClass().addAll("iconbutton", "leftbuttonsmall");
@@ -124,7 +114,6 @@ public class TerrainMenu extends VBox {
 		proportions_pingouins.getSecondSlice().getChildren().add(lblS2);
 		proportions_pingouins.getThirdSlice().getChildren().add(lblS3);
 		
-		poissonsLyt.getChildren().addAll(poissons1, poissons2, poissons3, tf_p1, tf_p2, tf_p3);
 		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
 		this.getChildren().addAll(dimBox, proportions_pingouins, jouer, retour);
 	}
