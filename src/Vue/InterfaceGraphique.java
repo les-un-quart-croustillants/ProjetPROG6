@@ -6,11 +6,12 @@ import Vue.Menu;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import Vue.Pane.GamePane;
+import Modele.Moteurs.MoteurApp.*;
 import Modele.Moteurs.MoteurApp;
 
 public class InterfaceGraphique extends Application {	
 	private static MoteurApp m;
-	private static Stage stage;
+	public static Stage stage;
 	
 	static public float dt = 1f/60f;
 	
@@ -24,20 +25,26 @@ public class InterfaceGraphique extends Application {
 		stage = primaryStage;
 		Menu.setInterfaceGraphique(this);
 		Menu.setMoteurApp(m);
-		Scene menu = new Scene(Menu.getInstance(), 1000, 800);
-        stage.setScene(menu);
+        stage.setScene(new Scene(Menu.getInstance(), 1000, 800));
 		stage.show();
 		stage.setMinHeight(400);
 		stage.setMinWidth(600);
 	}
 	
-	public void graphic_state() {
+	public static void transition(Action action) {
+		m.transition(action);
+	}
+	
+	public static void graphic_state() {
 		switch(m.currentState()) {
 		case MENU:
-			stage.setScene(new Scene(Menu.getInstance(), 1000, 800));
+			//stage.setScene(new Scene(Menu.getInstance(), 1000, 800));
+			stage.getScene().setRoot(Menu.getInstance());
+			Menu.getInstance().getChildren().removeAll(ConfigMenu.getInstance(), TerrainMenu.getInstance(), NewGameMenu.getInstance());
 			break;
 		case JEU:
-			stage.setScene(new Scene(GamePane.getInstance()));
+			//stage.setScene(new Scene(GamePane.getInstance()));
+			stage.getScene().setRoot(GamePane.getInstance());
 			break;
 		case QUITTER:
 			stage.close();

@@ -26,6 +26,10 @@ public class GameObject {
 		return estDetruit;
 	}
 	
+	public void start() {
+		
+	}
+	
 	 /**
      * update : M�thode � surcharger pour modifier l'objet (appelee � chaque frame)
      */

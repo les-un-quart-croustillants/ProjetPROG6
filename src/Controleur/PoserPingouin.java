@@ -35,10 +35,11 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
 						GamePane.getPlateauCadre().gameObjects.get(1).add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
-										pc.plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
+										pc.plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
 						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 					}
 				}
+				GamePane.getPlateauCadre().moteurGraphique.sel_desel_case_un_poisson(false);
 			} else if (GamePane.moteur().currentState() == State.SELECTIONNER_PINGOUIN) {
 				Case c = pc.plateauGraphique.XYtoCase(new Point((int) event.getX(), (int) event.getY()));
 				if (c != null) {
@@ -74,6 +75,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 					}
 				}
 			}
+			GamePane.getPlateauCadre().actualiser_undo_redo();
 		}
 		
 	}

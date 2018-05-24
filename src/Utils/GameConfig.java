@@ -2,8 +2,6 @@ package Utils;
 
 import java.util.LinkedList;
 
-import Modele.Moteur.Moteur.State;
-
 public class GameConfig {
 	public enum TypeJoueur {
 		HUMAIN, IA;
@@ -35,16 +33,18 @@ public class GameConfig {
 		public TypeJoueur type;
 		public difficulte difficulte_ia;
 		public Integer nb_pingouins;
+		public String name;
 		
-		public ConfigJoueur(TypeJoueur t, difficulte d, Integer n) {
+		public ConfigJoueur(TypeJoueur t, difficulte d, Integer n, String name) {
 			type = t;
+			this.name = name; 
 			difficulte_ia = d;
 			nb_pingouins = n;
 		}
 		
 		@Override
 		public String toString() {
-			String str = type.toString();
+			String str = name + "("+type.toString()+")";
 			if(type == TypeJoueur.IA)
 				str += " " + difficulte_ia.toString();
 			
@@ -59,6 +59,14 @@ public class GameConfig {
 	public GameConfig(Integer dim) {
 		this.dim = dim;
 		joueurs = new LinkedList<ConfigJoueur>();
+	}
+	
+	public Integer nb_pingouins() {
+		Integer c = 0;
+		for(ConfigJoueur jc : joueurs) {
+			c += jc.nb_pingouins;
+		}
+		return c;
 	}
 	
 	@Override

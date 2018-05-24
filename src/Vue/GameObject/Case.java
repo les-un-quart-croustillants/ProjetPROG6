@@ -8,6 +8,7 @@ import com.sun.javafx.geom.Vec2f;
 
 import Utils.Position;
 import Vue.Donnees;
+import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -21,7 +22,8 @@ public class Case extends GameObject {
 	private PlateauGraphique pg;
 
 	public PingouinGraphique pingouinGraphique;
-	public Color couleur;
+	public Color couleurSelected = new Color(210f/255f,110f/255f,0,1);
+
 	public Position posPlateau;
 	
 	private int currentFrame = 0;
@@ -44,15 +46,6 @@ public class Case extends GameObject {
 
 	@Override
 	public void update() {
-			/*position.x = pg.plateau.getSize()*pg.tailleCase/2 + posPlateau.j()*pg.tailleCase - posPlateau.i()*pg.tailleCase/2;
-			position.y =  posPlateau.i()*pg.tailleCase*0.7 + posPlateau.j()*pg.tailleCase/2 - pg.plateau.getSize()*pg.tailleCase/2;
-
-			if (posPlateau.i() % 2 == 0) {
-				position.x += pg.tailleCase*0.5;
-				position.y += pg.tailleCase*0.25;
-
-			}*/
-		
 			position.x = posPlateau.j()*(pg.tailleCase+pg.espacement) + (1-posPlateau.i()%2)*(pg.tailleCase+pg.espacement)/2;
 			position.y = posPlateau.i()*(pg.tailleCase+pg.espacement)/2;
 			
@@ -62,7 +55,8 @@ public class Case extends GameObject {
 			polygon.xpoints[i] = (int) (px[i] * pg.tailleCase / 256 + position.x);
 			polygon.ypoints[i] = (int) (py[i] * pg.tailleCase / 256 + position.y);
 		}
-
+		if(GamePane.moteur().joueurCourant() != null)
+			couleurSelected = Donnees.getCouleur(GamePane.moteur().joueurCourant().id());
 	}
 	
 	
@@ -94,7 +88,7 @@ public class Case extends GameObject {
 		gc.drawImage(sprite, position.x, position.y, pg.tailleCase,
 				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
 		if (selected) {
-			gc.setStroke(new Color(1, 1, 0, 1));
+			gc.setStroke(couleurSelected);
 			gc.setLineWidth(5);
 			if(miseEnValeur)
 				gc.setGlobalAlpha((Math.cos(0.01*System.currentTimeMillis())+1)/2);
@@ -109,7 +103,15 @@ public class Case extends GameObject {
 				dpx[i] = polygon.xpoints[i];
 				dpy[i] = polygon.ypoints[i];
 			}
-			// gc.fillPolygon(dpx, dpy, polygon.npoints);
+			if(selected) {
+				gc.setFill(couleurSelected);
+				if(miseEnValeur)
+					gc.setGlobalAlpha((Math.cos(0.01*System.currentTimeMillis())+1)/2);
+				else
+					gc.setGlobalAlpha(0.5);
+				gc.fillPolygon(dpx, dpy, polygon.npoints);
+				gc.setGlobalAlpha(1);
+			}
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}
 		gc.restore();

@@ -3,7 +3,9 @@ package Vue.Pane;
 import java.util.ArrayList;
 
 import Modele.Joueurs.Joueur;
+import Modele.Moteurs.MoteurApp.Action;
 import Vue.Donnees;
+import Vue.InterfaceGraphique;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,47 +16,33 @@ import javafx.scene.effect.Glow;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class ScorePane extends StackPane {
+public class ScorePane extends PopupPane {
 
 	public ScorePane() {
-		this.setStyle(" -fx-background-color: rgba(0,0,0,0.5);");
-		VBox p = creer_pane_central();
-		//p.maxWidthProperty().bind(this.widthProperty().multiply(0.5));
-		//p.maxHeightProperty().bind(this.heightProperty().multiply(0.7));
-		p.setMaxWidth(400);
-		p.setMaxHeight(600);
-		this.getChildren().add(p);
+		super();
+		remplir_pane_central();
 	}
 	
-	private VBox creer_pane_central() {
-		VBox v = new VBox();
-		v.setStyle(" -fx-background-color: rgba(35,60,100,1); -fx-background-radius: 20; -fx-border-color: rgb(10,30,60);  -fx-border-radius: 20; -fx-border-width: 10;");
-		v.setAlignment(Pos.CENTER);
-		v.setSpacing(30);
-		
+	private void remplir_pane_central() {		
 		//Titre
 		Label titre = new Label("Scores");
 		titre.setFont(Donnees.FONT_PLAY);
 		titre.setTextFill(Color.YELLOW);
 		titre.setEffect(new Glow(1));
 		titre.setPadding(new Insets(5));
-		v.getChildren().add(titre);
+		pane.getChildren().add(titre);
 		
 		//Tableau score
 		try {
 			GridPane gp = creer_grille_scores();
-			v.getChildren().add(gp);
+			pane.getChildren().add(gp);
 		} catch (Exception e) {
 		}
 		//gp.maxWidthProperty().bind(v.widthProperty().multiply(0.5));		
 		//Boutons
-		v.getChildren().add(creer_retour_menu());
-		
-		return v;
+		pane.getChildren().add(creer_retour_menu());	
 	}
 	
 	private Button creer_retour_menu() {
@@ -63,7 +51,8 @@ public class ScorePane extends StackPane {
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("J'ai pas compris comment on fait les transitions entre menus.");
+				InterfaceGraphique.transition(Action.RETOUR_MENU);
+				InterfaceGraphique.graphic_state();
 			}
 		});
 		
@@ -85,7 +74,7 @@ public class ScorePane extends StackPane {
 			Label l;
 			//nom
 			l = nom_joueur(j.nom());
-			l.setTextFill(Donnees.COULEURS_JOUEURS[i]);
+			l.setTextFill(Donnees.getCouleur(j.id()));
 			GridPane.setColumnIndex(l,0);			
 			GridPane.setRowIndex(l,i+1);
 			gp.getChildren().add(l);

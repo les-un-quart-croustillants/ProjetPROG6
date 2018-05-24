@@ -1,7 +1,7 @@
 .menu {
 	-fx-alignment: center;
 	-fx-font-family: "Luckiest Guy";
-	-fx-spacing: 35px;
+	-fx-spacing: 15px;
 }
 
 .playandback {
@@ -12,6 +12,18 @@
 .label {
 	-fx-text-fill: white;
 	-fx-font-size: 58px;
+}
+
+.smaller {
+	-fx-font-size: 28px;
+}
+
+.nameplayer {
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+	-fx-padding: 0px;
+	-fx-font-size: 25px;
+	-fx-max-width: 205px;
 }
 
 .iconbutton {
@@ -61,7 +73,7 @@
 .scroll-pane {
 	-fx-background-color: transparent;
 	-fx-pref-height: 213px;
-	-fx-max-width: 360px;
+	-fx-max-width: 560px;
 	-fx-fit-to-height: true;
 	-fx-fit-to-width: false;
 }
@@ -85,4 +97,26 @@
 
 .joueurconfig {
 	-fx-spacing: 20px;
+}
+
+.trislider .slice {
+	-fx-min-width: 0px;
+	-fx-pref-height: 32px;
+	-fx-alignment:	center;
+}
+
+.trislider {
+	-fx-max-width: 400px;
+}
+
+.trislider-first {
+	-fx-background-color: blue;
+}
+
+.trislider-second {
+	-fx-background-color: green;
+}
+
+.trislider-third {
+	-fx-background-color: red;
 }

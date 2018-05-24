@@ -1,16 +1,19 @@
 package Vue.GameObject;
 
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Utils.Position;
 import Vue.Donnees;
+import Vue.Cadre.PlateauCadre;
+import Vue.Listener.SauvegardeListener;
 import Vue.Pane.GamePane;
 import Vue.Pane.ScorePane;
 
 public class MoteurGraphique extends GameObject {
-
+	
+	public SauvegardeListener sauvegardeListener;
+	
 	public enum StateGraph {
-		ATTENDRE_MOTEUR, POSER_PINGOUIN_GRAPH, SELECTIONNER_PINGOUIN_GRAPH, SELECTIONNER_DESTINATION_GRAPH, CHANGER_JOUEUR_GRAPH, FIN;
+		ATTENDRE_MOTEUR, POSER_PINGOUIN_GRAPH, SELECTIONNER_PINGOUIN_GRAPH, SELECTIONNER_DESTINATION_GRAPH, CHANGER_JOUEUR_GRAPH, POSER_PINGOUIN_GRAPH_INIT, FIN;
 
 		static public String toString(StateGraph s) {
 			switch (s) {
@@ -20,6 +23,8 @@ public class MoteurGraphique extends GameObject {
 				return "POSER_PINGOUIN_GRAPH";
 			case SELECTIONNER_PINGOUIN_GRAPH:
 				return "SELECTIONNER_PINGOUIN_GRAPH";
+			case POSER_PINGOUIN_GRAPH_INIT:
+				return "POSER_PINGOUIN_GRAPH_INIT";
 			case SELECTIONNER_DESTINATION_GRAPH:
 				return "SELECTIONNER_DESTINATION_GRAPH";
 			case CHANGER_JOUEUR_GRAPH:
@@ -37,7 +42,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 250;
+	private double delay = 500;
 
 	@Override
 	public void update() {
@@ -50,6 +55,12 @@ public class MoteurGraphique extends GameObject {
 			if (time + 250 < System.currentTimeMillis()) {
 				onStateCHANGER_JOUEUR_GRAPH();
 			}
+			break;
+		case POSER_PINGOUIN_GRAPH_INIT:
+			if(!GamePane.moteur().joueurCourant().estIA()){
+				sel_desel_case_un_poisson(true);
+			}
+			setCurrentState(StateGraph.POSER_PINGOUIN_GRAPH);
 			break;
 		case POSER_PINGOUIN_GRAPH:
 			if (time + delay < System.currentTimeMillis()) {
@@ -80,15 +91,17 @@ public class MoteurGraphique extends GameObject {
 		case POSER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
 				GamePane.getPlateauCadre().infoGraphique.setText("Attendez votre tour");
-				currentState = StateGraph.POSER_PINGOUIN_GRAPH;
+			setCurrentState(StateGraph.POSER_PINGOUIN_GRAPH_INIT);
 			}
-			else
-				GamePane.getPlateauCadre().infoGraphique.setText("Cliquez sur une case à 1 poisson pour poser un pingouin");
+			else{
+				GamePane.getPlateauCadre().infoGraphique.setText("Poser un pingouin sur une case");
+				sel_desel_case_un_poisson(true);
+			}
 			break;
 		case SELECTIONNER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
 				GamePane.getPlateauCadre().infoGraphique.setText("Attendez votre tour");
-				currentState = StateGraph.SELECTIONNER_PINGOUIN_GRAPH;
+				setCurrentState(StateGraph.SELECTIONNER_PINGOUIN_GRAPH);
 			}
 			else
 				GamePane.getPlateauCadre().infoGraphique.setText("Selectionnez un pingouin");
@@ -96,7 +109,7 @@ public class MoteurGraphique extends GameObject {
 		case RESULTATS:
 			GamePane.getPlateauCadre().infoGraphique.setText("Fin de la partie");
 			GamePane.getInstance().getChildren().add(new ScorePane());
-			currentState = StateGraph.FIN;
+			setCurrentState(StateGraph.FIN);
 			break;
 		default:
 			break;
@@ -109,20 +122,29 @@ public class MoteurGraphique extends GameObject {
 	private void onStateSELECTIONNER_PINGOUIN_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().selectionnerPingouin(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))) {
+				System.out.println("Probleme: l'ia n'a pas su jouer");
+				System.exit(1);
+			}
 			pingouinCoupIA = p;
 			GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].select();
-			currentState = StateGraph.SELECTIONNER_DESTINATION_GRAPH;
+			setCurrentState(StateGraph.SELECTIONNER_DESTINATION_GRAPH);
 		}
+		
 	}
 
 	private void onStateSELECTIONNER_DESTINATION_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().selectionnerDestination(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))) {
+				System.out.println("Probleme: l'ia n'a pas su jouer");
+				System.exit(1);
+			}
 			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].deselect();
 			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].pingouinGraphique
 					.moveTo(p);
 			GamePane.getPlateauCadre().plateauGraphique.cases[pingouinCoupIA.i()][pingouinCoupIA.j()].detruire();
-			currentState = StateGraph.CHANGER_JOUEUR_GRAPH;
+			setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 		}
 	}
 
@@ -130,25 +152,28 @@ public class MoteurGraphique extends GameObject {
 		int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().poserPingouin(new Position(-1, -1));
+			if(p.equals(new Position(-1,-1))){
+				System.out.println("Plus de place pour poser les pingouins");
+				System.exit(1);
+			}
 			GamePane.getPlateauCadre().gameObjects.get(1)
 					.add(new PingouinGraphique(GamePane.moteur().plateau().getCellule(p).pingouin(),
-							GamePane.getPlateauCadre().plateauGraphique, Donnees.COULEURS_JOUEURS[i_joueur_courant]));
-			currentState = StateGraph.CHANGER_JOUEUR_GRAPH;
+							GamePane.getPlateauCadre().plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
+			setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 		} else {
-
 		}
 	}
 
 	private void onStateCHANGER_JOUEUR_GRAPH() {
-		if (GamePane.moteur().currentState() == State.SELECTIONNER_PINGOUIN
-				|| GamePane.moteur().currentState() == State.POSER_PINGOUIN) {
+		if (GamePane.moteur().currentState() == Moteur.State.SELECTIONNER_PINGOUIN
+				|| GamePane.moteur().currentState() == Moteur.State.POSER_PINGOUIN) {
 			GamePane.getPlateauCadre().joueurCourantGraphique
 					.setText("Joueur " + (1 + GamePane.moteur().joueurCourant().id()) + "("
 							+ GamePane.moteur().joueurCourant().scoreFish() + ")");
 			GamePane.getPlateauCadre().joueurCourantGraphique
-					.setCouleur(Donnees.COULEURS_JOUEURS[GamePane.moteur().joueurCourant().id()]);
+					.setCouleur(Donnees.getCouleur(GamePane.moteur().joueurCourant().id()%4));
 		}
-		currentState = StateGraph.ATTENDRE_MOTEUR;
+		setCurrentState(StateGraph.ATTENDRE_MOTEUR);
 	}
 
 	public StateGraph getCurrentState() {
@@ -156,6 +181,34 @@ public class MoteurGraphique extends GameObject {
 	}
 
 	public void setCurrentState(StateGraph sg) {
+		if(sg==StateGraph.ATTENDRE_MOTEUR && GamePane.moteur().joueurCourant()!=null && !GamePane.moteur().joueurCourant().estIA())
+			setSauvegardeAutorise(true);
+		else
+			setSauvegardeAutorise(false);
 		currentState = sg;
+	}
+	
+	public void sel_desel_case_un_poisson(boolean select){
+		PlateauCadre pc = GamePane.getPlateauCadre();
+		for(int i=0;i<pc.plateau.getSize();i++){
+			for(int j=0;j<pc.plateau.getSize();j++){
+				if(pc.plateau.getCellule(new Position(i,j)).getFish()==1){
+					if(select && !pc.plateau.getCellule(new Position(i,j)).aPingouin())
+						pc.plateauGraphique.cases[i][j].select();
+					else
+						pc.plateauGraphique.cases[i][j].deselect();
+				}
+			}
+		}
+	}
+	
+	private boolean sauvegardeAutorise = true;
+	public void setSauvegardeAutorise(boolean b) {
+		if(sauvegardeListener!=null)
+			sauvegardeListener.action(b);
+		sauvegardeAutorise = b;
+	}
+	public boolean getSauvegardeAutorise() {
+		return sauvegardeAutorise;
 	}
 }
