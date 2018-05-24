@@ -288,7 +288,7 @@ public class Plateau implements Serializable {
 		if (isInTab(candidat)) {
 			if ((mode == -1 && !getCellule(candidat).isObstacle())
 					|| (mode == -2 && !getCellule(candidat).isDestroyed())
-					|| (mode >= 0 && getCellule(candidat).pingouin().employeur() != mode)) {
+					|| (mode >= 0 && (getCellule(candidat).aPingouin() && getCellule(candidat).pingouin().employeur() != mode))) {
 				if (!l.contains(candidat))
 					l.add(candidat);
 				return true;
