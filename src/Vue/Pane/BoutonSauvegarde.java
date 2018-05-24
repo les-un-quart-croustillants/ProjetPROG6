@@ -30,7 +30,7 @@ public class BoutonSauvegarde extends Button implements SauvegardeListener {
 					GamePane.moteur().selectionnerDestination(new Position(-1, -1));
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setInitialDirectory(new File("rsc/save/"));
-				fileChooser.setInitialFileName(new SimpleDateFormat("dd_MM_yyyy_H_m").format(new Date()));
+				fileChooser.setInitialFileName(new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date())+".save");
 				File file = fileChooser.showSaveDialog(InterfaceGraphique.stage);
 				if (file != null) {
 					if (GamePane.moteur().sauvegarder(file)) {
