@@ -68,3 +68,7 @@
 	-fx-background-insets: 0px;
 	-fx-border-image-insets: -10px;
 }
+
+.nameplayer:hover {
+	-fx-effect:  dropshadow(three-pass-box, rgba(255,255,255,1), 15, 0, 0, 0);
+}
