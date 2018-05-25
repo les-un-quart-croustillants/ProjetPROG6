@@ -38,16 +38,14 @@ private void create_elements() {
 		HBox mapSelection = new HBox();
 		
 		
-		config.getStyleClass().add("textbutton");
+		config.getStyleClass().addAll("textbutton", "smallerbtn");
 		jouer.getStyleClass().add("textbutton");
-		retour.getStyleClass().add("textbutton");
+		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		
 		mapButton.getStyleClass().addAll("mapbutton");
 		
 		leftMap.getStyleClass().addAll("iconbutton", "leftbutton");
 		rightMap.getStyleClass().addAll("iconbutton", "rightbutton");
-		
-		config.getStyleClass().add("smallerbtn");
 		
 		mapSelection.setAlignment(Pos.CENTER);
 		mapSelection.getStyleClass().add("mapselection");
