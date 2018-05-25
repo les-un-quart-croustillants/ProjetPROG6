@@ -1,3 +1,8 @@
+@font-face {
+    font-family: Luckiest Guy;
+    src: url('LuckiestGuy.ttf');
+}
+
 .menu {
 	-fx-alignment: center;
 	-fx-font-family: "Luckiest Guy";
