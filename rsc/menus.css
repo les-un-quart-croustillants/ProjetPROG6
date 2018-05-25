@@ -90,11 +90,6 @@
 	-fx-padding: 15px;
 }
 
-.hbox {
-	-fx-alignment: center;
-	-fx-spacing: 15px;
-}
-
 .joueurconfig {
 	-fx-spacing: 20px;
 }
