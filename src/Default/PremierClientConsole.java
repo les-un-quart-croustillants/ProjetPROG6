@@ -10,7 +10,7 @@ import Utils.Couple;
 public class PremierClientConsole {
 	public static void main(String[] args) throws IOException {
 		String hostname = "130.190.76.244";
-		Integer port = 46303;
+		Integer port = 44999;
 		ClientAnwserProtocol cap = new ClientAnwserProtocol();
 		
 		System.out.println("Starting new Client configurated to connect to lobby "+hostname+":"+port+" ...");
@@ -37,6 +37,7 @@ public class PremierClientConsole {
 		if(c != null) {
 			cap.connecte(c.gauche(), c.droit());
 		}
+		System.out.println("Server anwser: "+cap.reponseServeurString());
 		System.out.println("Server anwser: "+cap.reponseServeurString());
 	}
 }

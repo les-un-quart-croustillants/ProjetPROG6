@@ -25,7 +25,7 @@ public class Lobby {
 			System.out.println("Server " + ip + " listening on port " + serverSocket.getLocalPort());
 			// Attente de client, lancement nouveau thread pour gestion client
 			while (run)
-				new LobbyThread(serverSocket.accept(), instances);
+				new LobbyThread(serverSocket.accept(), instances, ip);
 			serverSocket.close();
 
 		} catch (IOException e) {

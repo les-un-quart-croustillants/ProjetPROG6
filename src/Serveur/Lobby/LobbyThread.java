@@ -17,13 +17,13 @@ public class LobbyThread implements Runnable {
 	private BufferedReader in = null;
 	private PrintWriter out = null;
 	private InstanceList instances;
-
-	public LobbyThread(Socket s, InstanceList il) {
+	public LobbyThread(Socket s, InstanceList il, String ip) {
 
 		try {
 			this.socket = s;
 			this.out = new PrintWriter(s.getOutputStream(), true);
 			this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			out.flush();
 			this.outObj = new ObjectOutputStream(socket.getOutputStream());
 			outObj.flush();
 			this.inObj = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
@@ -48,6 +48,7 @@ public class LobbyThread implements Runnable {
 
 			// this.connectedPlayerID = Integer.parseInt(in.readLine());
 			while ((inputLine = in.readLine()) != null) {
+				System.out.println("read : "+inputLine);
 				String[] splited = inputLine.split("\\s+");
 				switch (splited[0]) {
 				case "I": // Get instances
@@ -71,7 +72,7 @@ public class LobbyThread implements Runnable {
 					String instanceName = splited[1];
 					System.out.println("Client asking to create new game instance named "+instanceName); 
 					if(instances.get("bob") == null) {
-						new GameInstance(instanceName, this.instances, this.socket.getRemoteSocketAddress().toString());
+						new GameInstance(instanceName, this.instances);
 						this.out.println("H ok");
 						System.out.println("Instance created");
 						System.out.flush();

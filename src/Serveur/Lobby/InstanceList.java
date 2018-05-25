@@ -28,7 +28,6 @@ public class InstanceList implements Serializable {
 				return c;
 			}
 		}
-		System.out.println("SALUT");
 		System.out.flush();
 		return null;
 	}

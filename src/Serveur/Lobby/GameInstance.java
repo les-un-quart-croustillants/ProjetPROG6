@@ -21,14 +21,16 @@ public class GameInstance implements Runnable {
 
 	private ServerSocket serverSocket;
 	private String name;
-	private String host;
 	private InstanceList instances;
+	private socketList clients;
 
 
-	public GameInstance(String name, InstanceList instances, String host) {
+	public GameInstance(String name, InstanceList instances) {
 		this.name = name;
-		this.host = host;
 		this.instances = instances;
+		this.clients = new socketList();
+		System.out.println("SALUT");
+		System.out.flush();
 		(new Thread(this)).start();
 	}
 
@@ -49,32 +51,28 @@ public class GameInstance implements Runnable {
 			}
 			this.instances.add(new Couple<String, Integer>(this.name, serverSocket.getLocalPort())); // L'instance s'ajoute aux instances
 			System.out.println("Game instance on server " + ip + " listening on port " + serverSocket.getLocalPort());
-			System.out.println("Waiting fort game-master " + this.host);
-			
-			/* Ouverture d'une connection */
-			while(!hostConnected) {
-				if(this.host.equals(this.joueurs.get(0).getRemoteSocketAddress().toString())) {
-					this.out.get(0).println("H ok");
-					hostConnected = true;
-				} else {
-					this.out.get(0).println("H error");
-				}	
-			}
 			
 			//TODO choix nombre de joueurs
-			nbJoueurs = 3;
+			nbJoueurs = 1;
 			
+			//Connection de tous les joueurs
+			/*
 			for(int i=0;i<nbJoueurs;i++) {
-				
+				this.clients.connectTo(serverSocket.accept());
+				System.out.println("New connection established");
 			}
+			*/
 			
-			System.out.println("Connected to "+this.joueurs.getInetAddress());
+			this.clients.connectTo(serverSocket.accept());
+			System.out.println("New connection established");
+			
+			this.clients.sendToAll("LETS GET THE PARTY STARTED");
+			
+			//Close connection
 			serverSocket.close();
 			this.instances.remove(name);
 			return;
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 

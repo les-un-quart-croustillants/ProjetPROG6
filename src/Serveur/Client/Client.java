@@ -17,6 +17,7 @@ import Utils.Couple;
 public class Client implements Runnable {
 
 	Socket clientSocket;
+	String hostname;
 	PrintWriter out;
 	ObjectInputStream inObj;
 	ObjectOutputStream outObj;
@@ -31,8 +32,10 @@ public class Client implements Runnable {
 	public Client(String hostName, int port, ClientAnwserProtocol cap) {
 		this.joueursIDs = new ArrayList<Integer>();
 		try {
+			this.hostname = hostname;
 			this.clientSocket = new Socket(hostName, port);
 			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+			this.out.flush();
 			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			this.outObj = new ObjectOutputStream(clientSocket.getOutputStream());
 			outObj.flush();
@@ -61,19 +64,20 @@ public class Client implements Runnable {
 			// out.print(this.joueursIDs); //Envois des identifiants des joueurs geres par
 			// le client
 			// Lecture du flus de donnees provenant du serveur
+			this.out.println();
 			while (inputLine != "Bye") {
 				if (cap.currentState() == State.DEFAULT) { // Si le client est en attente d'un message
 					inputLine = "none";
 					outputLine = cap.processInputString(inputLine);
 					splited = outputLine.split("\\s+");
 					if(splited[0].equals("C")) {
-						connectionInfo = new Couple<String,Integer>(splited[0],Integer.parseInt(splited[1]));
+						connectionInfo = new Couple<String,Integer>(splited[1],Integer.parseInt(splited[2]));
 					}
 				} else if(cap.currentState() == State.WAITFORANWSER) {
 					inputLine = in.readLine();
 					outputLine = cap.processInputString(inputLine);
 					if(inputLine.equals("C ok")) {
-						connectToLobby(connectionInfo);
+						connectToGameInstance(connectionInfo);
 					}
 				} else { // Si le client est en attente de donnees
 					inputObj = inObj.readObject();
@@ -99,7 +103,7 @@ public class Client implements Runnable {
 		}
 	}
 
-	private void connectToLobby(Couple<String, Integer> c) {
+	private void connectToGameInstance(Couple<String, Integer> c) {
 		try {
 			this.clientSocket.close();
 		} catch (IOException e) {
@@ -108,7 +112,7 @@ public class Client implements Runnable {
 		}
 		
 		try {
-			this.clientSocket = new Socket(c.gauche(), c.droit());
+			this.clientSocket = new Socket(this.hostname, c.droit());
 			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
 			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			this.outObj = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -118,7 +122,5 @@ public class Client implements Runnable {
 			System.err.println("Connection a " + c.gauche() + ":" + c.droit() + " a echouee");
 			e.printStackTrace();
 		}
-		
-		
 	}
 }

@@ -60,6 +60,7 @@ public class ClientAnwserProtocol {
 			this.currentState = State.DEFAULT;
 		}
 		this.serverMessage = input;
+		System.out.println(this.ihmMessage+"|"+this.serverMessage);
 		this.ihmMessage = null;
 		notifyAll();
 		return res;
@@ -111,46 +112,22 @@ public class ClientAnwserProtocol {
 	}
 
 	synchronized public void instances() {
-		while (this.serverMessage != null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 		this.ihmMessage = "I";
 		notifyAll();
 	}
 
 	synchronized public void connecte(String hostName, int port) {
-		while (this.serverMessage != null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 		this.ihmMessage = "C " + hostName + " " + port;
 		notifyAll();
 	}
 	
 	synchronized public void connect(Couple<String,Integer> c) {
-		while (this.serverMessage != null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 		this.ihmMessage = "C " + c.gauche() + " " + c.droit();
 		
 		notifyAll();
 	}
 
 	synchronized public void heberger(String name) {
-		while (this.serverMessage != null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 		this.ihmMessage = "H " + name;
 		notifyAll();
 	}

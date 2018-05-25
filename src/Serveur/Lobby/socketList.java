@@ -26,9 +26,9 @@ public class socketList {
 		this.inObj = new ArrayList<ObjectInputStream>();
 	}
 	
-	public void connectTo(ServerSocket serverSocket) {
+	public void connectTo(Socket socket) {
 		try {
-			this.joueurs.add(serverSocket.accept());
+			this.joueurs.add(socket);
 			int index = this.joueurs.size()-1;
 			this.out.add(new PrintWriter(joueurs.get(index).getOutputStream(), true));
 			this.in.add(new BufferedReader(new InputStreamReader(joueurs.get(index).getInputStream())));
@@ -41,9 +41,9 @@ public class socketList {
 		}
 	}
 	
-	public void changeConnectionAt(ServerSocket serverSocket,int index) {
+	public void changeConnectionAt(Socket socket,int index) {
 		try {
-			this.joueurs.set(index,serverSocket.accept());
+			this.joueurs.set(index,socket);
 			this.out.set(index,new PrintWriter(joueurs.get(index).getOutputStream(), true));
 			this.in.set(index,new BufferedReader(new InputStreamReader(joueurs.get(index).getInputStream())));
 			this.outObj.set(index,new ObjectOutputStream(joueurs.get(index).getOutputStream()));
@@ -114,6 +114,10 @@ public class socketList {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public boolean isHost(int index, String host) {
+		return this.joueurs.get(index).getRemoteSocketAddress().toString().equals(host);
 	}
 	
 }
