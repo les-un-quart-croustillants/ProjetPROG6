@@ -129,8 +129,6 @@ public class ConfigMenu extends VBox {
 				}
 			});
 			
-
-			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
 					objet.type_editted = true;
@@ -200,8 +198,6 @@ public class ConfigMenu extends VBox {
 		joueursPane.setContent(listJoueurs);
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
-		
-
 		
 		newJoueur.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {

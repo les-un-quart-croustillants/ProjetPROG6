@@ -158,11 +158,13 @@ public class PlateauCadre extends Cadre {
 		p.prefWidthProperty().bind(hv.widthProperty());
 		p.getChildren().add(creer_bouton_quitter());
 		p.setAlignment(Pos.CENTER_RIGHT);
-		undoBouton = creer_bouton_undo();
-		redoBouton = creer_bouton_redo();
+		
+		HBox cur = creer_cadre_undo_redo();
+		cur.prefWidthProperty().bind(hv.widthProperty().multiply(0.5));
+		hv.getChildren().add(cur);
 		actualiser_undo_redo();
-		hv.getChildren().add(undoBouton);
-		hv.getChildren().add(redoBouton);
+		//hv.getChildren().add(undoBouton);
+		//hv.getChildren().add(redoBouton);
 		hv.getChildren().add(p);
 		hv.setAlignment(Pos.CENTER_LEFT);
 		hv.setPadding(new Insets(0, 20, 0, 20));
@@ -233,18 +235,18 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_undo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+		b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 0 0 5;");
+				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 
@@ -259,18 +261,18 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_redo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+		b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 0 0 5;");
+				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 0; ");
+				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 
@@ -281,6 +283,17 @@ public class PlateauCadre extends Cadre {
 			}
 		});
 				return b;
+	}
+	
+	private HBox creer_cadre_undo_redo(){
+		HBox hbox = new HBox();
+		hbox.setAlignment(Pos.CENTER_LEFT);
+		hbox.setSpacing(10);
+		undoBouton = creer_bouton_undo();
+		redoBouton = creer_bouton_redo();
+		hbox.getChildren().add(undoBouton);
+		hbox.getChildren().add(redoBouton);
+		return hbox;
 	}
 
 }

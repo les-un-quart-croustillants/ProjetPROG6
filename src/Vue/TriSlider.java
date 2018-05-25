@@ -18,6 +18,9 @@ public class TriSlider extends SplitPane {
 		part3.getStyleClass().addAll("trislider-third", "slice");
 		
 		this.getItems().addAll(part1, part2, part3);
+		
+		this.getDividers().get(0).setPosition(0.33);
+		this.getDividers().get(1).setPosition(0.66);
 	}
 	
 	Pane getFirstSlice() {

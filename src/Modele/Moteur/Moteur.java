@@ -76,7 +76,7 @@ public class Moteur implements Serializable {
 	 * @author Louka Soret
 	 *
 	 */
-	public enum Action implements Serializable{
+	public enum Action implements Serializable {
 		MAUVAIS_ETAT, // La machine a etat a deraillee
 		SELECTION_VALIDE, // La selection faite par le joueur etait invalide
 		SELECTION_INVALIDE, // La selection faite par le joueur etait valide
@@ -179,8 +179,8 @@ public class Moteur implements Serializable {
 	}
 
 	/**
-	 * Change l'etat courant en appliquant la transition (etat courrant,action) sur
-	 * la machine a etat
+	 * Change l'etat courant en appliquant la transition (etat courrant,action)
+	 * sur la machine a etat
 	 * 
 	 * @param action
 	 */
@@ -194,21 +194,21 @@ public class Moteur implements Serializable {
 	}
 
 	public boolean undoPossible() {
-		if(this.undoRedoAutorise) {
-			return this.plateau.undoPossible();	
+		if (this.undoRedoAutorise) {
+			return this.plateau.undoPossible();
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean redoPossible() {
-		if(this.undoRedoAutorise) {
+		if (this.undoRedoAutorise) {
 			return this.plateau.redoPossible();
 		} else {
 			return false;
 		}
 	}
-	
+
 	public State currentState() {
 		return this.currentState;
 	}
@@ -279,8 +279,9 @@ public class Moteur implements Serializable {
 
 	/**
 	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
-	 * représente un rang dans le podium (le gagnant est a l'indice 0), dans chaque
-	 * ligne il y a: l'ID du joueur, son score de poissons et son score de cases.
+	 * représente un rang dans le podium (le gagnant est a l'indice 0), dans
+	 * chaque ligne il y a: l'ID du joueur, son score de poissons et son score
+	 * de cases.
 	 * 
 	 * @return
 	 * @throws Exception
@@ -288,7 +289,7 @@ public class Moteur implements Serializable {
 	public ArrayList<ArrayList<Integer>> scores(boolean sorted) {
 		@SuppressWarnings("unchecked")
 		ArrayList<Joueur> tmp = (ArrayList<Joueur>) this.joueurs.clone();
-		if(sorted) {
+		if (sorted) {
 			// Tri les joueurs elimines en vue du calcul du podium
 			Collections.sort(tmp, new Comparator<Joueur>() {
 				@Override
@@ -300,12 +301,13 @@ public class Moteur implements Serializable {
 					}
 				}
 			});
-			Collections.reverse(tmp);	
+			Collections.reverse(tmp);
 		}
 		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 		for (Joueur j : tmp) {
 			res.add(new ArrayList<Integer>() {
 				private static final long serialVersionUID = 1L;
+
 				{
 					add(j.id());
 					add(j.scoreFish());
@@ -328,8 +330,10 @@ public class Moteur implements Serializable {
 
 		do {
 			this.indexJoueurCourant = (this.indexJoueurCourant + 1) % this.joueurs.size();
-		} while (this.joueurCourant().estElimine() || ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size()) && this.currentState == State.POSER_PINGOUIN));
-		
+		} while (this.joueurCourant().estElimine()
+				|| ((this.joueurCourant().nbPingouin() == joueurCourant().pingouins().size())
+						&& this.currentState == State.POSER_PINGOUIN));
+
 		if (this.currentState() == State.POSER_PINGOUIN) {
 			return joueurCourant();
 		} else {
@@ -357,8 +361,8 @@ public class Moteur implements Serializable {
 	}
 
 	/**
-	 * poserPingouin : pose un pingouin � la position donn�e en param�tre et change
-	 * l'�tat du moteur (joueur courant + �tat courant)
+	 * poserPingouin : pose un pingouin � la position donn�e en param�tre et
+	 * change l'�tat du moteur (joueur courant + �tat courant)
 	 * 
 	 * @param p
 	 *            position ou poser le pingouin
@@ -401,8 +405,8 @@ public class Moteur implements Serializable {
 	}
 
 	/**
-	 * selectionnerPingouin : le moteur retiendra le pingouin selectionn� (et change
-	 * son �tat en cons�quence)
+	 * selectionnerPingouin : le moteur retiendra le pingouin selectionn� (et
+	 * change son �tat en cons�quence)
 	 * 
 	 * @param p
 	 *            : position du pingouin � selectionner
@@ -413,7 +417,7 @@ public class Moteur implements Serializable {
 		if (currentState == State.SELECTIONNER_PINGOUIN) {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
-				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau,this.scores(false));
+				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau, this.scores(false));
 				if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
 					// Si choix du pingouin effectue
 					tmp = calculated.gauche();
@@ -425,7 +429,8 @@ public class Moteur implements Serializable {
 			}
 			// Si le pingouin n'est pas isole
 			if (!plateau.estIsolee(tmp)) {
-				// Si La cellule en p a un pingouin et que ce pingouin appartient au joueur
+				// Si La cellule en p a un pingouin et que ce pingouin
+				// appartient au joueur
 				// courrant
 				if (plateau.getCellule(tmp).aPingouin()
 						&& (plateau.getCellule(tmp).pingouin().employeur() == joueurCourant().id())) {
@@ -482,19 +487,20 @@ public class Moteur implements Serializable {
 
 	/**
 	 * Reviens au coup precedent, s'arrete au premier joueur physique
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
-			Couple<Boolean,Couple<Integer, Integer>> res;
+			Couple<Boolean, Couple<Integer, Integer>> res;
 
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
 				if (res.droit().gauche() >= 0) {
 					if ((indexJoueurCourant = indexJoueur(res.droit().droit())) >= 0) {
-						joueurCourant().undo(res.droit().gauche(),res.gauche());
+						joueurCourant().undo(res.droit().gauche(), res.gauche());
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -518,6 +524,7 @@ public class Moteur implements Serializable {
 
 	/**
 	 * Rejoue le coup qui a ete undo en dernier
+	 * 
 	 * @return
 	 */
 	public Joueur redo() {
@@ -548,45 +555,64 @@ public class Moteur implements Serializable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * sauvegarde l'etat courant du moteur dans rsc/save/filename
+	 * 
 	 * @param filename
 	 * @return
 	 */
 	public boolean sauvegarder(String filename) {
+		File file = new File("rsc/save/" + filename);
+		return sauvegarder(file);
+	}
+
+	public boolean sauvegarder() {
+		return sauvegarder("newSave");
+	}
+
+	public boolean sauvegarder(File file) {
 		try {
-			File file = new File("rsc/save/"+filename);
+			if (file == null)
+				return false;
 			file.getParentFile().mkdirs();
-			file.createNewFile(); // if file already exists will do nothing 
-			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file,false));
+			file.createNewFile(); // if file already exists will do nothing
+			ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file, false));
 			stream.writeObject(this);
 			stream.close();
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
-	public boolean sauvegarder() {
-		return sauvegarder("newSave");
-	}
-	
+
 	/**
 	 * charge un moteur depuis rsc/save/filename et le renvois
+	 * 
 	 * @param filename
 	 * @return le moteur charge
 	 */
 	static public Moteur charger(String filename) {
+		File file = new File("rsc/save/" + filename);
+		return charger(file);
+	}
+
+	static public Moteur charger() {
+		return charger("newSave");
+	}
+
+	static public Moteur charger(File file) {
 		Moteur m;
 		try {
-			File file = new File("rsc/save/"+filename);
-			file.getParentFile().mkdirs();
-			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
-			m = (Moteur) stream.readObject();
-			stream.close();
+			if (file != null) {
+				file.getParentFile().mkdirs();
+				ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
+				m = (Moteur) stream.readObject();
+				stream.close();
+			} else {
+				m = null;
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -598,12 +624,8 @@ public class Moteur implements Serializable {
 		}
 		return m;
 	}
-	
-	public Moteur charger() {
-		return charger("newSave");
-	}
-	
-	public Couple<Position,Position> sugestion() {
-		 return UtilsIA.jouerCoupDifficile(this.plateau,joueurCourant().id());
+
+	public Couple<Position, Position> sugestion() {
+		return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
 	}
 }
