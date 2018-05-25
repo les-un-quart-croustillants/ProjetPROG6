@@ -49,6 +49,7 @@ public class TerrainMenu extends VBox {
 		proportions_pingouins = new TriSlider();
 		Label mapDim = new Label("Dimensions");
 		Label LblDim1 = new Label(dim.toString());
+		Label repartitionPoissons = new Label("Repartition des poissons");
 		Label x = new Label("x");
 		Label LblDim2 = new Label(dim.toString());
 		HBox dimBox = new HBox();
@@ -59,6 +60,7 @@ public class TerrainMenu extends VBox {
 		
 		// Configuration
 		retour.getStyleClass().addAll("textbutton", "smallerbtn");
+		repartitionPoissons.getStyleClass().add("smaller");
 		jouer.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
@@ -108,6 +110,6 @@ public class TerrainMenu extends VBox {
 		proportions_pingouins.getThirdSlice().getChildren().add(lblS3);
 		
 		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
-		this.getChildren().addAll(dimBox, proportions_pingouins, jouer, retour);
+		this.getChildren().addAll(dimBox, repartitionPoissons, proportions_pingouins, jouer, retour);
 	}
 }
