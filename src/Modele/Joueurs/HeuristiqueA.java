@@ -153,7 +153,7 @@ public class HeuristiqueA {
 					}
 				}
 			}
-		return heuristique;
+		return 2*heuristique;
 	}
 }
 

@@ -133,7 +133,7 @@ public class HeuristiqueB {
 					}
 				}
 			}
-		return heuristique;
+		return 2*heuristique;
 	}
 }
 
