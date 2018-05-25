@@ -79,6 +79,8 @@ public class PlateauTest {
 					nb[sujet.getCellule(i,j).getFish() - 1]++;
 			}
 		}
+		Assert.assertTrue(sujet.getNbFish() > 0);
+		Assert.assertTrue(sujet.getNbFish() >= (ref[0] + ref[1] + ref[2]));
 		Assert.assertTrue("initTab_propotionnel : nb_1 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[0] <= nb[0]);
 		Assert.assertTrue("initTab_propotionnel : nb_2 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[1] <= nb[1]);
 		Assert.assertTrue("initTab_propotionnel : nb_3 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[2] <= nb[2]);
@@ -402,8 +404,10 @@ public class PlateauTest {
 	@Test
 	public void jouer() {
 		Random r = new Random();
-		int expected;
-		Plateau sujet = p.clone();
+		int expected, nb_fish,
+			size = r.nextInt(47) + 3;
+		Plateau sujet = new Plateau(size, r.nextInt(size * size - (size + 1) / 2)),
+				ref = sujet.clone();
 		Position current,
 				target;
 
@@ -411,11 +415,13 @@ public class PlateauTest {
 			expected = -1;
 			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
+			nb_fish = sujet.getNbFish();
 			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
 			if (sujet.isInTab(target) && sujet.accessible(current).contains(target))
 				expected = sujet.getCellule(target).getFish();
 			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
-			sujet = p.clone();
+			Assert.assertEquals(nb_fish - expected, sujet.getNbFish());
+			sujet = ref.clone();
 		}
 	}
 
@@ -435,7 +441,7 @@ public class PlateauTest {
 		Assert.assertFalse(sujet.getUndoList().isEmpty());
 		Assert.assertTrue(sujet.getHistory().isEmpty());
 		Assert.assertEquals(1, sujet.getUndoList().size());
-
+		Assert.assertEquals(p.getNbFish(), sujet.getNbFish());
 		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish(), pingouin)));
 		Assert.assertTrue(p.tabEquals(sujet.getTab()));
 		Assert.assertFalse(p.getCellule(to).aPingouin());
@@ -550,7 +556,7 @@ public class PlateauTest {
 		String filename = "tests/rsc/test_parse_terrain";
 		try {
 			Plateau test = Plateau.parse(filename);
-			Assert.assertEquals("{8, [ [[(0,0),false,1,null], [(0,1),false,1,null], [(0,2),false,2,null], [(0,3),false,1,null], [(0,4),false,3,null], [(0,5),false,3,null], [(0,6),false,3,null], [(0,7),true,0,null]] [[(1,0),false,2,null], [(1,1),false,3,null], [(1,2),false,2,null], [(1,3),false,1,null], [(1,4),false,1,null], [(1,5),false,1,null], [(1,6),false,2,null], [(1,7),false,2,null]] [[(2,0),false,3,null], [(2,1),false,1,null], [(2,2),false,3,null], [(2,3),false,2,null], [(2,4),false,3,null], [(2,5),false,1,null], [(2,6),false,2,null], [(2,7),true,0,null]] [[(3,0),false,2,null], [(3,1),false,3,null], [(3,2),false,3,null], [(3,3),false,1,null], [(3,4),false,1,null], [(3,5),false,1,null], [(3,6),false,2,null], [(3,7),false,2,null]] [[(4,0),false,3,null], [(4,1),false,2,null], [(4,2),false,1,null], [(4,3),false,2,null], [(4,4),false,3,null], [(4,5),false,2,null], [(4,6),false,2,null], [(4,7),true,0,null]] [[(5,0),false,1,null], [(5,1),false,1,null], [(5,2),false,2,null], [(5,3),false,1,null], [(5,4),false,3,null], [(5,5),false,3,null], [(5,6),false,1,null], [(5,7),false,3,null]] [[(6,0),false,1,null], [(6,1),false,3,null], [(6,2),false,1,null], [(6,3),false,2,null], [(6,4),false,3,null], [(6,5),false,3,null], [(6,6),false,2,null], [(6,7),true,0,null]] [[(7,0),false,3,null], [(7,1),false,3,null], [(7,2),false,2,null], [(7,3),false,1,null], [(7,4),false,1,null], [(7,5),false,2,null], [(7,6),false,1,null], [(7,7),false,2,null]] ],h:[],u:[]]}", test.toString());
+			Assert.assertEquals("{8, 118, [ [[(0,0),false,1,null], [(0,1),false,1,null], [(0,2),false,2,null], [(0,3),false,1,null], [(0,4),false,3,null], [(0,5),false,3,null], [(0,6),false,3,null], [(0,7),true,0,null]] [[(1,0),false,2,null], [(1,1),false,3,null], [(1,2),false,2,null], [(1,3),false,1,null], [(1,4),false,1,null], [(1,5),false,1,null], [(1,6),false,2,null], [(1,7),false,2,null]] [[(2,0),false,3,null], [(2,1),false,1,null], [(2,2),false,3,null], [(2,3),false,2,null], [(2,4),false,3,null], [(2,5),false,1,null], [(2,6),false,2,null], [(2,7),true,0,null]] [[(3,0),false,2,null], [(3,1),false,3,null], [(3,2),false,3,null], [(3,3),false,1,null], [(3,4),false,1,null], [(3,5),false,1,null], [(3,6),false,2,null], [(3,7),false,2,null]] [[(4,0),false,3,null], [(4,1),false,2,null], [(4,2),false,1,null], [(4,3),false,2,null], [(4,4),false,3,null], [(4,5),false,2,null], [(4,6),false,2,null], [(4,7),true,0,null]] [[(5,0),false,1,null], [(5,1),false,1,null], [(5,2),false,2,null], [(5,3),false,1,null], [(5,4),false,3,null], [(5,5),false,3,null], [(5,6),false,1,null], [(5,7),false,3,null]] [[(6,0),false,1,null], [(6,1),false,3,null], [(6,2),false,1,null], [(6,3),false,2,null], [(6,4),false,3,null], [(6,5),false,3,null], [(6,6),false,2,null], [(6,7),true,0,null]] [[(7,0),false,3,null], [(7,1),false,3,null], [(7,2),false,2,null], [(7,3),false,1,null], [(7,4),false,1,null], [(7,5),false,2,null], [(7,6),false,1,null], [(7,7),false,2,null]] ],h:[],u:[]]}", test.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -559,7 +565,7 @@ public class PlateauTest {
 
 	@Ignore
 	@Test
-	public void testKignOfTheHillConstruct() {
+	public void testKingOfTheHillConstruct() {
 		Plateau sujet = new Plateau(20, new KingOfTheHillConstruct(20, 5));
 		System.out.println(sujet.pretty());
 	}

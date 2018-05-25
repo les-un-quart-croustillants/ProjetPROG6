@@ -24,6 +24,7 @@ public class Plateau implements Serializable {
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
+	private int nb_fish;
 
 	Plateau() {
 		this(3, 1);
@@ -62,6 +63,7 @@ public class Plateau implements Serializable {
 		this.tab = new Cellule[size][size];
 		this.history = new LinkedList<>();
 		this.undoList = new LinkedList<>();
+		this.nb_fish = 0;
 		initTab(c, nb_pingouins);
 	}
 
@@ -72,6 +74,7 @@ public class Plateau implements Serializable {
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				this.tab[i][j] = tab[i][j].clone();
+				nb_fish += this.tab[i][j].getFish();
 			}
 		}
 		this.history = (LinkedList<Move>) history.clone();
@@ -129,6 +132,7 @@ public class Plateau implements Serializable {
 				}
 			}
 		}
+		this.nb_fish = nb[0] + nb[1] * 2 + nb[2] * 3;
 	}
 
 	private void initTab(Construct c, int borne) {
@@ -138,6 +142,7 @@ public class Plateau implements Serializable {
 				if (!(((i % 2) == 0) && (j == (size - 1)))) {
 					tmp = c.getCellValue(i,j);
 					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
+					nb_fish += tmp;
 					if (tmp == 1)
 						nb_1++;
 				}
@@ -155,6 +160,7 @@ public class Plateau implements Serializable {
 		while (nb_1 <= borne) {
 			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
 			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
+				nb_fish -= (this.tab[p.i()][p.j()].getFish() - 1);
 				this.tab[p.i()][p.j()].setFish(1);
 				nb_1++;
 			}
@@ -509,6 +515,7 @@ public class Plateau implements Serializable {
 			res = targetCell.getFish();
 			targetCell.setFish(0);
 		}
+		nb_fish -= res;
 		return res;
 	}
 
@@ -555,6 +562,7 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
+		nb_fish += fishAte;
 		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
 	}
 
@@ -647,6 +655,10 @@ public class Plateau implements Serializable {
 		return undoList;
 	}
 
+	public int getNbFish() {
+		return nb_fish;
+	}
+
 	public String pretty() {
 		String res = "";
 		for (Cellule[] line: this.tab) {
@@ -691,6 +703,6 @@ public class Plateau implements Serializable {
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
+		return "{" + size + ", " +  nb_fish  + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
 	}
 }
