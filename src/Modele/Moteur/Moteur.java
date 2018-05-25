@@ -376,7 +376,9 @@ public class Moteur implements Serializable {
 			if (this.joueurCourant().estIA()) {
 				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
 				// Si le calcule de l'IA a reussis
-				if (!calculated.equals(new Position(-1, -1))) {
+				if(calculated == null) {
+					return calculated;
+				} else if (!calculated.equals(new Position(-1, -1))) {
 					tmp = calculated;
 				} else {
 					transition(Action.SELECTION_INVALIDE);
@@ -418,7 +420,9 @@ public class Moteur implements Serializable {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
 				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau, this.scores(false));
-				if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
+				if(calculated == null) {
+					return null;
+				} else if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
 					// Si choix du pingouin effectue
 					tmp = calculated.gauche();
 					this.prochainCLicIA = calculated.droit();
@@ -626,6 +630,7 @@ public class Moteur implements Serializable {
 	}
 
 	public Couple<Position, Position> sugestion() {
-		return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
+		return null;
+		//return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
 	}
 }

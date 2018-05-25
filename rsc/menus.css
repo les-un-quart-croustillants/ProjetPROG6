@@ -1,3 +1,8 @@
+@font-face {
+    font-family: Luckiest Guy;
+    src: url('LuckiestGuy.ttf');
+}
+
 .menu {
 	-fx-alignment: center;
 	-fx-font-family: "Luckiest Guy";
@@ -88,11 +93,6 @@
 	-fx-alignment: center;
 	-fx-spacing: 15px;
 	-fx-padding: 15px;
-}
-
-.hbox {
-	-fx-alignment: center;
-	-fx-spacing: 15px;
 }
 
 .joueurconfig {

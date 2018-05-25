@@ -183,18 +183,20 @@ public class ConfigMenu extends VBox {
 		Button newJoueur = new Button("Nouveau joueur");
 		Button minusDim = new Button();
 		Button plusDim = new Button();
+		VBox joueursBox = new VBox();
 		
 		map_customization = new Button("Configuration du terrain");
 		retour = new Button("Retour");
 		jouer = new Button("JOUER");
 		
 		// Configuration
+		joueursBox.getStyleClass().add("center");
 		jouer.getStyleClass().add("textbutton");
 		map_customization.getStyleClass().add("textbutton");
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
 		configLbl.getStyleClass().add("title");
-		retour.getStyleClass().add("textbutton");
+		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		joueursPane.setContent(listJoueurs);
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
@@ -217,7 +219,8 @@ public class ConfigMenu extends VBox {
 			
 		}
 		
-		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, jouer, retour);
+		joueursBox.getChildren().addAll(joueursPane, newJoueur);
+		this.getChildren().addAll(configLbl, joueursBox, map_customization, jouer, retour);
 	}
 	
 	GameConfig create_config() {
