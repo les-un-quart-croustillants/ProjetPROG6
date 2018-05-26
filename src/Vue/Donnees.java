@@ -33,7 +33,7 @@ public abstract class Donnees {
 	public static Image IMG_SELECTEUR = new Image("selecteur.png");
 	public static Image IMG_CADENAS = new Image("cadenas.png");
 	public static Image IMG_POISSON = new Image("poisson_scores.png");
-	public static Image IMG_PARTICLE_AURA = new Image("paricle_flash.png");
+	public static Image IMG_PARTICLE_AURA = new Image("particule_flash.png");
 
 	public static Color getCouleur(int index){
 		return Donnees.COULEURS_JOUEURS[index%4];
