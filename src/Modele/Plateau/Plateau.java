@@ -698,11 +698,27 @@ public class Plateau implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return this.size == ((Plateau) obj).getSize()
-				&& this.history.equals(((Plateau) obj).history)
-				&& this.undoList.equals(((Plateau) obj).undoList)
-				&& tabEquals(((Plateau) obj).getTab());
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Plateau)) return false;
+
+		Plateau plateau = (Plateau) o;
+
+		if (getSize() != plateau.getSize()) return false;
+		if (nb_fish != plateau.nb_fish) return false;
+		if (!Arrays.deepEquals(getTab(), plateau.getTab())) return false;
+		if (!getHistory().equals(plateau.getHistory())) return false;
+		return getUndoList().equals(plateau.getUndoList());
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getSize();
+		result = 31 * result + Arrays.deepHashCode(getTab());
+		result = 31 * result + getHistory().hashCode();
+		result = 31 * result + getUndoList().hashCode();
+		result = 31 * result + nb_fish;
+		return result;
 	}
 
 	@Override
