@@ -471,25 +471,7 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
-		try {
-			int res = jouer_pr(current,target);
-			if (res >= 0)
-				clearUndoList();
-			return res;
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
-	}
-
-	/* Implementation pour Plateau.redo() */
-	private int jouer(Move m) {
-		try {
-			return jouer_pr(m.getFrom(), m.getTo());
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
+		return jouer(current, target);
 	}
 
 	private int jouer_pr(Position current, Position target) throws PlateauException {
@@ -576,8 +558,14 @@ public class Plateau implements Serializable {
 		int res;
 		if (m.getFrom().equals(Plateau.source))
 			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
-		else
-			res = jouer(m);
+		else {
+			try {
+				res = jouer_pr(m.getFrom(), m.getTo());
+			} catch (PlateauException e) {
+				System.err.println(e.getMessage());
+				res = -1;
+			}
+		}
 		return res;
 	}
 
