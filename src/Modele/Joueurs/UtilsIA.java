@@ -686,7 +686,7 @@ public class UtilsIA {
 	 * @return la profondeur maximale
 	 */
 	public static int evaluerProfondeur(Plateau plateau){
-		int val = 3;
+		int val = 2;
 		int nbcaselibre = 0;
 		for(int i = 0; i < plateau.getSize();i++) {
 			for(int j = 0; j < plateau.getSize();j++) {
