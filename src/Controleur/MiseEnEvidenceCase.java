@@ -2,10 +2,13 @@ package Controleur;
 
 import java.awt.Point;
 
+import Modele.Plateau.Pingouin;
 import Vue.Cadre.PlateauCadre;
 import Vue.GameObject.Case;
+import Vue.GameObject.PingouinGraphique;
 import Vue.Pane.GamePane;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 
 public class MiseEnEvidenceCase implements EventHandler<MouseEvent> {
@@ -28,8 +31,14 @@ public class MiseEnEvidenceCase implements EventHandler<MouseEvent> {
 					}
 				}
 			}
+			
+			Pingouin pingouin = GamePane.moteur().pingouinSelection();
+			if(pingouin != null && !GamePane.moteur().joueurCourant().estIA()) {
+				PingouinGraphique pg = pc.plateauGraphique.cases[pingouin.position().i()][pingouin.position().j()].pingouinGraphique;
+				Point2D vec = new Point2D(event.getX() - pg.position().x,event.getY() - pg.position().y);
+				double angle = Math.atan2(vec.getY(), vec.getX()) - Math.atan2(0, 1);
+				pg.setViewDirection(-Math.toDegrees(angle));
+			}
 		}
-
 	}
-
 }
