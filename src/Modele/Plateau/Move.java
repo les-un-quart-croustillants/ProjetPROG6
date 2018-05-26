@@ -87,6 +87,11 @@ public class Move implements Serializable {
 
 	@Override
 	public String toString() {
-		return to + "," + from + "," + fishAte + "," + pingouin;
+		return "Move{" +
+				"to=" + to +
+				", from=" + from +
+				", fishAte=" + fishAte +
+				", pingouin=" + pingouin +
+				'}';
 	}
 }

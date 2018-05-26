@@ -85,6 +85,11 @@ public class Cellule implements Serializable {
 
 	@Override
 	public String toString() {
-		return "[" + position + "," + destroyed + "," + fish + "," + pingouin + ']';
+		return "Cellule{" +
+				"position=" + position +
+				", destroyed=" + destroyed +
+				", fish=" + fish +
+				", pingouin=" + pingouin +
+				'}';
 	}
 }

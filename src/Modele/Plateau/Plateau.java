@@ -674,9 +674,9 @@ public class Plateau implements Serializable {
 	}
 
 	private String tabToString() {
-		String res = "[ ";
+		String res = "[\n";
 		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+			res += Arrays.toString(line) + "\n";
 		}
 		return res + "]";
 	}
@@ -707,6 +707,12 @@ public class Plateau implements Serializable {
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " +  nb_fish  + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
+		return "Plateau{" +
+				"size=" + size +
+				", tab=" + tabToString() +
+				", history=" + history +
+				", undoList=" + undoList +
+				", nb_fish=" + nb_fish +
+				'}';
 	}
 }
