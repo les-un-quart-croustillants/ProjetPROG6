@@ -62,6 +62,10 @@ public class Move implements Serializable {
 		this.pingouin = pingouin;
 	}
 
+	@Override
+	protected Object clone() {
+		return new Move(to.clone(), from.clone(), fishAte, pingouin.clone());
+	}
 
 	@Override
 	public boolean equals(Object o) {

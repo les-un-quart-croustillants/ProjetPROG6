@@ -76,8 +76,8 @@ public class Plateau implements Serializable {
 				this.nb_fish += this.tab[i][j].getFish();
 			}
 		}
-		this.history = (LinkedList<Move>) history.clone();
-		this.undoList = (LinkedList<Move>) undoList.clone();
+		this.history = history;
+		this.undoList = undoList;
 	}
 
 	/**
@@ -681,9 +681,19 @@ public class Plateau implements Serializable {
 		return res + "]";
 	}
 
+	private LinkedList<Move> cloneList(LinkedList<Move> l) {
+		Iterator<Move> it = l.iterator();
+		LinkedList<Move> r = new LinkedList<>();
+		while (it.hasNext()) {
+			r.addLast((Move)it.next().clone());
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public Plateau clone() {
-		return new Plateau(this.tab, this.history, this.undoList);
+		return new Plateau(this.tab,cloneList(this.history),cloneList(this.undoList));
 	}
 
 	boolean tabEquals(Cellule[][] tab) {
