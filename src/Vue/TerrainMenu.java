@@ -58,7 +58,7 @@ public class TerrainMenu extends VBox {
 		jouer = new Button("JOUER");		
 		
 		// Configuration
-		retour.getStyleClass().add("textbutton");
+		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		jouer.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
