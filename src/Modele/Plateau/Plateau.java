@@ -11,10 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Integer.max;
 
@@ -46,6 +43,7 @@ public class Plateau implements Serializable {
 
 	public Plateau(int size, int nb_fish_1, int nb_fish_2, int nb_fish_3) {
 		this.size = size;
+		this.nb_fish = 0;
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
@@ -70,11 +68,12 @@ public class Plateau implements Serializable {
 	@SuppressWarnings("unchecked")
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
 		this.size = tab.length;
+		this.nb_fish = 0;
 		this.tab = new Cellule[this.size][this.size];
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				this.tab[i][j] = tab[i][j].clone();
-				nb_fish += this.tab[i][j].getFish();
+				this.nb_fish += this.tab[i][j].getFish();
 			}
 		}
 		this.history = (LinkedList<Move>) history.clone();
@@ -504,10 +503,9 @@ public class Plateau implements Serializable {
 
 		pingouin = getCellule(current).pingouin();
 		targetCell = getCellule(target);
-
+		currentCell = getCellule(current);
 		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
 			history.addLast(new Move(target, current, targetCell.getFish(), pingouin));
-			currentCell = getCellule(current);
 			currentCell.destroy();
 			currentCell.setPenguin(null);
 			pingouin.setPosition(target);
@@ -631,8 +629,10 @@ public class Plateau implements Serializable {
 			//Si la case en p a un seul poisson
 			if(this.getCellule(p).getFish() == 1) {
 				getCellule(p).setPenguin(pingouin);
+				getCellule(p).setFish(0);
 				pingouin.setPosition(p);
 				history.addLast(new Move(p, pingouin));
+				this.nb_fish--;
 				return true;
 			}
 		}
@@ -657,6 +657,10 @@ public class Plateau implements Serializable {
 
 	public int getNbFish() {
 		return nb_fish;
+	}
+
+	void setNbFish(int nb_fish) {
+		this.nb_fish = nb_fish;
 	}
 
 	public String pretty() {

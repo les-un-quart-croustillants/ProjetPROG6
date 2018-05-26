@@ -46,6 +46,23 @@ public class Move implements Serializable {
 		return pingouin;
 	}
 
+	public void setTo(Position to) {
+		this.to = to;
+	}
+
+	public void setFrom(Position from) {
+		this.from = from;
+	}
+
+	public void setFishAte(int fishAte) {
+		this.fishAte = fishAte;
+	}
+
+	public void setPingouin(Pingouin pingouin) {
+		this.pingouin = pingouin;
+	}
+
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

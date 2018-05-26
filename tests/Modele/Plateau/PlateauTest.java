@@ -41,6 +41,19 @@ public class PlateauTest {
 	}
 
 	@Test
+	public void initTab_nb_poissons() {
+		int size, expected = 0;
+		Random r = new Random();
+		size = r.nextInt(17) + 3;
+		Plateau sujet = new Plateau(size, r.nextInt(size * size - (size + 1) / 2));
+		for (Cellule[] l: sujet.getTab()) {
+			for (Cellule c :l) {
+				expected += c.getFish();
+			}
+		}
+		Assert.assertEquals(expected, sujet.getNbFish());
+	}
+	@Test
 	public void initTab_nb_pingouin() {
 		Random r = new Random();
 		int size, nb_cases1, nb_pingouins;
@@ -404,8 +417,8 @@ public class PlateauTest {
 	@Test
 	public void jouer() {
 		Random r = new Random();
-		int expected, nb_fish,
-			size = r.nextInt(47) + 3;
+		int tmp, expected, nb_fish,
+			size = r.nextInt(1) + 3;
 		Plateau sujet = new Plateau(size, r.nextInt(size * size - (size + 1) / 2)),
 				ref = sujet.clone();
 		Position current,
@@ -417,9 +430,17 @@ public class PlateauTest {
 			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			nb_fish = sujet.getNbFish();
 			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
+			sujet.getCellule(current).setFish(0);
 			if (sujet.isInTab(target) && sujet.accessible(current).contains(target))
 				expected = sujet.getCellule(target).getFish();
-			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
+			tmp =  sujet.jouer(current, target);
+			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected,tmp);
+			if (tmp != -1) {
+				Assert.assertTrue(sujet.getCellule(current).isDestroyed());
+				Assert.assertFalse(sujet.getCellule(current).aPingouin());
+				Assert.assertEquals(sujet.getCellule(current).getFish(), 0);
+				Assert.assertEquals(sujet.getCellule(target).getFish(), 0);
+			}
 			Assert.assertEquals(nb_fish - expected, sujet.getNbFish());
 			sujet = ref.clone();
 		}
