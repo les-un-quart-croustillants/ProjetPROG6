@@ -1,48 +1,32 @@
 package Vue.GameObject;
 
 import com.sun.javafx.geom.Vec2d;
+import com.sun.javafx.geom.Vec2f;
 
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Pingouin;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.Pane.GamePane;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class PingouinGraphique extends GameObject {
 
-	public enum GState {
-		IDLE, TRANSITION, BOUBOULE;
-
-		static public String toString(GState s) {
-			switch (s) {
-			case IDLE:
-				return "IDLE";
-			case TRANSITION:
-				return "TRANSITION";
-			case BOUBOULE:
-				return "BOUBOULE";
-			default:
-				return "undefined";
-			}
-		}
+	enum GState {
+		BD,BG,D,G,HD,HG;
 	}
 
-	GState etat = GState.IDLE;
-	Image currentSprite = Donnees.IMG_PINGOUIN_FACE;
-	int nFrames = 7; // nb frame du sprite
-	int frameRate = 24; // nb frames/sec
-	double delayFrame = 1000.0 / ((double) frameRate);
-	int tailleSprites = (int) (Donnees.IMG_PINGOUIN_ANIM.getHeight());
-	int currentFrame = 0;
-	double timeLastFrame;
+	Image currentSprite = Donnees.IMG_PINGOUIN_BD;
+	GState currentState = GState.BD;
+	int tailleSprites = (int) (currentSprite.getHeight());
 
 	Pingouin pingouin;
 	PlateauGraphique pg;
 	Color couleur;
-	Vec2d offset = new Vec2d(-Donnees.IMG_PINGOUIN_FACE.getWidth() / 2, -Donnees.IMG_PINGOUIN_FACE.getHeight());
+	Vec2d offset = new Vec2d(-currentSprite.getWidth() / 2, -currentSprite.getHeight());
 	float scale = 1f;
 	int width, height;
 	Position pingouinPosition;
@@ -53,29 +37,38 @@ public class PingouinGraphique extends GameObject {
 		this.couleur = c;
 		pg.cases[pingouin.position().i()][pingouin.position().j()].pingouinGraphique = this;
 		pingouinPosition = new Position(pingouin.position().i(), pingouin.position().j());
-		setEtat(GState.IDLE);
 	}
 
-	private void setEtat(GState e) {
-		this.etat = e;
-		switch (etat) {
-		case IDLE:
-			currentSprite = Donnees.IMG_PINGOUIN_FACE;
+	private void setState(GState s) {
+		currentState = s;
+		offset = new Vec2d(-currentSprite.getWidth() / 2, -currentSprite.getHeight());
+		tailleSprites = (int) (currentSprite.getHeight());
+		switch(currentState) {
+		case BD:
+			currentSprite = Donnees.IMG_PINGOUIN_BD;
 			break;
-		case TRANSITION:
-			currentSprite = Donnees.IMG_PINGOUIN_ANIM;
+		case BG:
+			currentSprite = Donnees.IMG_PINGOUIN_BG;
 			break;
-		case BOUBOULE:
-			currentSprite = Donnees.IMG_PINGOUIN_BOULE;
+		case D:
+			currentSprite = Donnees.IMG_PINGOUIN_D;
+			break;
+		case G:
+			currentSprite = Donnees.IMG_PINGOUIN_G;
+			break;
+		case HD:
+			currentSprite = Donnees.IMG_PINGOUIN_HD;
+			break;
+		case HG:
+			currentSprite = Donnees.IMG_PINGOUIN_HG;
 			break;
 		}
 	}
-
+	
 	private float f = 0.5f;
-
+	
 	@Override
 	public void update() {
-		updateFrame();
 		position.x = pg.cases[pingouinPosition.i()][pingouinPosition.j()].position().x + pg.tailleCase / 2;
 		position.y = (float) (pg.cases[pingouinPosition.i()][pingouinPosition.j()].position().y + pg.tailleCase * 0.35);
 		offset.x = -tailleSprites / 2 * scale;
@@ -100,29 +93,9 @@ public class PingouinGraphique extends GameObject {
 		gc.setStroke(couleur);
 		gc.strokeOval(position.x - pg.tailleCase * 0.3 * f, position.y - pg.tailleCase * 0.2 * f,
 				pg.tailleCase * 0.6 * f, pg.tailleCase * 0.3 * f);
-		if(etat==GState.TRANSITION)
-			drawFrame(gc);
-		else
-			gc.drawImage(currentSprite, position.x + offset.x, position.y + offset.y, width, height);
+		gc.drawImage(currentSprite, position.x + offset.x, position.y + offset.y, width, height);
 	}
 
-	private void updateFrame() {
-		if (etat == GState.TRANSITION) {
-			if (timeLastFrame + delayFrame < System.currentTimeMillis()) {
-				currentFrame++;
-				timeLastFrame = System.currentTimeMillis();
-			}
-			if (currentFrame >= nFrames){
-				setEtat(GState.BOUBOULE);
-				currentFrame = 0;
-			}
-		}
-	}
-
-	private void drawFrame(GraphicsContext gc) {
-		gc.drawImage(currentSprite, currentFrame * tailleSprites, 0, tailleSprites, tailleSprites,
-				position.x + offset.x, position.y + offset.y,  tailleSprites*scale, height);
-	}
 
 	public void moveTo(Position p) {
 		pg.cases[pingouinPosition.i()][pingouinPosition.j()].pingouinGraphique = null;
@@ -130,12 +103,22 @@ public class PingouinGraphique extends GameObject {
 		pg.cases[pingouinPosition.i()][pingouinPosition.j()].pingouinGraphique = this;
 	}
 
+	public void setViewDirection(double angle) {		
+		if(angle < -90)
+			setState(GState.BG);
+		else if(angle < -30)
+			setState(GState.BD);
+		else if(angle < 30)
+			setState(GState.D);
+		else if(angle < 90)
+			setState(GState.HD);
+		else if(angle<150)
+			setState(GState.HG);
+		else 
+			setState(GState.G);
+	}
+
 	public void transformer(){
-		timeLastFrame = System.currentTimeMillis();
-		System.out.println("truc");
-		if(etat==GState.IDLE)
-			setEtat(GState.TRANSITION);
-		else
-			setEtat(GState.IDLE);
+		
 	}
 }

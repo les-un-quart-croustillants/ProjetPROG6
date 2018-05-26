@@ -500,6 +500,8 @@ public class Moteur implements Serializable {
 		if (this.undoRedoAutorise) {
 			Couple<Boolean, Couple<Integer, Integer>> res;
 
+			this.selected = null;
+			
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
 				if (res.droit().gauche() >= 0) {
