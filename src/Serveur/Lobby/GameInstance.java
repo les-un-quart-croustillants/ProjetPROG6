@@ -68,6 +68,8 @@ public class GameInstance implements Runnable {
 			
 			this.clients.sendToAll("LETS GET THE PARTY STARTED");
 			
+			System.out.println("Data sent");
+			
 			//Close connection
 			serverSocket.close();
 			this.instances.remove(name);

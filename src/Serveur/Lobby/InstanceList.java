@@ -25,10 +25,11 @@ public class InstanceList implements Serializable {
 	synchronized public Couple<String,Integer> get(String name){
 		for(Couple<String,Integer> c: this.instances) {
 			if(c.gauche().equals(name)) {
+				System.out.println("non");
 				return c;
 			}
 		}
-		System.out.flush();
+		System.out.println("OUI");
 		return null;
 	}
 	

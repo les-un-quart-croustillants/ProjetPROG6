@@ -23,7 +23,6 @@ public class LobbyThread implements Runnable {
 			this.socket = s;
 			this.out = new PrintWriter(s.getOutputStream(), true);
 			this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			out.flush();
 			this.outObj = new ObjectOutputStream(socket.getOutputStream());
 			outObj.flush();
 			this.inObj = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
@@ -71,7 +70,7 @@ public class LobbyThread implements Runnable {
 				case "H": // Create instance
 					String instanceName = splited[1];
 					System.out.println("Client asking to create new game instance named "+instanceName); 
-					if(instances.get("bob") == null) {
+					if(instances.get(instanceName) == null) {
 						new GameInstance(instanceName, this.instances);
 						this.out.println("H ok");
 						System.out.println("Instance created");

@@ -53,8 +53,10 @@ public class ClientAnwserProtocol {
 		}
 		String res = this.ihmMessage;
 		if(res == "I") {
+			System.out.println("OUI");
 			this.currentState = State.WAITFORINSTANCES;	
-		} else if (this.currentState == State.DEFAULT && !this.ihmMessage.equals("K")) {
+			this.instances = null;
+		} else if ((this.currentState == State.DEFAULT && !this.ihmMessage.equals("K") || input.equals("C ok"))) {
 			this.currentState = State.WAITFORANWSER;
 		} else {
 			this.currentState = State.DEFAULT;
@@ -67,9 +69,12 @@ public class ClientAnwserProtocol {
 	}
 
 	synchronized public String processInputObject(Object input) {
+		System.out.println("ok");
 		switch (this.currentState) {
 		case WAITFORINSTANCES:
 			this.instances = (InstanceList) input;
+			System.out.println(instances.getInstances().toString());
+			System.out.println(((InstanceList) input).getInstances().toString());
 			this.currentState = State.DEFAULT;
 			this.ihmMessage = null;
 			this.serverMessage = null;
@@ -107,6 +112,7 @@ public class ClientAnwserProtocol {
 		InstanceList tmp = instances;
 		instances = null;
 		this.serverMessage = null;
+		System.out.println(tmp.getInstances().toString());
 		notifyAll();
 		return tmp;
 	}

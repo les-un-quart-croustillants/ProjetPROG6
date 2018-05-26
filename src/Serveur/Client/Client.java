@@ -32,10 +32,9 @@ public class Client implements Runnable {
 	public Client(String hostName, int port, ClientAnwserProtocol cap) {
 		this.joueursIDs = new ArrayList<Integer>();
 		try {
-			this.hostname = hostname;
+			this.hostname = hostName;
 			this.clientSocket = new Socket(hostName, port);
 			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
-			this.out.flush();
 			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			this.outObj = new ObjectOutputStream(clientSocket.getOutputStream());
 			outObj.flush();
