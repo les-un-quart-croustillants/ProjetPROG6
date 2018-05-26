@@ -397,14 +397,31 @@ public class PlateauTest {
 
 	@Test
 	public void clonetest() {
-		Plateau sujet = p.clone();
+		Plateau ref = new Plateau(3, 1),
+				sujet = p.clone();
+		Position p1 = new Position(0,0),
+				p2 = new Position(1,1),
+				p3 = new Position(2,1);
+		Pingouin pingouin = new Pingouin(1, p1);
 		Assert.assertEquals(p, p.clone());
-		Assert.assertEquals(p,sujet);
-		sujet.getCellule(new Position(0,0)).destroy();
-		Assert.assertFalse(p.equals(sujet));
+		Assert.assertEquals(p, sujet);
+		sujet.getCellule(new Position(0, 0)).destroy();
+		Assert.assertNotEquals(p, sujet);
 		sujet = new Plateau(4, 2);
-		Assert.assertFalse(p.clone().equals(sujet.clone()));
+		Assert.assertNotEquals(p.clone(), sujet.clone());
+		ref.setNbFish(ref.getNbFish() - ref.getCellule(0,0).getFish());
+		ref.getCellule(0,0).setFish(1);
+		ref.setNbFish(ref.getNbFish() + ref.getCellule(0,0).getFish());
+		ref.poserPingouin(p1, pingouin);
+		ref.jouer(pingouin, p2);
+		ref.jouer(pingouin, p3);
+		ref.undo();
+		sujet = ref.clone();
 
+		Assert.assertEquals(ref, sujet);
+		Move m = sujet.getUndoList().getLast();
+		m.setTo(new Position(4,4));
+		Assert.assertNotEquals(ref, sujet);
 	}
 
 	@Test
