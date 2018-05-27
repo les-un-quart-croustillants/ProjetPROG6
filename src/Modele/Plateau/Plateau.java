@@ -21,9 +21,7 @@ public class Plateau implements Serializable {
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
-	private int nb_fish;
 
-	/* Constructors ========================== */
 	Plateau() {
 		this(3, 1);
 	}
@@ -44,7 +42,6 @@ public class Plateau implements Serializable {
 
 	public Plateau(int size, int nb_fish_1, int nb_fish_2, int nb_fish_3) {
 		this.size = size;
-		this.nb_fish = 0;
 		this.undoList = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.tab = new Cellule[size][size];
@@ -62,58 +59,20 @@ public class Plateau implements Serializable {
 		this.tab = new Cellule[size][size];
 		this.history = new LinkedList<>();
 		this.undoList = new LinkedList<>();
-		this.nb_fish = 0;
 		initTab(c, nb_pingouins);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Plateau(Cellule[][] tab, LinkedList<Move> history, LinkedList<Move> undoList) {
 		this.size = tab.length;
-		this.nb_fish = 0;
 		this.tab = new Cellule[this.size][this.size];
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				this.tab[i][j] = tab[i][j].clone();
-				this.nb_fish += this.tab[i][j].getFish();
 			}
 		}
 		this.history = history;
 		this.undoList = undoList;
-	}
-
-	/* Functions ============================= */
-
-	/* Private =============================== */
-	private void clearUndoList() {
-		if (!this.undoList.isEmpty())
-			this.undoList = new LinkedList<>();
-	}
-
-	private LinkedList<Move> cloneList(LinkedList<Move> l) {
-		Iterator<Move> it = l.iterator();
-		LinkedList<Move> r = new LinkedList<>();
-		while (it.hasNext()) {
-			r.addLast((Move)it.next().clone());
-		}
-		return r;
-	}
-
-	int diffDir(int a, int b) {
-		int res = 0;
-		if (a < b)
-			res = 1;
-		if (b < a)
-			res = -1;
-		return res;
-	}
-
-	/**
-	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
-	 * @param nb_pingouin : equibvalent à nb_fish_1
-	 */
-	private void initTab(int nb_pingouin) {
-		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
-		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
 
 	/**
@@ -124,9 +83,9 @@ public class Plateau implements Serializable {
 	 */
 	private void initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3) {
 		int coeff,
-				candidat,
-				borne = nb_fish_1 + nb_fish_2 + nb_fish_3,
-				nb_cases = (size * size) - (size + 1) / 2;
+			candidat,
+			borne = nb_fish_1 + nb_fish_2 + nb_fish_3,
+			nb_cases = (size * size) - (size + 1) / 2;
 		int[] nb = new int[3];
 		Arrays.fill(nb, 0);
 
@@ -167,7 +126,6 @@ public class Plateau implements Serializable {
 				}
 			}
 		}
-		this.nb_fish = nb[0] + nb[1] * 2 + nb[2] * 3;
 	}
 
 	private void initTab(Construct c, int borne) {
@@ -177,7 +135,6 @@ public class Plateau implements Serializable {
 				if (!(((i % 2) == 0) && (j == (size - 1)))) {
 					tmp = c.getCellValue(i,j);
 					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
-					nb_fish += tmp;
 					if (tmp == 1)
 						nb_1++;
 				}
@@ -189,29 +146,153 @@ public class Plateau implements Serializable {
 		verif_borne(borne, nb_1);
 	}
 
-	private int jouer_pr(Position current, Position target) throws PlateauException {
-		int res = -1;
-		Cellule currentCell, targetCell;
-		Pingouin pingouin;
-		if (!isInTab(current) || !isInTab(target))
-			throw new BewareOfOrcasException();
-		if (!getCellule(current).aPingouin())
-			throw new ItsOnlyYouException(current);
-
-		pingouin = getCellule(current).pingouin();
-		targetCell = getCellule(target);
-		currentCell = getCellule(current);
-		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
-			history.addLast(new Move(target, current, targetCell.getFish(), pingouin));
-			currentCell.destroy();
-			currentCell.setPenguin(null);
-			pingouin.setPosition(target);
-			targetCell.setPenguin(pingouin);
-			res = targetCell.getFish();
-			targetCell.setFish(0);
+	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
+		Random r = new Random();
+		Position p;
+		while (nb_1 <= borne) {
+			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
+			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
+				this.tab[p.i()][p.j()].setFish(1);
+				nb_1++;
+			}
 		}
-		nb_fish -= res;
+	}
+
+	/**
+	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
+	 * @param nb_pingouin : equibvalent à nb_fish_1
+	 */
+	private void initTab(int nb_pingouin) {
+		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
+		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
+	}
+
+	public static Plateau parse(String filename) throws IOException {
+		ArrayList<Cellule[]> list = new ArrayList<>();
+		Cellule[] line;
+		int line_nb = 0;
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String s = br.readLine();
+		String[] splited;
+
+		while (s != null) {
+			splited = s.split(" ");
+			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
+			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
+				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
+					line[i] = new Cellule(new Position(line_nb,i),true,0);
+				else
+					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
+			}
+			line_nb++;
+			list.add(line);
+			s = br.readLine();
+		}
+
+		Cellule[][] tab = new Cellule[line_nb][line_nb];
+		for (Cellule[] element : list) {
+			for (Cellule c: element) {
+				tab[c.getPosition().i()][c.getPosition().j()] = c.clone();
+			}
+		}
+		return new Plateau(tab, new LinkedList<>(), new LinkedList<>());
+	}
+
+	/**
+	 * isInTab : si une position est dans le tableau
+	 * @param p : la position
+	 * @return : vrai si la position est dans le tableau,
+	 * faux sinon.
+	 */
+	public boolean isInTab(Position p) {
+		return isInTab(p.i(),p.j());
+	}
+
+	/**
+	 * isInTab : si une position est dans le tableau
+	 * @param i : la ligne
+	 * @param j : la colonn
+	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
+	 * faux sinon.
+	 */
+	public boolean isInTab(int i, int j) {
+		return 0 <= i
+				&& i < size
+				&& 0 <= j
+				&& j < size;
+	}
+
+	/**
+	 * getCellule : recupère une cellule
+	 * @param p : la position de la cellule dans le tableau
+	 * @return : l'objet Cellule
+	 */
+	public Cellule getCellule(Position p) {
+		return getCellule(p.i(), p.j());
+	}
+
+	/**
+	 * getCellule : recupère une cellule à la position (i,j)
+	 * @param i : la ligne
+	 * @param j : la colonne
+	 * @return la Cellule si la position est dans le tablea
+	 * null sinon.
+	 */
+	public Cellule getCellule(int i, int j) {
+		Cellule res = null;
+		if (isInTab(i,j))
+			res = tab[i][j];
 		return res;
+	}
+
+	/**
+	 * getNeighbours : récupère la liste des cases voisine de {@code p}
+	 * @param p : la position de la case courante
+	 * @return : une LinkedList de Cellule
+	 * @See Cellule
+	 */
+	public LinkedList<Position> getNeighbours(Position p) {
+		LinkedList<Position> r = new LinkedList<>();
+		int dec = (p.i() % 2 == 0) ? 0 : 1;
+
+		for (Position candidat: new Position[]{
+				new Position(p.i() - 1,p.j() - dec),
+				new Position(p.i() - 1,p.j() + 1 - dec),
+				new Position(p.i(),p.j() - 1),
+				new Position(p.i(),p.j() + 1),
+				new Position(p.i() + 1,p.j() - dec),
+				new Position(p.i() + 1,p.j() + 1 - dec)}) {
+			if (isInTab(candidat))
+				if (!getCellule(candidat).isObstacle())
+					r.add(candidat);
+		}
+		return r;
+	}
+
+	/**
+	 * safeAdd : ajoute une position dans la liste si elle n'y est pas déjà présente,
+	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
+	 * @param l : la liste de position
+	 * @param candidat : la position à ajouter
+	 * @param mode : l'entier représentant le mode a utilisé
+	 *              0..+ : l'indice du joueur courant,
+	 *                  ce mode ne considère que les pingouins adverses comme obstacles
+	 *              -1 : considère tous les pingouins comme obstacles
+	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
+	 * @return si l'ajout de candidat à été fait ou non.
+	 */
+	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
+		if (isInTab(candidat)) {
+
+			if ((mode == -1 && !getCellule(candidat).isObstacle())
+					|| (mode == -2 && !getCellule(candidat).isDestroyed())
+					|| (mode >= 0 && (getCellule(candidat).aPingouin() && getCellule(candidat).pingouin().employeur() != mode))) {
+				if (!l.contains(candidat))
+					l.add(candidat);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -275,66 +356,6 @@ public class Plateau implements Serializable {
 	}
 
 	/**
-	 * Pose un pingouin sur un case si les lunes sont alignées
-	 * @param p position ou ajouter le pingouin
-	 * @return true si tout c'est bien passe false sinon
-	 * @author Louka Soret, Gaëtan Sorin
-	 */
-	private boolean poserPingouin_pr(Position p, Pingouin pingouin) {
-		// Si la case en p n'est pas fondue et n'a pas de pingouin
-		if(isInTab(p) && !this.getCellule(p).isObstacle()) {
-			//Si la case en p a un seul poisson
-			if(this.getCellule(p).getFish() == 1) {
-				getCellule(p).setPenguin(pingouin);
-				getCellule(p).setFish(0);
-				pingouin.setPosition(p);
-				history.addLast(new Move(p, pingouin));
-				this.nb_fish--;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	void setNbFish(int nb_fish) {
-		this.nb_fish = nb_fish;
-	}
-
-	boolean tabEquals(Cellule[][] tab) {
-		boolean b = tab.length == this.size;
-		if (b)
-			for (int i = 0; i < this.size; i++) {
-				for (int j = 0; j < this.size; j++) {
-					b = b && tab[i][j].equals(this.tab[i][j]);
-				}
-			}
-		return b;
-	}
-
-	private String tabToString() {
-		String res = "[\n";
-		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + "\n";
-		}
-		return res + "]";
-	}
-
-	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
-		Random r = new Random();
-		Position p;
-		while (nb_1 <= borne) {
-			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
-			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
-				nb_fish -= (this.tab[p.i()][p.j()].getFish() - 1);
-				this.tab[p.i()][p.j()].setFish(1);
-				nb_1++;
-			}
-		}
-	}
-
-	/* Public ================================ */
-
-	/**
 	 * accessible : Liste des positions accessibles depuis p
 	 * wrapper de listAccessible considérant les pingouins comme obstacles
 	 * @param p : position courante
@@ -358,18 +379,13 @@ public class Plateau implements Serializable {
 		return listAccessibles(p, id_joueur);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Plateau clone() {
-		return new Plateau(this.tab,cloneList(this.history),cloneList(this.undoList));
-	}
-
-	/**
-	 * destroyCell : detruit une cellule
-	 * @param p : la position de la cellule
-	 */
-	public void destroyCell(Position p) {
-		tab[p.i()][p.j()].destroy();
+	int diffDir(int a, int b) {
+		int res = 0;
+		if (a < b)
+			res = 1;
+		if (b < a)
+			res = -1;
+		return res;
 	}
 
 	/**
@@ -415,109 +431,9 @@ public class Plateau implements Serializable {
 		return candidat.equals(target);
 	}
 
-	/**
-	 * estIsolee : si une position est entourée d'obstacles
-	 * @param p : la position
-	 * @return : vrai si tous les voisins de la position p sont des obstacles
-	 */
-	public boolean estIsolee(Position p) {
-		for(Position n : getNeighbours(p)) {
-			if(! getCellule(n).isObstacle()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * getCellule : recupère une cellule
-	 * @param p : la position de la cellule dans le tableau
-	 * @return : l'objet Cellule
-	 */
-	public Cellule getCellule(Position p) {
-		return getCellule(p.i(), p.j());
-	}
-
-	/**
-	 * getCellule : recupère une cellule à la position (i,j)
-	 * @param i : la ligne
-	 * @param j : la colonne
-	 * @return la Cellule si la position est dans le tablea
-	 * null sinon.
-	 */
-	public Cellule getCellule(int i, int j) {
-		Cellule res = null;
-		if (isInTab(i,j))
-			res = tab[i][j];
-		return res;
-	}
-
-	public LinkedList<Move> getHistory() {
-		return history;
-	}
-
-	public int getNbFish() {
-		return nb_fish;
-	}
-
-	/**
-	 * getNeighbours : récupère la liste des cases voisine de {@code p}
-	 * @param p : la position de la case courante
-	 * @return : une LinkedList de Cellule
-	 * @See Cellule
-	 */
-	public LinkedList<Position> getNeighbours(Position p) {
-		LinkedList<Position> r = new LinkedList<>();
-		int dec = (p.i() % 2 == 0) ? 0 : 1;
-
-		for (Position candidat: new Position[]{
-				new Position(p.i() - 1,p.j() - dec),
-				new Position(p.i() - 1,p.j() + 1 - dec),
-				new Position(p.i(),p.j() - 1),
-				new Position(p.i(),p.j() + 1),
-				new Position(p.i() + 1,p.j() - dec),
-				new Position(p.i() + 1,p.j() + 1 - dec)}) {
-			if (isInTab(candidat))
-				if (!getCellule(candidat).isObstacle())
-					r.add(candidat);
-		}
-		return r;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public Cellule[][] getTab() {
-		return tab;
-	}
-
-	public LinkedList<Move> getUndoList() {
-		return undoList;
-	}
-
-	/**
-	 * isInTab : si une position est dans le tableau
-	 * @param p : la position
-	 * @return : vrai si la position est dans le tableau,
-	 * faux sinon.
-	 */
-	public boolean isInTab(Position p) {
-		return isInTab(p.i(),p.j());
-	}
-
-	/**
-	 * isInTab : si une position est dans le tableau
-	 * @param i : la ligne
-	 * @param j : la colonn
-	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
-	 * faux sinon.
-	 */
-	public boolean isInTab(int i, int j) {
-		return 0 <= i
-				&& i < size
-				&& 0 <= j
-				&& j < size;
+	private void clearUndoList() {
+		if (!this.undoList.isEmpty())
+			this.undoList = new LinkedList<>();
 	}
 
 	/**
@@ -538,7 +454,6 @@ public class Plateau implements Serializable {
 			return -1;
 		}
 	}
-
 	/**
 	 * jouer : déplace un pinguoin si possible
 	 * @param penguin : le pinguoin à déplacer
@@ -551,82 +466,38 @@ public class Plateau implements Serializable {
 		return jouer(current, target);
 	}
 
-	public static Plateau parse(String filename) throws IOException {
-		ArrayList<Cellule[]> list = new ArrayList<>();
-		Cellule[] line;
-		int line_nb = 0;
-		BufferedReader br = new BufferedReader(new FileReader(filename));
-		String s = br.readLine();
-		String[] splited;
+	private int jouer_pr(Position current, Position target) throws PlateauException {
+		int res = -1;
+		Cellule currentCell, targetCell;
+		Pingouin pingouin;
+		if (!isInTab(current) || !isInTab(target))
+			throw new BewareOfOrcasException();
+		if (!getCellule(current).aPingouin())
+			throw new ItsOnlyYouException(current);
 
-		while (s != null) {
-			splited = s.split(" ");
-			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
-			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
-				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
-					line[i] = new Cellule(new Position(line_nb,i),true,0);
-				else
-					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
-			}
-			line_nb++;
-			list.add(line);
-			s = br.readLine();
-		}
+		pingouin = getCellule(current).pingouin();
+		targetCell = getCellule(target);
 
-		Cellule[][] tab = new Cellule[line_nb][line_nb];
-		for (Cellule[] element : list) {
-			for (Cellule c: element) {
-				tab[c.getPosition().i()][c.getPosition().j()] = c.clone();
-			}
-		}
-		return new Plateau(tab, new LinkedList<>(), new LinkedList<>());
-	}
-
-	/**
-	 * Pose un pingouin sur un case si les lunes sont alignées
-	 * Efface la undoList si la pose du pingouin s'est bien passée
-	 * @param p position ou ajouter le pingouin
-	 * @return true si tout c'est bien passe false sinon
-	 * @author Louka Soret, Gaëtan Sorin
-	 */
-	public boolean poserPingouin(Position p, Pingouin pingouin) {
-		boolean b = poserPingouin_pr(p, pingouin);
-		if (b)
-			clearUndoList();
-		return b;
-	}
-
-	public String pretty() {
-		String res = "";
-		for (Cellule[] line: this.tab) {
-			for (Cellule c : line)
-				res += c.pretty();
-			res += "\n";
+		if (estAccessible(current, target) && !targetCell.isDestroyed()) {
+			history.addLast(new Move(target, current, targetCell.getFish(), pingouin));
+			currentCell = getCellule(current);
+			currentCell.destroy();
+			currentCell.setPenguin(null);
+			pingouin.setPosition(target);
+			targetCell.setPenguin(pingouin);
+			res = targetCell.getFish();
+			targetCell.setFish(0);
 		}
 		return res;
 	}
 
 	/**
-	 * redo : ré-exécute le dernier coup annulé, si il y en a
-	 * @return la valeur du coup exécuté si il y'en a un,
-	 * -1 sinon
+	 * undoPossible : si un undo est possible
+	 * @return vrai si l'historique n'est pas vide et que l'on peut undo
+	 * faux sinon
 	 */
-	public int redo() {
-		if (undoList.isEmpty())
-			return -1;
-		Move m = undoList.removeLast();
-		int res;
-		if (m.getFrom().equals(Plateau.source))
-			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
-		else {
-			try {
-				res = jouer_pr(m.getFrom(), m.getTo());
-			} catch (PlateauException e) {
-				System.err.println(e.getMessage());
-				res = -1;
-			}
-		}
-		return res;
+	public boolean undoPossible() {
+		return !this.history.isEmpty();
 	}
 
 	/**
@@ -636,32 +507,6 @@ public class Plateau implements Serializable {
 	 */
 	public boolean redoPossible() {
 		return !this.undoList.isEmpty();
-	}
-
-	/**
-	 * safeAdd : ajoute une position dans la liste si elle n'y est pas déjà présente,
-	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
-	 * @param l : la liste de position
-	 * @param candidat : la position à ajouter
-	 * @param mode : l'entier représentant le mode a utilisé
-	 *              0..+ : l'indice du joueur courant,
-	 *                  ce mode ne considère que les pingouins adverses comme obstacles
-	 *              -1 : considère tous les pingouins comme obstacles
-	 *              -2 : ignore tous les pingouins, seules les cases détruites sont des obstacles
-	 * @return si l'ajout de candidat à été fait ou non.
-	 */
-	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
-		if (isInTab(candidat)) {
-
-			if ((mode == -1 && !getCellule(candidat).isObstacle())
-					|| (mode == -2 && !getCellule(candidat).isDestroyed())
-					|| (mode >= 0 && (getCellule(candidat).aPingouin() && getCellule(candidat).pingouin().employeur() != mode))) {
-				if (!l.contains(candidat))
-					l.add(candidat);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -689,20 +534,148 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-		nb_fish += fishAte;
 		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
 	}
 
 	/**
-	 * undoPossible : si un undo est possible
-	 * @return vrai si l'historique n'est pas vide et que l'on peut undo
-	 * faux sinon
+	 * redo : ré-exécute le dernier coup annulé, si il y en a
+	 * @return la valeur du coup exécuté si il y'en a un,
+	 * -1 sinon
 	 */
-	public boolean undoPossible() {
-		return !this.history.isEmpty();
+	public int redo() {
+		if (undoList.isEmpty())
+			return -1;
+		Move m = undoList.removeLast();
+		int res;
+		if (m.getFrom().equals(Plateau.source))
+			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
+		else {
+			try {
+				res = jouer_pr(m.getFrom(), m.getTo());
+			} catch (PlateauException e) {
+				System.err.println(e.getMessage());
+				res = -1;
+			}
+		}
+		return res;
 	}
 
-	/* Override ============================== */
+	/**
+	 * estIsolee : si une position est entourée d'obstacles
+	 * @param p : la position
+	 * @return : vrai si tous les voisins de la position p sont des obstacles
+	 */
+	public boolean estIsolee(Position p) {
+		for(Position n : getNeighbours(p)) {
+			if(! getCellule(n).isObstacle()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * destroyCell : detruit une cellule
+	 * @param p : la position de la cellule
+	 */
+	public void destroyCell(Position p) {
+		tab[p.i()][p.j()].destroy();
+	}
+
+	/**
+	 * Pose un pingouin sur un case si les lunes sont alignées
+	 * Efface la undoList si la pose du pingouin s'est bien passée
+	 * @param p position ou ajouter le pingouin
+	 * @return true si tout c'est bien passe false sinon
+	 * @author Louka Soret, Gaëtan Sorin
+	 */
+	public boolean poserPingouin(Position p, Pingouin pingouin) {
+		boolean b = poserPingouin_pr(p, pingouin);
+		if (b)
+			clearUndoList();
+		return b;
+	}
+
+	/**
+	 * Pose un pingouin sur un case si les lunes sont alignées
+	 * @param p position ou ajouter le pingouin
+	 * @return true si tout c'est bien passe false sinon
+	 * @author Louka Soret, Gaëtan Sorin
+	 */
+	private boolean poserPingouin_pr(Position p, Pingouin pingouin) {
+		// Si la case en p n'est pas fondue et n'a pas de pingouin
+		if(isInTab(p) && !this.getCellule(p).isObstacle()) {
+			//Si la case en p a un seul poisson
+			if(this.getCellule(p).getFish() == 1) {
+				getCellule(p).setPenguin(pingouin);
+				pingouin.setPosition(p);
+				history.addLast(new Move(p, pingouin));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public Cellule[][] getTab() {
+		return tab;
+	}
+
+	public LinkedList<Move> getHistory() {
+		return history;
+	}
+
+	public LinkedList<Move> getUndoList() {
+		return undoList;
+	}
+
+	public String pretty() {
+		String res = "";
+		for (Cellule[] line: this.tab) {
+			for (Cellule c : line)
+				res += c.pretty();
+			res += "\n";
+		}
+		return res;
+	}
+
+	private String tabToString() {
+		String res = "[\n";
+		for (Cellule[] line: this.tab) {
+			res += Arrays.toString(line) + "\n";
+		}
+		return res + "]";
+	}
+
+	private LinkedList<Move> cloneList(LinkedList<Move> l) {
+		Iterator<Move> it = l.iterator();
+		LinkedList<Move> r = new LinkedList<>();
+		while (it.hasNext()) {
+			r.addLast((Move)it.next().clone());
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Plateau clone() {
+		return new Plateau(this.tab,cloneList(this.history),cloneList(this.undoList));
+	}
+
+	boolean tabEquals(Cellule[][] tab) {
+		boolean b = tab.length == this.size;
+		if (b)
+			for (int i = 0; i < this.size; i++) {
+				for (int j = 0; j < this.size; j++) {
+					b = b && tab[i][j].equals(this.tab[i][j]);
+				}
+			}
+		return b;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -711,7 +684,6 @@ public class Plateau implements Serializable {
 		Plateau plateau = (Plateau) o;
 
 		if (getSize() != plateau.getSize()) return false;
-		if (nb_fish != plateau.nb_fish) return false;
 		if (!Arrays.deepEquals(getTab(), plateau.getTab())) return false;
 		if (!getHistory().equals(plateau.getHistory())) return false;
 		return getUndoList().equals(plateau.getUndoList());
@@ -723,7 +695,6 @@ public class Plateau implements Serializable {
 		result = 31 * result + Arrays.deepHashCode(getTab());
 		result = 31 * result + getHistory().hashCode();
 		result = 31 * result + getUndoList().hashCode();
-		result = 31 * result + nb_fish;
 		return result;
 	}
 
@@ -734,7 +705,6 @@ public class Plateau implements Serializable {
 				", tab=" + tabToString() +
 				", history=" + history +
 				", undoList=" + undoList +
-				", nb_fish=" + nb_fish +
 				'}';
 	}
 }
