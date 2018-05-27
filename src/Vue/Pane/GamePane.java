@@ -7,7 +7,6 @@ import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Joueurs.JoueurIA;
 import Modele.Joueurs.JoueurPhysique;
 import Modele.Moteur.Moteur;
-import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Plateau;
 import Vue.Cadre.PlateauCadre;
 import javafx.scene.layout.StackPane;
@@ -23,6 +22,7 @@ public class GamePane extends StackPane{
 	public static GamePane getInstance(){
 		if(GamePane.instance==null){
 			GamePane.instance = new GamePane();
+			GamePane.getPlateauCadre().start();
 			return GamePane.instance;
 		}
 		return GamePane.instance;
@@ -36,17 +36,18 @@ public class GamePane extends StackPane{
 		this.plateauCadre.prefWidthProperty().bind(this.widthProperty());
 		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
-		this.moteur.setCurrentState(State.POSER_PINGOUIN);
-		plateauCadre.start();
+		//this.moteur.setCurrentState(State.POSER_PINGOUIN);
+		//plateauCadre.start();
 	}
 	
 	private GamePane(){
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
-		joueurs.add(new JoueurPhysique(0,3,"Joueur 1"));
-		//joueurs.add(new JoueurIA(0,"Loukavocat",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(1,3,"Loukavocat",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(2,3,"Loukanape",Difficulte.FACILE));
-		joueurs.add(new JoueurIA(3,3,"Loukasscouilles",Difficulte.FACILE));
+		//joueurs.add(new JoueurPhysique(0,2,"Joueur 1"));
+		joueurs.add(new JoueurIA(1,2,"Loukavocat",Difficulte.FACILE));
+		//joueurs.add(new JoueurIA(2,3,"Loukanape",Difficulte.FACILE));
+		
+		joueurs.add(new JoueurIA(2,2,"Loukanape",Difficulte.DIFFICILE));
+		//joueurs.add(new JoueurIA(3,4,"Loukasscouilles",Difficulte.FACILE));
 		this.moteur = new Moteur(new Plateau(8),joueurs);
 		init();
 	}
@@ -60,7 +61,10 @@ public class GamePane extends StackPane{
 	 * @param p : le plateau
 	 */
 	public static void newInstance(Moteur m){
+		if(GamePane.instance!=null)
+			GamePane.getPlateauCadre().animationTimer.stop();
 		GamePane.instance = new GamePane(m);
+		GamePane.instance.plateauCadre.start();
 	}
 	
 	public static PlateauCadre getPlateauCadre(){

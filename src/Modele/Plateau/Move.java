@@ -46,6 +46,27 @@ public class Move implements Serializable {
 		return pingouin;
 	}
 
+	public void setTo(Position to) {
+		this.to = to;
+	}
+
+	public void setFrom(Position from) {
+		this.from = from;
+	}
+
+	public void setFishAte(int fishAte) {
+		this.fishAte = fishAte;
+	}
+
+	public void setPingouin(Pingouin pingouin) {
+		this.pingouin = pingouin;
+	}
+
+	@Override
+	protected Object clone() {
+		return new Move(to.clone(), from.clone(), fishAte, pingouin.clone());
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -70,6 +91,11 @@ public class Move implements Serializable {
 
 	@Override
 	public String toString() {
-		return to + "," + from + "," + fishAte + "," + pingouin;
+		return "Move{" +
+				"to=" + to +
+				", from=" + from +
+				", fishAte=" + fishAte +
+				", pingouin=" + pingouin +
+				'}';
 	}
 }

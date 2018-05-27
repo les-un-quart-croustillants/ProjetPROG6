@@ -1,7 +1,6 @@
 package Vue.GameObject;
 
 import com.sun.javafx.geom.Vec2d;
-
 import Vue.InterfaceGraphique;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -19,23 +18,11 @@ public class Particle extends GameObject{
 		super(x,y);
 		this.sprite = sprite;
 		time = System.currentTimeMillis();
-		direction = new Vec2d(0,1);
+		direction = new Vec2d(0,0);
 	}
 	
-	private double length(Vec2d v) {
-		return Math.sqrt(v.x*v.x+v.y*v.y);
-	}
-	private void normalize(Vec2d v) {
-		double l = length(v);
-		if(l>0) {
-			v.x = v.x/l;
-			v.y = v.y/l;
-		}
-	}
-	
-	public void setDirection(Vec2d v) {
-		direction.set(v);
-		normalize(direction);
+	public void setDirection(Vec2d d) {
+		direction.set(d);
 	}
 	
 	public void setVitesse(float v) {

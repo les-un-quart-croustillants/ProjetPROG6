@@ -1,12 +1,17 @@
+@font-face {
+    font-family: Luckiest Guy;
+    src: url('LuckiestGuy.ttf');
+}
+
 .menu {
 	-fx-alignment: center;
 	-fx-font-family: "Luckiest Guy";
-	-fx-spacing: 15px;
+	-fx-spacing: 25px;
 }
 
 .playandback {
 	-fx-alignment: center;
-	-fx-spacing: 15px;
+	-fx-spacing: 25px;
 }
 
 .label {
@@ -90,11 +95,28 @@
 	-fx-padding: 15px;
 }
 
-.hbox {
-	-fx-alignment: center;
-	-fx-spacing: 15px;
-}
-
 .joueurconfig {
 	-fx-spacing: 20px;
+}
+
+.trislider .slice {
+	-fx-min-width: 0px;
+	-fx-pref-height: 32px;
+	-fx-alignment:	center;
+}
+
+.trislider {
+	-fx-max-width: 400px;
+}
+
+.trislider-first {
+	-fx-background-color: #bbcefd;
+}
+
+.trislider-second {
+	-fx-background-color: #c9ccd2;
+}
+
+.trislider-third {
+	-fx-background-color: #d3c173;
 }

@@ -3,6 +3,7 @@ package Vue.GameObject;
 import Vue.Donnees;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 
@@ -20,20 +21,20 @@ public class ScoresGraphique extends GameObject{
 	@Override
 	public void draw(GraphicsContext gc){
 		String nom,score;
-		gc.setFont(Donnees.FONT_SCORE);
-		Lighting l = new Lighting();
+		gc.setFont(Donnees.FONT_SCORES_FINAUX);
+		/*Lighting l = new Lighting();
 		l.setSurfaceScale(3);
 		l.setDiffuseConstant(3);
-		gc.setEffect(l);
+		gc.setEffect(l);*/
 		for(int i=0;i<GamePane.moteur().njoueurs();i++){
 			nom = GamePane.moteur().joueur(i).nom();
-			score = "x"+Integer.toString(GamePane.moteur().joueur(i).scoreFish());
+			score = Integer.toString(GamePane.moteur().joueur(i).scoreFish());
 			gc.setFill(Donnees.getCouleur(GamePane.moteur().joueur(i).id()%4));
 			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-nom.length()*gc.getFont().getSize()*0.3);
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.95);
 			gc.fillText(nom, x, y);
-			//gc.setStroke(Color.DARKCYAN);
-			//gc.strokeText(nom, (GamePane.getPlateauCadre().getWidth()/(GamePane.moteur().njoueurs()+1))*(i+1)-nom.length()*gc.getFont().getSize()*0.25, GamePane.getPlateauCadre().getHeight()*0.9);
+			//gc.setStroke(Color.BLACK);
+			//gc.strokeText(nom, x, y);
 			gc.setFill(Color.ORANGE);
 			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-score.length()*gc.getFont().getSize()*0.3+Donnees.IMG_POISSON.getWidth()/2);
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.98);
@@ -52,7 +53,7 @@ public class ScoresGraphique extends GameObject{
 				y = (int) (GamePane.getPlateauCadre().getHeight()*0.88);
 				gc.drawImage(Donnees.IMG_CADENAS,x,y,w,h);
 			}
-			gc.setEffect(l);
+			//gc.setEffect(l);
 		}		
 		gc.setEffect(null);
 	}

@@ -61,6 +61,14 @@ public class GameConfig {
 		joueurs = new LinkedList<ConfigJoueur>();
 	}
 	
+	public Integer nb_pingouins() {
+		Integer c = 0;
+		for(ConfigJoueur jc : joueurs) {
+			c += jc.nb_pingouins;
+		}
+		return c;
+	}
+	
 	@Override
 	public String toString() {
 		String str = "Plateau : " + dim.toString() + "x" + dim.toString();

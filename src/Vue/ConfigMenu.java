@@ -23,10 +23,14 @@ public class ConfigMenu extends VBox {
 		public TextField typeJoueur;
 		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
 		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
-		private int nb_Penguin;
+		private int nb_Penguin = 4;
 		
 		GameConfig.ConfigJoueur getConfig() {
-			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, typeJoueur.getText());
+			String name = typeJoueur.getText();
+			if(type_joueur == GameConfig.TypeJoueur.IA && name.equals("IA")) {
+				name += " " + diff_IA.toString();
+			}
+			return new GameConfig.ConfigJoueur(type_joueur, diff_IA, nb_Penguin, name);
 		}
 		
 		public void editNbPenguins(int newnb) {
@@ -37,13 +41,23 @@ public class ConfigMenu extends VBox {
 		public void editPlayerType(GameConfig.TypeJoueur type) {
 			type_joueur = type;
 			if(type_joueur == GameConfig.TypeJoueur.HUMAIN) {
-				typeJoueur.setText("HUMAIN");
+				typeJoueur.setText(type_joueur.toString());
 				if(difficulte.isVisible())
 					difficulte.setVisible(false);
 			} else {
-					typeJoueur.setText("IA");
+					typeJoueur.setText(type_joueur.toString());
 					if(!difficulte.isVisible())
 						difficulte.setVisible(true);		
+			}
+		}
+		
+		public void editIA(GameConfig.difficulte diff) {
+			diff_IA = diff;
+			switch(diff_IA) {
+			case FACILE:	difficulte.setText(diff_IA.toString());		break;
+			case MOYEN:		difficulte.setText(diff_IA.toString());		break;
+			case DIFFICILE:	difficulte.setText(diff_IA.toString());	break;
+			default: break;
 			}
 		}
 		
@@ -52,8 +66,9 @@ public class ConfigMenu extends VBox {
 			diff_IA = GameConfig.difficulte.FACILE;
 			this.getStyleClass().add("joueurconfig");
 			HBox joueurLyt = new HBox();
-			typeJoueur = new TextField("HUMAIN");
-			difficulte = new Button("FACILE");
+			typeJoueur = new TextField(type_joueur.toString());
+			difficulte = new Button(diff_IA.toString());
+			difficulte.setVisible(false);
 			nbPenguin = new Label("x"+nb_Penguin);
 			minusPenguin = new Button();
 			delete = new Button();
@@ -114,17 +129,14 @@ public class ConfigMenu extends VBox {
 				}
 			});
 			
-
-			
 			difficulte.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
 					objet.type_editted = true;
-					if(difficulte.getText() == "FACILE") {
-						difficulte.setText("MOYEN");
-					} else if(difficulte.getText() == "MOYEN") {
-						difficulte.setText("DIFFICILE");
-					} else {
-						difficulte.setText("FACILE");
+					switch(diff_IA) {
+					case FACILE:	editIA(GameConfig.difficulte.MOYEN);	break;
+					case MOYEN:		editIA(GameConfig.difficulte.DIFFICILE);break;
+					case DIFFICILE:	editIA(GameConfig.difficulte.FACILE);	break;
+					default: break;
 					}
 				}
 			});
@@ -149,25 +161,16 @@ public class ConfigMenu extends VBox {
 	private void normalize() {
 		// Nb pingouins
 		int size = listJoueurs.getChildren().size();
-		boolean first_visited = false;
 		int nbpenguins;
-		if(size <= 4) {
-			nbpenguins = size;
-		} else {
+		if(size == 3)
+			nbpenguins = 3;
+		else 
 			nbpenguins = 4;
-		}
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
 		for(Node jc : listJoueurs.getChildren()) {
-			if(!((JoueurConfig)jc).type_editted)
+			if(!((JoueurConfig)jc).type_editted) {
 				((JoueurConfig)jc).editNbPenguins(nbpenguins);
-			if(!first_visited) {
-				if(!((JoueurConfig)jc).type_editted)
-					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.HUMAIN);
-				first_visited = true;
-			} else {
-				if(!((JoueurConfig)jc).type_editted)
-					((JoueurConfig)jc).editPlayerType(GameConfig.TypeJoueur.IA);
 			}
 		}
 	}
@@ -180,23 +183,23 @@ public class ConfigMenu extends VBox {
 		Button newJoueur = new Button("Nouveau joueur");
 		Button minusDim = new Button();
 		Button plusDim = new Button();
+		VBox joueursBox = new VBox();
 		
 		map_customization = new Button("Configuration du terrain");
 		retour = new Button("Retour");
 		jouer = new Button("JOUER");
 		
 		// Configuration
+		joueursBox.getStyleClass().add("center");
 		jouer.getStyleClass().add("textbutton");
 		map_customization.getStyleClass().add("textbutton");
 		listJoueurs.getStyleClass().add("center");
 		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
 		configLbl.getStyleClass().add("title");
-		retour.getStyleClass().add("textbutton"); 
+		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		joueursPane.setContent(listJoueurs);
 		minusDim.getStyleClass().addAll("leftbutton", "iconbutton");
 		plusDim.getStyleClass().addAll("rightbutton", "iconbutton");
-		
-
 		
 		newJoueur.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
@@ -208,13 +211,16 @@ public class ConfigMenu extends VBox {
 		});
 		
 		// Ajout
-		listJoueurs.getChildren().addAll(new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs), 
-				new JoueurConfig(listJoueurs));
-		normalize();
+		listJoueurs.getChildren().add(new JoueurConfig(listJoueurs));
+		for(int i = 0; i < 3; ++i) {
+			JoueurConfig jc = new JoueurConfig(listJoueurs);
+			jc.editPlayerType(GameConfig.TypeJoueur.IA);
+			listJoueurs.getChildren().add(jc);
+			
+		}
 		
-		this.getChildren().addAll(configLbl, joueursPane, newJoueur, map_customization, jouer, retour);
+		joueursBox.getChildren().addAll(joueursPane, newJoueur);
+		this.getChildren().addAll(configLbl, joueursBox, map_customization, jouer, retour);
 	}
 	
 	GameConfig create_config() {
