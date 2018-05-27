@@ -13,7 +13,7 @@ public class ConfigMenu extends VBox {
 	private static ConfigMenu instance = null;
 	Integer dim = 8;
 	VBox listJoueurs;
-	Button retour, map_customization, jouer;
+	Button retour, map_customization, jouer, newJoueur;
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
@@ -36,6 +36,14 @@ public class ConfigMenu extends VBox {
 		public void editNbPenguins(int newnb) {
 			nb_Penguin = newnb >= 4 ? 4 : newnb <= 0 ? 1 : newnb;
 			nbPenguin.setText("x"+nb_Penguin);
+			if(nb_Penguin == 4)
+				plusPenguin.setVisible(false);
+			else
+				plusPenguin.setVisible(true);
+			if(nb_Penguin == 1)
+				minusPenguin.setVisible(false);
+			else
+				minusPenguin.setVisible(true);
 		}
 		
 		public void editPlayerType(GameConfig.TypeJoueur type) {
@@ -93,6 +101,7 @@ public class ConfigMenu extends VBox {
 					parent.getChildren().remove(objet); 
 					if(!ConfigMenu.getInstance().editFlag)
 						ConfigMenu.getInstance().normalize();
+					instance.update_list_joueurs_elements();
 				} 
 			});
 			
@@ -177,12 +186,24 @@ public class ConfigMenu extends VBox {
 		}
 	}
 	
+	private void update_list_joueurs_elements() {
+		if(listJoueurs.getChildren().size() == 8) {
+			newJoueur.setVisible(false);
+		} else {
+			newJoueur.setVisible(true);
+			if(listJoueurs.getChildren().size() == 1)
+				((JoueurConfig)listJoueurs.getChildren().get(0)).delete.setVisible(false);
+			else
+				((JoueurConfig)listJoueurs.getChildren().get(0)).delete.setVisible(true);
+		}
+	}
+	
 	private void create_elements() {
 		// Allocations
 		listJoueurs = new VBox();
 		Label configLbl = new Label("CONFIG.");
 		ScrollPane joueursPane = new ScrollPane();
-		Button newJoueur = new Button("Nouveau joueur");
+		newJoueur = new Button("Nouveau joueur");
 		Button minusDim = new Button();
 		Button plusDim = new Button();
 		VBox joueursBox = new VBox();
@@ -209,6 +230,7 @@ public class ConfigMenu extends VBox {
 				joueursPane.setVvalue(1.0);
 				if(!editFlag)
 					normalize();
+				instance.update_list_joueurs_elements();
 			}
 		});
 		
