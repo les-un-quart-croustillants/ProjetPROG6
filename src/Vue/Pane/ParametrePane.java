@@ -36,11 +36,11 @@ public class ParametrePane extends PopupPane {
 			@Override
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
-				fileChooser.setInitialDirectory(new File("rsc/save/"));
+				//fileChooser.setInitialDirectory(new File("rsc/save/"));
 				File file = fileChooser.showOpenDialog(InterfaceGraphique.stage);
 				if (file != null) {
 					GamePane.getInstance().getChildren().remove(ParametrePane.this);
-					GamePane.newInstance(Moteur.charger(file));
+					GamePane.newInstance(Moteur.charger(file), GamePane.getPlateauCadre().niveau);
 					InterfaceGraphique.stage.getScene().setRoot(GamePane.getInstance());
 				}
 			}
@@ -68,7 +68,8 @@ public class ParametrePane extends PopupPane {
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.exit(0);
+				//System.exit(0);
+				GamePane.getInstance().getChildren().add(new ConfirmationQuitter());
 			}
 		});
 		return b;

@@ -5,6 +5,7 @@ import Modele.Moteur.*;
 import Modele.Joueurs.*;
 import Modele.Plateau.*;
 import Utils.GameConfig;
+import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
 
 import java.util.*;
@@ -16,6 +17,7 @@ public class Menu extends StackPane {
 	private static Menu instance = null;
 	private static MoteurApp mApp;
 	private static InterfaceGraphique ig;
+	private Niveau niveau = Niveau.BANQUISE;
 	
 	public static Menu getInstance() {
 		if(instance == null)
@@ -82,7 +84,7 @@ public class Menu extends StackPane {
 		
 		TerrainMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),Niveau.BANQUISE);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
@@ -98,7 +100,7 @@ public class Menu extends StackPane {
 		
 		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
@@ -139,10 +141,12 @@ public class Menu extends StackPane {
 					instance.getStylesheets().remove("enfer.css");
 					NewGameMenu.getInstance().mapName.setText("BANQUISE");
 					instance.getStylesheets().add("banquise.css");
+					niveau = Niveau.BANQUISE;
 				} else if(instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
 					NewGameMenu.getInstance().mapName.setText("ENFER");
 					instance.getStylesheets().add("enfer.css");
+					niveau = Niveau.ENFER;
 				}
 			}
 		});
@@ -153,10 +157,12 @@ public class Menu extends StackPane {
 					instance.getStylesheets().remove("enfer.css");
 					NewGameMenu.getInstance().mapName.setText("BANQUISE");
 					instance.getStylesheets().add("banquise.css");
+					niveau = Niveau.BANQUISE;
 				} else if(instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
 					NewGameMenu.getInstance().mapName.setText("ENFER");
 					instance.getStylesheets().add("enfer.css");
+					niveau = Niveau.ENFER;
 				}
 			}
 		});
@@ -169,7 +175,7 @@ public class Menu extends StackPane {
 		
 		NewGameMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()));
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}

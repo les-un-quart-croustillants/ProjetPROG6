@@ -23,7 +23,7 @@ public class ConfigMenu extends VBox {
 		public TextField typeJoueur;
 		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
 		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
-		private int nb_Penguin = 4;
+		private int nb_Penguin = 2;
 		
 		GameConfig.ConfigJoueur getConfig() {
 			String name = typeJoueur.getText();
@@ -164,7 +164,9 @@ public class ConfigMenu extends VBox {
 		int nbpenguins;
 		if(size == 3)
 			nbpenguins = 3;
-		else 
+		else if(size == 4)
+			nbpenguins = 2;
+		else
 			nbpenguins = 4;
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
