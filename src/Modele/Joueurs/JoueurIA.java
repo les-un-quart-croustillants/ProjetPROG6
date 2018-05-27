@@ -1,22 +1,22 @@
 package Modele.Joueurs;
 
 import java.util.ArrayList;
-
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
-//import java.util.LinkedList;
-//import Modele.Plateau.Cellule;
-//import Modele.Plateau.Pingouin;
-//import java.util.HashMap;
-//import java.util.Random;
+
 
 public class JoueurIA extends Joueur {
+	
+	private boolean threadLancee;
+	private IAshared shared;
 	
 	private static final long serialVersionUID = -8134226007569319548L;
 
 	public JoueurIA(int id,int nbP,String n,Difficulte d){
 		super(id,nbP,n,d);
+		this.shared = new IAshared();
+		this.threadLancee = false;
 	}
 
 	@Override
@@ -33,18 +33,37 @@ public class JoueurIA extends Joueur {
 		}
 	}
 	
-	public Couple<Position,Position> coupDifficile(Plateau plateau) {
-		return UtilsIA.jouerCoupDifficile(plateau,super.id());
-	}
 	
 	@Override
 	public Couple<Position,Position> prochainCoup(Plateau plateau,ArrayList<ArrayList<Integer>> scores) {
-		return UtilsIA.jouerCoupFacile(plateau,super.id());
+		if(this.threadLancee) {
+			Couple<Position,Position> tmp = this.shared.getCoupCalcule();
+			if(tmp != null) {
+				this.threadLancee = false;
+			}
+			return tmp;
+		} else {
+			new IAthread(super.difficulte,plateau, super.id(),scores,this.shared);
+			this.threadLancee = true;
+			return null;
+		}
 	}
+
+	
 	
 	@Override
 	public Position prochainePosePingouin(Plateau plateau) {
-		return UtilsIA.bestplace(plateau, super.id());
+		if(this.threadLancee) {
+			Position tmp = this.shared.getPoseCalcule();
+			if(tmp != null) {
+				this.threadLancee = false;
+			}
+			return tmp;
+		} else {
+			new IAthread(super.difficulte,plateau, super.id(),this.shared);
+			this.threadLancee = true;
+			return null;
+		}
 	}
 	
 	@Override

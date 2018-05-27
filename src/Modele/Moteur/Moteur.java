@@ -376,7 +376,9 @@ public class Moteur implements Serializable {
 			if (this.joueurCourant().estIA()) {
 				Position calculated = this.joueurCourant().prochainePosePingouin(this.plateau);
 				// Si le calcule de l'IA a reussis
-				if (!calculated.equals(new Position(-1, -1))) {
+				if(calculated == null) {
+					return calculated;
+				} else if (!calculated.equals(new Position(-1, -1))) {
 					tmp = calculated;
 				} else {
 					transition(Action.SELECTION_INVALIDE);
@@ -418,7 +420,9 @@ public class Moteur implements Serializable {
 			// Si le joueur est une IA
 			if (this.joueurCourant().estIA()) {
 				Couple<Position, Position> calculated = this.joueurCourant().prochainCoup(plateau, this.scores(false));
-				if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
+				if(calculated == null) {
+					return null;
+				} else if (!calculated.equals(new Couple<Position, Position>(new Position(-1, -1), new Position(-1, -1)))) {
 					// Si choix du pingouin effectue
 					tmp = calculated.gauche();
 					this.prochainCLicIA = calculated.droit();
@@ -465,6 +469,7 @@ public class Moteur implements Serializable {
 			}
 			try {
 				if (this.joueurCourant().jouerCoup(this.plateau, selected, tmp) < 0) {
+					this.selected = null;
 					transition(Action.SELECTION_INVALIDE);
 					return new Position(-1, -1);
 				} else {
@@ -476,6 +481,7 @@ public class Moteur implements Serializable {
 					return tmp;
 				}
 			} catch (Exception e) {
+				this.selected = null;
 				transition(Action.SELECTION_INVALIDE);
 				return new Position(-1, -1);
 			}
@@ -496,6 +502,8 @@ public class Moteur implements Serializable {
 		if (this.undoRedoAutorise) {
 			Couple<Boolean, Couple<Integer, Integer>> res;
 
+			this.selected = null;
+			
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
 				if (res.droit().gauche() >= 0) {
@@ -626,6 +634,7 @@ public class Moteur implements Serializable {
 	}
 
 	public Couple<Position, Position> sugestion() {
-		return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
+		return null;
+		//return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
 	}
 }

@@ -42,7 +42,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 500;
+	private double delay = 10;
 
 	@Override
 	public void update() {
@@ -122,13 +122,15 @@ public class MoteurGraphique extends GameObject {
 	private void onStateSELECTIONNER_PINGOUIN_GRAPH() {
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().selectionnerPingouin(new Position(-1, -1));
-			if(p.equals(new Position(-1,-1))) {
-				System.out.println("Probleme: l'ia n'a pas su jouer");
-				System.exit(1);
+			if(p != null) {
+				if(p.equals(new Position(-1,-1))) {
+					System.out.println("Probleme: l'ia n'a pas su jouer");
+					System.exit(1);
+				}
+				pingouinCoupIA = p;
+				GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].select();
+				setCurrentState(StateGraph.SELECTIONNER_DESTINATION_GRAPH);	
 			}
-			pingouinCoupIA = p;
-			GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].select();
-			setCurrentState(StateGraph.SELECTIONNER_DESTINATION_GRAPH);
 		}
 		
 	}
@@ -152,14 +154,16 @@ public class MoteurGraphique extends GameObject {
 		int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 		if (GamePane.moteur().joueurCourant().estIA()) {
 			Position p = GamePane.moteur().poserPingouin(new Position(-1, -1));
-			if(p.equals(new Position(-1,-1))){
-				System.out.println("Plus de place pour poser les pingouins");
-				System.exit(1);
+			if(p != null) {
+				if(p.equals(new Position(-1,-1))){
+					System.out.println("Plus de place pour poser les pingouins");
+					System.exit(1);
+				}
+				GamePane.getPlateauCadre().gameObjects.get(1)
+						.add(new PingouinGraphique(GamePane.moteur().plateau().getCellule(p).pingouin(),
+								GamePane.getPlateauCadre().plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
+				setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);	
 			}
-			GamePane.getPlateauCadre().gameObjects.get(1)
-					.add(new PingouinGraphique(GamePane.moteur().plateau().getCellule(p).pingouin(),
-							GamePane.getPlateauCadre().plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
-			setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
 		} else {
 		}
 	}

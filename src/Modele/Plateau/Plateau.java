@@ -11,10 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Integer.max;
 
@@ -74,8 +71,8 @@ public class Plateau implements Serializable {
 				this.tab[i][j] = tab[i][j].clone();
 			}
 		}
-		this.history = (LinkedList<Move>) history.clone();
-		this.undoList = (LinkedList<Move>) undoList.clone();
+		this.history = history;
+		this.undoList = undoList;
 	}
 
 	/**
@@ -286,6 +283,7 @@ public class Plateau implements Serializable {
 	 */
 	private boolean safeAdd(LinkedList<Position> l, Position candidat, int mode) {
 		if (isInTab(candidat)) {
+
 			if ((mode == -1 && !getCellule(candidat).isObstacle())
 					|| (mode == -2 && !getCellule(candidat).isDestroyed())
 					|| (mode >= 0 && (getCellule(candidat).aPingouin() && getCellule(candidat).pingouin().employeur() != mode))) {
@@ -465,25 +463,7 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
-		try {
-			int res = jouer_pr(current,target);
-			if (res >= 0)
-				clearUndoList();
-			return res;
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
-	}
-
-	/* Implementation pour Plateau.redo() */
-	private int jouer(Move m) {
-		try {
-			return jouer_pr(m.getFrom(), m.getTo());
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
+		return jouer(current, target);
 	}
 
 	private int jouer_pr(Position current, Position target) throws PlateauException {
@@ -570,8 +550,14 @@ public class Plateau implements Serializable {
 		int res;
 		if (m.getFrom().equals(Plateau.source))
 			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
-		else
-			res = jouer(m);
+		else {
+			try {
+				res = jouer_pr(m.getFrom(), m.getTo());
+			} catch (PlateauException e) {
+				System.err.println(e.getMessage());
+				res = -1;
+			}
+		}
 		return res;
 	}
 
@@ -658,16 +644,26 @@ public class Plateau implements Serializable {
 	}
 
 	private String tabToString() {
-		String res = "[ ";
+		String res = "[\n";
 		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+			res += Arrays.toString(line) + "\n";
 		}
 		return res + "]";
 	}
 
+	private LinkedList<Move> cloneList(LinkedList<Move> l) {
+		Iterator<Move> it = l.iterator();
+		LinkedList<Move> r = new LinkedList<>();
+		while (it.hasNext()) {
+			r.addLast((Move)it.next().clone());
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public Plateau clone() {
-		return new Plateau(this.tab, this.history, this.undoList);
+		return new Plateau(this.tab,cloneList(this.history),cloneList(this.undoList));
 	}
 
 	boolean tabEquals(Cellule[][] tab) {
@@ -682,15 +678,34 @@ public class Plateau implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return this.size == ((Plateau) obj).getSize()
-				&& this.history.equals(((Plateau) obj).history)
-				&& this.undoList.equals(((Plateau) obj).undoList)
-				&& tabEquals(((Plateau) obj).getTab());
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Plateau)) return false;
+
+		Plateau plateau = (Plateau) o;
+
+		if (getSize() != plateau.getSize()) return false;
+		if (!Arrays.deepEquals(getTab(), plateau.getTab())) return false;
+		if (!getHistory().equals(plateau.getHistory())) return false;
+		return getUndoList().equals(plateau.getUndoList());
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getSize();
+		result = 31 * result + Arrays.deepHashCode(getTab());
+		result = 31 * result + getHistory().hashCode();
+		result = 31 * result + getUndoList().hashCode();
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
+		return "Plateau{" +
+				"size=" + size +
+				", tab=" + tabToString() +
+				", history=" + history +
+				", undoList=" + undoList +
+				'}';
 	}
 }
