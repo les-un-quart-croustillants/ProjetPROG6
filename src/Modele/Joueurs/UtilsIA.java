@@ -740,7 +740,6 @@ public class UtilsIA {
 			val = val+2;
 		if(nbcaselibre < 10)
 			val = 10;
-		System.out.println(val);
 		return val;
 		
 	}
@@ -762,11 +761,9 @@ public class UtilsIA {
 
 		switch(d) {
 			case MOYEN:
-				System.out.println("moyen cc");
 				minimaxA(a,memo,0,plateauclone,id,plateau,1, scores,id);
 				break;
 			case DIFFICILE:
-				System.out.println("difficile bb");
 				minimaxA(a,memo,0,plateauclone,id,plateau,evaluerProfondeur(plateau), scores,id);
 				break;
 			default:

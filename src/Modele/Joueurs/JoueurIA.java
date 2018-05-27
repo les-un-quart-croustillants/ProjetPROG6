@@ -1,9 +1,6 @@
 package Modele.Joueurs;
 
 import java.util.ArrayList;
-import java.lang.Thread;
-
-import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;

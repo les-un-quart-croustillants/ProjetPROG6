@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 
 public class HeuristiqueB {
+		@SuppressWarnings("unchecked")
 		public static int calcul(Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
 			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
 			int heuristique = 50;
@@ -23,8 +24,10 @@ public class HeuristiqueB {
 			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase.clone());
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
-
-			/*boolean finish = true;
+			
+///* possiblement pas utile
+			
+			boolean finish = true;
 			for(int i = 0; i < pCalcule.getSize();i++) {
 				for(int j = 0; j < pCalcule.getSize();j++) {
 					if(pCalcule.getCellule(new Position(i,j)).aPingouin() && !pCalcule.estIsolee(new Position(i,j)))
@@ -41,7 +44,8 @@ public class HeuristiqueB {
 				}
 			}
 			if(gagne && finish)
-				return -10000;*/
+				return -10000;
+//*/
 			
 			//IC ON MAXIMISE CE QU'ON VEUT PAS
 			

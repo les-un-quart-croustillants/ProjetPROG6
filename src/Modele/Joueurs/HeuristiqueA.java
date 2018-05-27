@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 
 public class HeuristiqueA {
+		@SuppressWarnings("unchecked")
 		public static int calcul(Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
 			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
 			int heuristique = 50;

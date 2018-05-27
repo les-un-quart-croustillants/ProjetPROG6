@@ -136,7 +136,8 @@ public class Noeud {
 			this.fils.remove(i);
 		}
 		
+		@SuppressWarnings("unchecked")
 		public Noeud clone() {
-			return new Noeud((LinkedList<Couple<Position,Position>>) this.listcoup.clone(),this.pere,this.heuristique,this.fils);
+			return new Noeud(((LinkedList<Couple<Position,Position>>) this.listcoup.clone()),this.pere,this.heuristique,this.fils);
 		}
 }
