@@ -11,10 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Integer.max;
 
@@ -24,7 +21,6 @@ public class Plateau implements Serializable {
 	private Cellule[][] tab;
 	private LinkedList<Move> history;
 	private LinkedList<Move> undoList;
-	private int nb_fish;
 
 	Plateau() {
 		this(3, 1);
@@ -63,7 +59,6 @@ public class Plateau implements Serializable {
 		this.tab = new Cellule[size][size];
 		this.history = new LinkedList<>();
 		this.undoList = new LinkedList<>();
-		this.nb_fish = 0;
 		initTab(c, nb_pingouins);
 	}
 
@@ -74,11 +69,10 @@ public class Plateau implements Serializable {
 		for (int i = 0; i < this.size; i++) {
 			for (int j = 0; j < this.size; j++) {
 				this.tab[i][j] = tab[i][j].clone();
-				nb_fish += this.tab[i][j].getFish();
 			}
 		}
-		this.history = (LinkedList<Move>) history.clone();
-		this.undoList = (LinkedList<Move>) undoList.clone();
+		this.history = history;
+		this.undoList = undoList;
 	}
 
 	/**
@@ -132,7 +126,6 @@ public class Plateau implements Serializable {
 				}
 			}
 		}
-		this.nb_fish = nb[0] + nb[1] * 2 + nb[2] * 3;
 	}
 
 	private void initTab(Construct c, int borne) {
@@ -142,7 +135,6 @@ public class Plateau implements Serializable {
 				if (!(((i % 2) == 0) && (j == (size - 1)))) {
 					tmp = c.getCellValue(i,j);
 					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
-					nb_fish += tmp;
 					if (tmp == 1)
 						nb_1++;
 				}
@@ -160,7 +152,6 @@ public class Plateau implements Serializable {
 		while (nb_1 <= borne) {
 			p = new Position(r.nextInt(this.size),r.nextInt(this.size));
 			if (!this.tab[p.i()][p.j()].isDestroyed() && this.tab[p.i()][p.j()].getFish() != 1) {
-				nb_fish -= (this.tab[p.i()][p.j()].getFish() - 1);
 				this.tab[p.i()][p.j()].setFish(1);
 				nb_1++;
 			}
@@ -472,25 +463,7 @@ public class Plateau implements Serializable {
 	 */
 	public int jouer(Pingouin penguin, Position target) {
 		Position current = penguin.position();
-		try {
-			int res = jouer_pr(current,target);
-			if (res >= 0)
-				clearUndoList();
-			return res;
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
-	}
-
-	/* Implementation pour Plateau.redo() */
-	private int jouer(Move m) {
-		try {
-			return jouer_pr(m.getFrom(), m.getTo());
-		} catch (PlateauException e) {
-			System.err.println(e.getMessage());
-			return -1;
-		}
+		return jouer(current, target);
 	}
 
 	private int jouer_pr(Position current, Position target) throws PlateauException {
@@ -515,7 +488,6 @@ public class Plateau implements Serializable {
 			res = targetCell.getFish();
 			targetCell.setFish(0);
 		}
-		nb_fish -= res;
 		return res;
 	}
 
@@ -562,7 +534,6 @@ public class Plateau implements Serializable {
 		pingouin.setPosition(from); // set pingouin to old position
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-		nb_fish += fishAte;
 		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
 	}
 
@@ -578,8 +549,14 @@ public class Plateau implements Serializable {
 		int res;
 		if (m.getFrom().equals(Plateau.source))
 			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
-		else
-			res = jouer(m);
+		else {
+			try {
+				res = jouer_pr(m.getFrom(), m.getTo());
+			} catch (PlateauException e) {
+				System.err.println(e.getMessage());
+				res = -1;
+			}
+		}
 		return res;
 	}
 
@@ -655,10 +632,6 @@ public class Plateau implements Serializable {
 		return undoList;
 	}
 
-	public int getNbFish() {
-		return nb_fish;
-	}
-
 	public String pretty() {
 		String res = "";
 		for (Cellule[] line: this.tab) {
@@ -670,16 +643,26 @@ public class Plateau implements Serializable {
 	}
 
 	private String tabToString() {
-		String res = "[ ";
+		String res = "[\n";
 		for (Cellule[] line: this.tab) {
-			res += Arrays.toString(line) + " ";
+			res += Arrays.toString(line) + "\n";
 		}
 		return res + "]";
 	}
 
+	private LinkedList<Move> cloneList(LinkedList<Move> l) {
+		Iterator<Move> it = l.iterator();
+		LinkedList<Move> r = new LinkedList<>();
+		while (it.hasNext()) {
+			r.addLast((Move)it.next().clone());
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public Plateau clone() {
-		return new Plateau(this.tab, this.history, this.undoList);
+		return new Plateau(this.tab,cloneList(this.history),cloneList(this.undoList));
 	}
 
 	boolean tabEquals(Cellule[][] tab) {
@@ -694,15 +677,34 @@ public class Plateau implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return this.size == ((Plateau) obj).getSize()
-				&& this.history.equals(((Plateau) obj).history)
-				&& this.undoList.equals(((Plateau) obj).undoList)
-				&& tabEquals(((Plateau) obj).getTab());
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Plateau)) return false;
+
+		Plateau plateau = (Plateau) o;
+
+		if (getSize() != plateau.getSize()) return false;
+		if (!Arrays.deepEquals(getTab(), plateau.getTab())) return false;
+		if (!getHistory().equals(plateau.getHistory())) return false;
+		return getUndoList().equals(plateau.getUndoList());
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getSize();
+		result = 31 * result + Arrays.deepHashCode(getTab());
+		result = 31 * result + getHistory().hashCode();
+		result = 31 * result + getUndoList().hashCode();
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "{" + size + ", " +  nb_fish  + ", " + tabToString() + ",h:" + history + ",u:" + undoList + "]" + '}';
+		return "Plateau{" +
+				"size=" + size +
+				", tab=" + tabToString() +
+				", history=" + history +
+				", undoList=" + undoList +
+				'}';
 	}
 }

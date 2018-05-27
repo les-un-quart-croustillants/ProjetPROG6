@@ -1,9 +1,13 @@
 package Modele.Joueurs;
 
+import java.io.Serializable;
+
 import Utils.Couple;
 import Utils.Position;
 
-public class IAshared {
+public class IAshared implements Serializable {
+
+	private static final long serialVersionUID = 9169117411446708506L;
 	private Couple<Position,Position> coupCalcule;
 	private Position poseCalcule;
 	

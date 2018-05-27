@@ -469,6 +469,7 @@ public class Moteur implements Serializable {
 			}
 			try {
 				if (this.joueurCourant().jouerCoup(this.plateau, selected, tmp) < 0) {
+					this.selected = null;
 					transition(Action.SELECTION_INVALIDE);
 					return new Position(-1, -1);
 				} else {
@@ -480,6 +481,7 @@ public class Moteur implements Serializable {
 					return tmp;
 				}
 			} catch (Exception e) {
+				this.selected = null;
 				transition(Action.SELECTION_INVALIDE);
 				return new Position(-1, -1);
 			}
@@ -500,6 +502,8 @@ public class Moteur implements Serializable {
 		if (this.undoRedoAutorise) {
 			Couple<Boolean, Couple<Integer, Integer>> res;
 
+			this.selected = null;
+			
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
 				if (res.droit().gauche() >= 0) {

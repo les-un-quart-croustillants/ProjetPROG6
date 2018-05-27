@@ -1,7 +1,6 @@
 package Vue;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -19,7 +18,12 @@ public abstract class Donnees {
 	public static Image IMG_BLOC_GLACE_P2 = new Image("bloc_glace_p2.png");
 	public static Image IMG_BLOC_GLACE_P3 = new Image("bloc_glace_p3.png");
 	public static Image IMG_BLOC_GLACE_RIPPLE = new Image("blocRipple256x221.png");
-	public static Image IMG_PINGOUIN_FACE= new Image("pingouin_BD.png");
+	public static Image IMG_PINGOUIN_BD= new Image("pingouin_BD.png");
+	public static Image IMG_PINGOUIN_BG= new Image("pingouin_BG.png");
+	public static Image IMG_PINGOUIN_D= new Image("pingouin_D.png");
+	public static Image IMG_PINGOUIN_G= new Image("pingouin_G.png");
+	public static Image IMG_PINGOUIN_HD= new Image("pingouin_HD.png");
+	public static Image IMG_PINGOUIN_HG= new Image("pingouin_HG.png");
 	public static Image IMG_PINGOUIN_BOULE= new Image("pingouin_Boule.png");
 	public static Image IMG_PINGOUIN_ANIM= new Image("animation.png");
 	public static Image IMG_FOND_SCORE = new Image("fond_score.png");
@@ -29,6 +33,7 @@ public abstract class Donnees {
 	public static Image IMG_SELECTEUR = new Image("selecteur.png");
 	public static Image IMG_CADENAS = new Image("cadenas.png");
 	public static Image IMG_POISSON = new Image("poisson_scores.png");
+	public static Image IMG_PARTICLE_AURA = new Image("particule_flash.png");
 
 	public static Color getCouleur(int index){
 		return Donnees.COULEURS_JOUEURS[index%4];
