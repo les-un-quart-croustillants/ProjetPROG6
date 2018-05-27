@@ -58,6 +58,10 @@
 	-fx-graphic: url("close_banquise_small.png");
 }
 
+.scroll-pane .closebtn:hover {
+	-fx-effect:  dropshadow(three-pass-box, rgba(255,0,0,1), 15, 0.5, 0, 0);
+}
+
 .trislider {
 	-fx-border-image-source: url("fond_score.png");
 	-fx-background-image: url("back_banquise.png");

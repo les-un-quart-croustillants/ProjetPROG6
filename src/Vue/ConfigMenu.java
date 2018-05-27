@@ -217,7 +217,7 @@ public class ConfigMenu extends VBox {
 		jouer.getStyleClass().add("textbutton");
 		map_customization.getStyleClass().add("textbutton");
 		listJoueurs.getStyleClass().add("center");
-		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
+		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn", "newplayerbutton");
 		configLbl.getStyleClass().add("title");
 		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		joueursPane.setContent(listJoueurs);
