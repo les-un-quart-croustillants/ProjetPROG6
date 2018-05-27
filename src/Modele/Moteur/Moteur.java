@@ -469,6 +469,7 @@ public class Moteur implements Serializable {
 			}
 			try {
 				if (this.joueurCourant().jouerCoup(this.plateau, selected, tmp) < 0) {
+					this.selected = null;
 					transition(Action.SELECTION_INVALIDE);
 					return new Position(-1, -1);
 				} else {
@@ -480,6 +481,7 @@ public class Moteur implements Serializable {
 					return tmp;
 				}
 			} catch (Exception e) {
+				this.selected = null;
 				transition(Action.SELECTION_INVALIDE);
 				return new Position(-1, -1);
 			}
