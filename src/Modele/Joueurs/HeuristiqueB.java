@@ -89,7 +89,6 @@ public class HeuristiqueB {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-// TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
 
 					//si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {

@@ -54,7 +54,7 @@ public class HeuristiqueA {
 			
 			
 			//ICI ON MAXIMISE CE QU'ON VEUT 
-			/*
+/*
 			System.out.println("-----------------------");
 			System.out.println("initial :");
 			for(int i = 0;i< composantesInit.size();i++){
@@ -107,7 +107,6 @@ public class HeuristiqueA {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-					// TODO : DIVISER PAR UN TRUC EN RAPPORT AVEC LE NOMBRE DE PINGUOINS ENFERMES
 
 					 //si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
