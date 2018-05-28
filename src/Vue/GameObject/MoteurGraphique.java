@@ -42,7 +42,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 10;
+	private double delay = 100;
 
 	@Override
 	public void update() {
@@ -69,7 +69,7 @@ public class MoteurGraphique extends GameObject {
 			}
 			break;
 		case SELECTIONNER_PINGOUIN_GRAPH:
-			if (time + delay < System.currentTimeMillis()) {
+			if (time + delay/2 < System.currentTimeMillis()) {
 				onStateSELECTIONNER_PINGOUIN_GRAPH();
 				time = System.currentTimeMillis();
 			}

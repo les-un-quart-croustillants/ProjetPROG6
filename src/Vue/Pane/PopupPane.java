@@ -18,7 +18,7 @@ public class PopupPane extends StackPane{
 	
 	private VBox creer_pane_central() {
 		VBox v = new VBox();
-		v.setStyle(" -fx-background-color: rgba(35,60,100,1); -fx-background-radius: 20; -fx-border-color: rgb(10,30,60);  -fx-border-radius: 20; -fx-border-width: 10;");
+		v.setStyle(" -fx-background-color: rgba(35,60,100,1); -fx-background-radius: 25; -fx-border-color: rgb(10,30,60);  -fx-border-radius: 20; -fx-border-width: 10;");
 		v.setAlignment(Pos.CENTER);
 		v.setSpacing(30);
 		return v;

@@ -8,8 +8,10 @@ import com.sun.javafx.geom.Vec2f;
 
 import Utils.Position;
 import Vue.Donnees;
+import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -22,76 +24,80 @@ public class Case extends GameObject {
 	private PlateauGraphique pg;
 
 	public PingouinGraphique pingouinGraphique;
-	public Color couleurSelected = new Color(210f/255f,110f/255f,0,1);
+	public Color couleurSelected = new Color(210f / 255f, 110f / 255f, 0, 1);
 
 	public Position posPlateau;
-	
+
 	private int currentFrame = 0;
 	private int frameRate = 10;
 	private int nSpritesPerLine = 4;
 	private int nSpritesPerCol = 2;
-	private int nSprites = nSpritesPerCol*nSpritesPerLine;
+	private int nSprites = nSpritesPerCol * nSpritesPerLine;
 	private double timeLastFrame = 0;
+	private Image sprite;
 
-	Case(PlateauGraphique pg, int i, int j) {
+	private Niveau niveau;
+
+	Case(PlateauGraphique pg, int i, int j, Niveau n) {
 		this.pg = pg;
-		px = new int[] { 0, 128, 256, 256, 128, 0};
-		py = new int[] { 44, 0, 44, 118, 160, 118};
+		px = new int[] { 0, 128, 256, 256, 128, 0 };
+		py = new int[] { 44, 0, 44, 118, 160, 118 };
 		polygon = new Polygon(px, py, 6);
 		position.x = pg.tailleCase;
 		position.y = pg.tailleCase;
 		posPlateau = new Position(i, j);
 		currentFrame = new Random().nextInt(7);
+		this.niveau = n;
+		this.sprite = Donnees.IMG_BLOC[niveau.getNiveau()];
 	}
 
 	@Override
 	public void update() {
-			position.x = posPlateau.j()*(pg.tailleCase+pg.espacement) + (1-posPlateau.i()%2)*(pg.tailleCase+pg.espacement)/2;
-			position.y = posPlateau.i()*(pg.tailleCase+pg.espacement)/2;
-			
-			position.x += pg.position().x;
-			position.y += pg.position().y;
+		position.x = posPlateau.j() * (pg.tailleCase + pg.espacement)
+				+ (1 - posPlateau.i() % 2) * (pg.tailleCase + pg.espacement) / 2;
+		position.y = posPlateau.i() * (pg.tailleCase + pg.espacement) / 2;
+
+		position.x += pg.position().x;
+		position.y += pg.position().y;
 		for (int i = 0; i < polygon.npoints; i++) {
 			polygon.xpoints[i] = (int) (px[i] * pg.tailleCase / 256 + position.x);
 			polygon.ypoints[i] = (int) (py[i] * pg.tailleCase / 256 + position.y);
 		}
-		if(GamePane.moteur().joueurCourant() != null)
+		if (GamePane.moteur().joueurCourant() != null)
 			couleurSelected = Donnees.getCouleur(GamePane.moteur().joueurCourant().id());
+
+		if (pg.plateau.getCellule(posPlateau).aPingouin()) {
+			sprite = Donnees.IMG_BLOC[niveau.getNiveau()];
+		} else {
+			switch (pg.plateau.getCellule(posPlateau).getFish()) {
+			case 1:
+				sprite = Donnees.IMG_BLOC_P1[niveau.getNiveau()];
+				break;
+			case 2:
+				sprite = Donnees.IMG_BLOC_P2[niveau.getNiveau()];
+				break;
+			case 3:
+				sprite = Donnees.IMG_BLOC_P3[niveau.getNiveau()];
+				break;
+			default:
+				sprite = Donnees.IMG_BLOC[niveau.getNiveau()];
+				break;
+			}
+		}
 	}
-	
-	
-	private Image sprite;
+
 	@Override
 	public void draw(GraphicsContext gc) {
 		gc.save();
 		afficher_reflet(gc);
 		gc.setGlobalAlpha(1);
-		if(pg.plateau.getCellule(posPlateau).aPingouin()) {
-			sprite = Donnees.IMG_BLOC_GLACE;
-		}
-		else {
-			switch(pg.plateau.getCellule(posPlateau).getFish()) {
-			case 1:
-				sprite = Donnees.IMG_BLOC_GLACE_P1;
-				break;
-			case 2:
-				sprite = Donnees.IMG_BLOC_GLACE_P2;
-				break;
-			case 3:
-				sprite = Donnees.IMG_BLOC_GLACE_P3;
-				break;
-			default:
-				sprite = Donnees.IMG_BLOC_GLACE;
-				break;
-			}
-		}
 		gc.drawImage(sprite, position.x, position.y, pg.tailleCase,
-				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
+				pg.tailleCase * (sprite.getHeight() / sprite.getWidth()));
 		if (selected) {
 			gc.setStroke(couleurSelected);
 			gc.setLineWidth(5);
-			if(miseEnValeur)
-				gc.setGlobalAlpha((Math.cos(0.01*System.currentTimeMillis())+1)/2);
+			if (miseEnValeur)
+				gc.setGlobalAlpha((Math.cos(0.01 * System.currentTimeMillis()) + 1) / 2);
 		} else if (miseEnValeur) {
 			gc.setStroke(new Color(1, 0, 0, 1));
 			gc.setLineWidth(3);
@@ -103,10 +109,10 @@ public class Case extends GameObject {
 				dpx[i] = polygon.xpoints[i];
 				dpy[i] = polygon.ypoints[i];
 			}
-			if(selected) {
+			if (selected) {
 				gc.setFill(couleurSelected);
-				if(miseEnValeur)
-					gc.setGlobalAlpha((Math.cos(0.01*System.currentTimeMillis())+1)/2);
+				if (miseEnValeur)
+					gc.setGlobalAlpha((Math.cos(0.01 * System.currentTimeMillis()) + 1) / 2);
 				else
 					gc.setGlobalAlpha(0.5);
 				gc.fillPolygon(dpx, dpy, polygon.npoints);
@@ -157,6 +163,8 @@ public class Case extends GameObject {
 	 */
 	public void select() {
 		selected = true;
+		if(pingouinGraphique!=null)
+			pingouinGraphique.transformer(true);
 	}
 
 	/**
@@ -165,6 +173,8 @@ public class Case extends GameObject {
 	 */
 	public void deselect() {
 		selected = false;
+		if(pingouinGraphique!=null)
+			pingouinGraphique.transformer(false);
 	}
 
 	public void mettreEnValeur() {
@@ -174,22 +184,35 @@ public class Case extends GameObject {
 	public void enleverMiseEnValeur() {
 		miseEnValeur = false;
 	}
-	
-	private int sx,sy,sw,sh;
+
+	private int sx, sy, sw, sh;
+
 	private void afficher_reflet(GraphicsContext gc) {
-		if(timeLastFrame + 1000/frameRate< System.currentTimeMillis()) {
-			currentFrame++;
-			if(currentFrame>=nSprites)
-				currentFrame = 0;
-			sx = currentFrame % nSpritesPerLine * 256;
-			sy = currentFrame / nSpritesPerLine * 221;
-			sw = 256;
-			sh = 221;
-			timeLastFrame = System.currentTimeMillis();
+		if (niveau == Niveau.BANQUISE) {
+			if (timeLastFrame + 1000 / frameRate < System.currentTimeMillis()) {
+				currentFrame++;
+				if (currentFrame >= nSprites)
+					currentFrame = 0;
+				sx = currentFrame % nSpritesPerLine * 256;
+				sy = currentFrame / nSpritesPerLine * 221;
+				sw = 256;
+				sh = 221;
+				timeLastFrame = System.currentTimeMillis();
+			}
+			gc.setGlobalAlpha(0.3);
+			gc.drawImage(Donnees.IMG_BLOC_GLACE_RIPPLE, sx, sy, sw, sh, position.x, position.y + pg.tailleCase * 0.2,
+					pg.tailleCase,
+					pg.tailleCase * (Donnees.IMG_BLOC[niveau.getNiveau()].getHeight() / Donnees.IMG_BLOC[niveau.getNiveau()].getWidth()));
+			gc.setGlobalAlpha(1);
 		}
-		gc.setGlobalAlpha(0.3);
-		gc.drawImage(Donnees.IMG_BLOC_GLACE_RIPPLE, sx,sy,sw,sh, position.x, position.y+pg.tailleCase*0.2, pg.tailleCase,
-				pg.tailleCase * (Donnees.IMG_BLOC_GLACE.getHeight() / Donnees.IMG_BLOC_GLACE.getWidth()));
-		gc.setGlobalAlpha(1);
+		else if (niveau == Niveau.ENFER){
+			gc.setEffect(new Shadow(1,Color.BLACK));
+			gc.setGlobalAlpha(0.2);
+			gc.drawImage(sprite, position.x, position.y + pg.tailleCase*0.08, pg.tailleCase,
+					pg.tailleCase * (sprite.getHeight() / sprite.getWidth()));
+			gc.setEffect(null);
+			gc.setGlobalAlpha(1);
+		}
 	}
+	
 }

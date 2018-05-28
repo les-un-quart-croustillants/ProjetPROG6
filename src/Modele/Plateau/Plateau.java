@@ -508,6 +508,7 @@ public class Plateau implements Serializable {
 			currentCell.setPenguin(null);
 			pingouin.setPosition(target);
 			targetCell.setPenguin(pingouin);
+			pingouin.setNbPoissonManges(pingouin.nbPoissonManges()+targetCell.getFish());
 			res = targetCell.getFish();
 			targetCell.setFish(0);
 		}
