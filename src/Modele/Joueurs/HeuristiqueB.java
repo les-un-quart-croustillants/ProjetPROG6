@@ -47,6 +47,20 @@ public class HeuristiqueB {
 				return -10000;
 //*/
 			
+			for(int i = 0;i < pCalcule.getSize();i++) {
+				for(int j = 0;j < pCalcule.getSize();j++) {
+					LinkedList<Position> voisincourant = pCalcule.getNeighbours(new Position(i,j));
+					if(pCalcule.getCellule(new Position(i,j)).aPingouin() && pCalcule.getCellule(new Position(i,j)).pingouin().employeur() == id) {
+						if(voisincourant.size() == 0)
+							heuristique = heuristique+50;
+					}
+					if(pCalcule.getCellule(new Position(i,j)).aPingouin() && pCalcule.getCellule(new Position(i,j)).pingouin().employeur() != id) {
+						if(voisincourant.size() == 0)
+							heuristique = heuristique-50;
+
+					}
+				}
+			}
 			//IC ON MAXIMISE CE QU'ON VEUT PAS
 			
 			if(composantesCalcul.size() > composantesInit.size()) {
@@ -89,7 +103,10 @@ public class HeuristiqueB {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-
+					//si on a un pingouin seul sur une grosse pasrtie de banquise
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2.5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+						heuristique = 10000;
+					}
 					//si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
 						heuristique = heuristique + nbPoissonsComposanteList.get(i)*10;
@@ -136,7 +153,7 @@ public class HeuristiqueB {
 					}
 				}
 			}
-		return 2*heuristique;
+		return heuristique;
 	}
 }
 

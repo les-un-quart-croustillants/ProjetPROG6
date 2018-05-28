@@ -37,6 +37,21 @@ public class HeuristiqueA {
 				}
 			}
 			
+			for(int i = 0;i < pCalcule.getSize();i++) {
+				for(int j = 0;j < pCalcule.getSize();j++) {
+					LinkedList<Position> voisincourant = pCalcule.getNeighbours(new Position(i,j));
+					if(pCalcule.getCellule(new Position(i,j)).aPingouin() && pCalcule.getCellule(new Position(i,j)).pingouin().employeur() == id) {
+						if(voisincourant.size() == 0)
+							heuristique = heuristique-50;
+					}
+					if(pCalcule.getCellule(new Position(i,j)).aPingouin() && pCalcule.getCellule(new Position(i,j)).pingouin().employeur() != id) {
+						if(voisincourant.size() == 0)
+							heuristique = heuristique+50;
+
+					}
+				}
+			}
+			
 			
 			int monscore = scores.get(id).get(1);
 			boolean gagne = true;
@@ -48,7 +63,6 @@ public class HeuristiqueA {
 				}
 			}
 			if(gagne && finish) {
-				//System.out.println("gagnééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé");
 				return 10000;
 			}
 			
@@ -107,7 +121,11 @@ public class HeuristiqueA {
 					nbPingouinEnnemisList.add(nbPingouinEnnemis);
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
-
+					
+					//si on a un pingouin seul sur une grosse pasrtie de banquise
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2.5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+						heuristique = -10000;
+					}
 					 //si une petit ile est laissée seule
 					if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
 						heuristique = heuristique - nbPoissonsComposanteList.get(i)*10;
@@ -153,7 +171,7 @@ public class HeuristiqueA {
 					}
 				}
 			}
-		return 2*heuristique;
+		return heuristique;
 	}
 }
 

@@ -1,5 +1,6 @@
 package Modele.Joueurs;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -16,6 +17,41 @@ public class HeuristiqueCoup {
 		if(pCalcule.estIsolee(coups.get(0).droit())) {
 			heuristique = heuristique -50;
 		}
+		
+		LinkedList<Position> voisincourant = pCalcule.getNeighboursSansPingouins(coups.get(0).droit());
+		
+		for(Iterator<Position> it = voisincourant.iterator(); it.hasNext() ; ) {
+			Position pos = it.next();
+			if(pCalcule.estIsolee(pos) && pCalcule.getCellule(pos).aPingouin() && pCalcule.getCellule(pos).pingouin().employeur() != id) {
+				heuristique = heuristique + 50;
+			}
+		}		
+
+		voisincourant = pInitial.getNeighbours(coups.get(0).gauche());
+		if(voisincourant.size() == 1) {
+			heuristique = heuristique+50;
+		}
+		
+		voisincourant = pCalcule.getNeighbours(coups.get(0).droit());
+		for(Iterator<Position> it = voisincourant.iterator(); it.hasNext() ; ) {
+			Position pos = it.next();
+			if(pCalcule.getCellule(pos).aPingouin() && pCalcule.getCellule(pos).pingouin().employeur() == id) {
+				LinkedList<Position> voisincourantduvoisincourant = pCalcule.getNeighbours(pos);
+				if(voisincourantduvoisincourant.size() == 1 ) {
+					heuristique = heuristique + 10;
+					LinkedList<Position> accessiblescourantduvoisincourantduvoisincourant = pCalcule.accessiblesanspingouin(voisincourantduvoisincourant.get(0));
+					for(Iterator<Position> iter = accessiblescourantduvoisincourantduvoisincourant.iterator(); it.hasNext() ; ) {
+						Position poscur = iter.next();
+						if(pCalcule.getCellule(poscur).aPingouin() && pCalcule.getCellule(poscur).pingouin().employeur() != id) {
+							heuristique = heuristique - 50;
+						}
+					}
+				}
+					
+			}
+		}	
+
+			
 		if(composantesCalcul.size() > composantesInit.size()) { // on regarde si on s'est pas isole 
 			for(int i = 0; i < composantesCalcul.size();i++) {
 				for(int j = 0; j < composantesInit.size();j++) {
@@ -42,18 +78,31 @@ public class HeuristiqueCoup {
 						nbPoissonsComposante = nbPoissonsComposante + pCalcule.getCellule(composantesCalcul.get(i).get(j)).getFish();	
 					}	
 				}
+
 				nbPingouinEnnemisList.add(nbPingouinEnnemis);
 				nbPingouinAlliesList.add(nbPingouinAllies);
 				nbPoissonsComposanteList.add(nbPoissonsComposante);
-			
-				if(composantesCalcul.get(i).size() == 1 && nbPingouinEnnemisList.get(i) == 1) {
-					heuristique = heuristique + 50;
+				 //si une petit ile est laissée seule
+				if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) == 0) {
+					heuristique = heuristique - nbPoissonsComposanteList.get(i)*10;
 				}
-				if(composantesCalcul.get(i).size() == 1 && nbPingouinAlliesList.get(i) == 1) {
-					heuristique = heuristique - 50;
+				
+				//si une portion du plateau est laissee a l'ennemi
+				if(nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+					heuristique = heuristique - nbPoissonsComposanteList.get(i) + 10*nbPingouinEnnemisList.get(i);
 				}
+
+				// si on est seuls sur la banquise
+				if(nbPingouinAlliesList.get(i) > 0 && nbPingouinEnnemisList.get(i) == 0) {
+					heuristique = heuristique + nbPoissonsComposanteList.get(i) - 10*nbPingouinAlliesList.get(i);
+				}
+
+				
+				
 			}
 		}
+		
+
 		
 		int nbPoissonsAccessibleAvant = 0;
 		int nbPoissonsAccessibleApres = 0;
