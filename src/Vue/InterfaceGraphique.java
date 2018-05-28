@@ -40,6 +40,7 @@ public class InterfaceGraphique extends Application {
 		case MENU:
 			//stage.setScene(new Scene(Menu.getInstance(), 1000, 800));
 			stage.getScene().setRoot(Menu.getInstance());
+			Menu.reload_css();
 			Menu.getInstance().getChildren().removeAll(ConfigMenu.getInstance(), NewGameMenu.getInstance());
 			break;
 		case JEU:
