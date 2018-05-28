@@ -402,7 +402,6 @@ public class ConfigMenu extends VBox {
 		reste = proportions_pingouins.getDividers().get(0).getPosition()*nbCases- nbP1.doubleValue();
 		nbP2 = Double.valueOf(Math.round(reste+(proportions_pingouins.getDividers().get(1).getPosition()-proportions_pingouins.getDividers().get(0).getPosition())*nbCases)).intValue();
 		nbP3 = nbCases-nbP2-nbP1;
-		System.out.println(nbP1 + " | " + nbP2 + " | " + nbP3 + " ==> " + (nbP1+nbP2+nbP3));
 		lblS1.setText(nbP1.toString());
 		lblS2.setText(nbP2.toString());
 		lblS3.setText(nbP3.toString());
