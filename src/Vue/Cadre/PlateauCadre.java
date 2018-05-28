@@ -3,18 +3,21 @@ package Vue.Cadre;
 import Controleur.MiseEnEvidenceCase;
 import Controleur.PoserPingouin;
 import Modele.Moteur.Moteur;
+import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
+import Vue.Donnees.Niveau;
 import Vue.GameObject.BackgroundGraphique;
 import Vue.GameObject.Brume;
 import Vue.GameObject.InfoGraphique;
 import Vue.GameObject.JoueurCourantGraphique;
 import Vue.GameObject.MoteurGraphique;
 import Vue.GameObject.MoteurGraphique.StateGraph;
-import Vue.GameObject.NeigeParticle;
+import Vue.GameObject.Particules.EnferParticle;
+import Vue.GameObject.Particules.NeigeParticle;
 import Vue.GameObject.PingouinGraphique;
 import Vue.GameObject.PlateauGraphique;
 import Vue.GameObject.ScoresGraphique;
@@ -28,6 +31,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -45,6 +51,8 @@ public class PlateauCadre extends Cadre {
 	private Button redoBouton;
 	
 	public AnimationTimer animationTimer;
+	public Niveau niveau = Niveau.ENFER;
+
 
 	/**
 	 * init : initialisation (appel�e par les constructeurs)
@@ -52,25 +60,34 @@ public class PlateauCadre extends Cadre {
 	 * @param p
 	 *            : un plateau
 	 */
-	private void init(Moteur m) {
+	private void init(Moteur m, Niveau niveau) {
 		this.moteur = m;
 		this.plateau = m.plateau();
-		//this.plateauGraphique = new PlateauGraphique(plateau, this);
+		this.niveau = niveau;
+		
 		construire_plateau();
 		this.gameObjects.get(0).add(plateauGraphique);
-		this.gameObjects.get(3).add(new Brume());
-		this.gameObjects.get(4).add(new BackgroundGraphique());
+		this.gameObjects.get(4).add(new BackgroundGraphique(niveau));
 		this.joueurCourantGraphique = new JoueurCourantGraphique("Joueur");
-		// this.gameObjects.get(5).add(joueurCourantGraphique);
 		this.moteurGraphique = new MoteurGraphique();
 		this.gameObjects.get(0).add(moteurGraphique);
 		this.gameObjects.get(5).add(new ScoresGraphique());
-		this.infoGraphique = new InfoGraphique("");
+		this.infoGraphique = new InfoGraphique("",niveau);
 		this.gameObjects.get(5).add(infoGraphique);
-		this.gameObjects.get(3).add(new NeigeParticle());
+		
+		this.gameObjects.get(3).add(new Brume(niveau));	
+
+		if(niveau==Niveau.BANQUISE) {
+			this.gameObjects.get(3).add(new NeigeParticle());
+		}
+		else {
+			this.gameObjects.get(3).add(new EnferParticle());
+		}
+		
 		this.setOnMouseMoved(new MiseEnEvidenceCase());
 		this.setOnMousePressed(new PoserPingouin(this));
-		this.setStyle("-fx-background-color: rgb(70,190,255);");
+		setBackground(new Background(new BackgroundFill(Donnees.COULEURS_NIVEAUX[niveau.getNiveau()], null, null)));
+
 
 		this.getChildren().add(construire_entete());
 	}
@@ -91,7 +108,7 @@ public class PlateauCadre extends Cadre {
 
 	public void construire_plateau() {
 		// on recree un plateau graphique et ses pingouins
-		this.plateauGraphique = new PlateauGraphique(plateau, this);
+		this.plateauGraphique = new PlateauGraphique(plateau, this, niveau);
 		this.gameObjects.get(0).add(plateauGraphique);
 		for (int i = 0; i < plateau.getSize(); i++) {
 			for (int j = 0; j < plateau.getSize(); j++) {
@@ -105,14 +122,14 @@ public class PlateauCadre extends Cadre {
 		plateauGraphique.update();
 	}
 
-	public PlateauCadre(Moteur m) {
+	public PlateauCadre(Moteur m,Niveau niveau) {
 		super();
-		init(m);
+		init(m,niveau);
 	}
 
-	public PlateauCadre(Moteur m, int w, int h) {
+	public PlateauCadre(Moteur m,Niveau niveau, int w, int h) {
 		super(w, h);
-		init(m);
+		init(m,niveau);
 	}
 
 	private StackPane pane_transition;
@@ -172,21 +189,24 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_quitter() {
 		Button b = new Button();
+	    b.setGraphic(new ImageView( Donnees.IMG_PARAMETRE[niveau.getNiveau()]));
 		b.setStyle(
-				"-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0 0 0 0;");
+				"-fx-background-color: transparent; -fx-padding: 0 0 0 0;");
 
 		b.setOnMouseEntered(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
+			    b.setGraphic(new ImageView( Donnees.IMG_PARAMETRE_HOVER[niveau.getNiveau()]));
 				b.setStyle(
-						"-fx-graphic: url('bouton_parametre_hover.png'); -fx-background-color: transparent; -fx-padding: 0;");
+						"-fx-background-color: transparent; -fx-padding: 0;");
 			}
 		});
 		b.setOnMouseExited(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
+			    b.setGraphic(new ImageView( Donnees.IMG_PARAMETRE[niveau.getNiveau()]));
 				b.setStyle(
-						"-fx-graphic: url('bouton_parametre.png'); -fx-background-color: transparent; -fx-padding: 0;");
+						"-fx-background-color: transparent; -fx-padding: 0;");
 			}
 		});
 
@@ -216,8 +236,14 @@ public class PlateauCadre extends Cadre {
 	private void executer_undo_redo(boolean undo) {
 		try {
 			deconstruire_plateau();
-			if(undo)
+			if(undo) {
+				if(moteur.currentState()==State.SELECTIONNER_DESTINATION && moteur.pingouinSelection() != null) {
+					PingouinGraphique pg = GamePane.getPlateauCadre().plateauGraphique.cases[moteur.pingouinSelection().position().i()][moteur.pingouinSelection().position().j()].pingouinGraphique;
+					if(pg!=null)
+						pg.transformer(false);
+				}
 				moteur.undo();
+			}
 			else
 				moteur.redo();
 			construire_plateau();
@@ -233,18 +259,19 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_undo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
+	    b.setGraphic(new ImageView( Donnees.IMG_UNDO[niveau.getNiveau()]));
+		b.setStyle("-fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
+				b.setStyle("-fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('undo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
+				b.setStyle("-fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 
@@ -259,18 +286,19 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_bouton_redo() {
 		Button b = new Button();
-		b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
+	    b.setGraphic(new ImageView( Donnees.IMG_REDO[niveau.getNiveau()]));
+		b.setStyle("-fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 		b.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 10 0 0 10;");
+				b.setStyle("-fx-background-color: transparent; -fx-padding: 10 0 0 10;");
 			}
 		});
 
 		b.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				b.setStyle("-fx-graphic: url('redo.png'); -fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
+				b.setStyle("-fx-background-color: transparent; -fx-padding: 5 5 5 5; ");
 			}
 		});
 

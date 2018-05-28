@@ -52,10 +52,10 @@ public class IAthread implements Runnable{
 					this.shared.setCoupCalcule(UtilsIA.jouerCoupFacile(this.plateau, this.id));
 					break;
 				case MOYEN:
-					this.shared.setCoupCalcule(UtilsIA.jouerCoupFacile(this.plateau, this.id));
+					this.shared.setCoupCalcule(UtilsIA.jouerCoupDifficile(this.plateau, this.id,this.scores,this.difficulte));
 					break;
 				case DIFFICILE:
-					this.shared.setCoupCalcule(UtilsIA.jouerCoupDifficile(this.plateau, this.id, this.scores));
+					this.shared.setCoupCalcule(UtilsIA.jouerCoupDifficile(this.plateau, this.id, this.scores,this.difficulte));
 					break;
 				default:
 					this.shared.setCoupCalcule(new Couple<Position,Position>(new Position(-1,-1),new Position(-1,-1)));

@@ -1,13 +1,12 @@
 package Modele.Joueurs;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-
 import Modele.Plateau.Plateau;
 import Utils.Couple;
 import Utils.Position;
 
 public class HeuristiqueCoup {
+	@SuppressWarnings("unchecked")
 	public static int calcul(int heuristique, Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id) {
 
 		Plateau pCalcule = UtilsIA.plateaucoup((LinkedList<Couple<Position,Position>>) coups.clone(), pInitial.clone());
@@ -15,10 +14,9 @@ public class HeuristiqueCoup {
 		LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 		
 		if(pCalcule.estIsolee(coups.get(0).droit())) {
-			//System.out.println("pas trop envie de m'isoler atm");
 			heuristique = heuristique -50;
 		}
-		if(composantesCalcul.size() > composantesInit.size()) { // on regarde si on s'est pas isole comme un debile
+		if(composantesCalcul.size() > composantesInit.size()) { // on regarde si on s'est pas isole 
 			for(int i = 0; i < composantesCalcul.size();i++) {
 				for(int j = 0; j < composantesInit.size();j++) {
 					if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
@@ -85,7 +83,6 @@ public class HeuristiqueCoup {
 			}	
 		}
 		int poissonsbloque = nbPoissonsAccessibleAvant - nbPoissonsAccessibleApres;
-	//	System.out.println("jte deny "+poissonsbloque+" poissons ");
 		heuristique = heuristique + poissonsbloque;
 		
 		

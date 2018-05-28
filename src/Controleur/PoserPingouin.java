@@ -33,7 +33,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				if (c != null) {
 					int i_joueur_courant = GamePane.moteur().indexJoueurCourant();
 					if (!GamePane.moteur().poserPingouin(c.posPlateau).equals(new Position(-1,-1))) {
-						GamePane.getPlateauCadre().gameObjects.get(1).add(
+						GamePane.getPlateauCadre().gameObjects.get(2).add(
 								new PingouinGraphique(GamePane.moteur().plateau().getCellule(c.posPlateau).pingouin(),
 										pc.plateauGraphique, Donnees.getCouleur(i_joueur_courant)));
 						pc.moteurGraphique.setCurrentState(StateGraph.CHANGER_JOUEUR_GRAPH);
@@ -49,7 +49,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 								pc.plateauGraphique.cases[pos.i()][pos.j()].select();
 						}
 						GamePane.getPlateauCadre().infoGraphique.setText("Selectionnez une destination");
-						GamePane.getPlateauCadre().plateauGraphique.cases[c.posPlateau.i()][c.posPlateau.j()].pingouinGraphique.transformer();
+						GamePane.getPlateauCadre().plateauGraphique.cases[c.posPlateau.i()][c.posPlateau.j()].pingouinGraphique.transformer(true);
 					}
 				}
 			}
@@ -63,7 +63,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 				if (!GamePane.moteur().selectionnerDestination(p).equals(new Position(-1,-1))) {
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.moveTo(p);
 					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].detruire();
-					GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].pingouinGraphique.transformer();
+					GamePane.getPlateauCadre().plateauGraphique.cases[p.i()][p.j()].pingouinGraphique.transformer(false);
 					for (Position pos : lastaccessibles) {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
@@ -75,7 +75,7 @@ public class PoserPingouin implements EventHandler<MouseEvent> {
 						if(pc.plateauGraphique.cases[pos.i()][pos.j()]!=null)
 							pc.plateauGraphique.cases[pos.i()][pos.j()].deselect();
 					}
-					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.transformer();
+					GamePane.getPlateauCadre().plateauGraphique.cases[lastSelection.i()][lastSelection.j()].pingouinGraphique.transformer(false);
 				}
 			}
 			GamePane.getPlateauCadre().actualiser_undo_redo();

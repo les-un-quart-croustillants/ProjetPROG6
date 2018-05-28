@@ -6,7 +6,7 @@ import com.sun.javafx.geom.Vec2f;
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject {
-	protected Vec2f position;
+	public Vec2f position;
 	private boolean estDetruit=false;
 	OnDestroyHandler odh;
 	

@@ -3,9 +3,9 @@ package Vue.GameObject;
 import Vue.Donnees;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Lighting;
+import javafx.scene.effect.Shadow;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 public class ScoresGraphique extends GameObject{
 		
@@ -30,21 +30,23 @@ public class ScoresGraphique extends GameObject{
 			nom = GamePane.moteur().joueur(i).nom();
 			score = Integer.toString(GamePane.moteur().joueur(i).scoreFish());
 			gc.setFill(Donnees.getCouleur(GamePane.moteur().joueur(i).id()%4));
-			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-nom.length()*gc.getFont().getSize()*0.3);
+			gc.setTextAlign(TextAlignment.CENTER);
+			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1));
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.95);
 			gc.fillText(nom, x, y);
-			//gc.setStroke(Color.BLACK);
-			//gc.strokeText(nom, x, y);
 			gc.setFill(Color.ORANGE);
-			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-score.length()*gc.getFont().getSize()*0.3+Donnees.IMG_POISSON.getWidth()/2);
-			y = (int) (GamePane.getPlateauCadre().getHeight()*0.98);
+			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)+Donnees.IMG_POISSON.getWidth()/2);
+			y = (int) (GamePane.getPlateauCadre().getHeight()*0.99);
+			gc.drawImage(Donnees.IMG_POISSON, x-Donnees.IMG_POISSON.getWidth()*1.3, y-Donnees.IMG_POISSON.getHeight()*0.9);
 			gc.fillText(score, x, y);
-			gc.drawImage(Donnees.IMG_POISSON, x-Donnees.IMG_POISSON.getWidth()*1.1, y-Donnees.IMG_POISSON.getHeight()*0.8);
-			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-GamePane.getPlateauCadre().getWidth()*0.1/2);
-			y = (int) (GamePane.getPlateauCadre().getHeight()*0.88);
+			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-GamePane.getPlateauCadre().getWidth()*0.15/2);
+			y = (int) (GamePane.getPlateauCadre().getHeight()*0.845);
 			gc.setEffect(null);
-			if(GamePane.moteur().indexJoueurCourant()==i) {
-				gc.drawImage(Donnees.IMG_SELECTEUR, x , y, GamePane.getPlateauCadre().getWidth()*0.1, GamePane.getPlateauCadre().getHeight()*0.05);
+			if(GamePane.moteur().indexJoueurCourant()==i) {	
+				gc.setEffect(new Shadow(10,Donnees.getCouleur(i)));
+				gc.drawImage(Donnees.IMG_SELECTEUR, x-5 , y-5, GamePane.getPlateauCadre().getWidth()*0.15+10, GamePane.getPlateauCadre().getHeight()*0.08+5);
+				gc.setEffect(null);
+				gc.drawImage(Donnees.IMG_SELECTEUR, x , y, GamePane.getPlateauCadre().getWidth()*0.15, GamePane.getPlateauCadre().getHeight()*0.08);
 			}
 			if(GamePane.moteur().joueur(i).estElimine()) {
 				w = (int) (GamePane.getPlateauCadre().getWidth()*0.015);

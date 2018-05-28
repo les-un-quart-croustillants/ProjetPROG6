@@ -7,6 +7,8 @@ import com.sun.javafx.geom.Vec2d;
 
 import Vue.InterfaceGraphique;
 import Vue.Pane.GamePane;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 
 public class ParticleSystem extends GameObject {
@@ -22,13 +24,17 @@ public class ParticleSystem extends GameObject {
 	private int layer = 3;
 	private float minSize = 0.02f;
 	private float maxSize = 0.02f;
+	private boolean reduireTaille = false;
 	private Vec2d direction = new Vec2d();
 	private boolean randDirection = false;
 	private int minVitesse = 100;
 	private int maxVitesse = 100;
 	public int minLifeTime = 2000;
 	public int maxLifeTime = 2000;
-	
+	private double minRotation = 0;
+	private double maxRotation = 0;
+	private Effect effet;
+	private BlendMode blendMode;
 
 	//private ArrayList<Particle> particles;
 
@@ -49,12 +55,16 @@ public class ParticleSystem extends GameObject {
                 rh = (int) (r.nextInt(zoneSpawn.height+1) + position.y + zoneSpawn.y);
 				Particle p = new Particle(sprite, rw, rh);
 				p.setSize(minSize+r.nextFloat()*(maxSize-minSize));
+				p.setReduireTaille(reduireTaille);
 				if(randDirection) {
 					setDirection(new Vec2d(r.nextInt(100)-50,r.nextInt(100)-50));
 				}
+				p.setRotation(minRotation+r.nextDouble()*(maxRotation-minRotation));
 				p.setDirection(direction);
 				p.setVitesse(r.nextInt(maxVitesse+1)+minVitesse);
 				p.setLifeTime(r.nextInt(maxLifeTime+1)+minLifeTime);
+				p.setEffet(effet);
+				p.setBlendMode(blendMode);
 				GamePane.getPlateauCadre().gameObjects.get(layer).add(p);
 			}
 			lastEmission = System.currentTimeMillis();
@@ -123,4 +133,25 @@ public class ParticleSystem extends GameObject {
 		delayEmission = (int) (1f / emission * 1000f);
 	}
 	
+	public void setRotation(double r) {
+		this.minRotation = r;
+		this.maxRotation = r;
+	}
+	
+	public void setRotation(double rmin, double rmax) {
+		this.minRotation = rmin;
+		this.maxRotation = rmax;
+	}
+	
+	public void setEffet(Effect e) {
+		this.effet = e;
+	}
+	
+	public void setBlendMode(BlendMode bm) {
+		this.blendMode = bm;
+	}
+	
+	public void setReduireTaille(boolean b) {
+		this.reduireTaille = b;
+	}
 }

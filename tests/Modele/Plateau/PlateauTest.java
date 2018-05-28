@@ -41,19 +41,6 @@ public class PlateauTest {
 	}
 
 	@Test
-	public void initTab_nb_poissons() {
-		int size, expected = 0;
-		Random r = new Random();
-		size = r.nextInt(17) + 3;
-		Plateau sujet = new Plateau(size, r.nextInt(size * size - (size + 1) / 2));
-		for (Cellule[] l: sujet.getTab()) {
-			for (Cellule c :l) {
-				expected += c.getFish();
-			}
-		}
-		Assert.assertEquals(expected, sujet.getNbFish());
-	}
-	@Test
 	public void initTab_nb_pingouin() {
 		Random r = new Random();
 		int size, nb_cases1, nb_pingouins;
@@ -92,8 +79,6 @@ public class PlateauTest {
 					nb[sujet.getCellule(i,j).getFish() - 1]++;
 			}
 		}
-		Assert.assertTrue(sujet.getNbFish() > 0);
-		Assert.assertTrue(sujet.getNbFish() >= (ref[0] + ref[1] + ref[2]));
 		Assert.assertTrue("initTab_propotionnel : nb_1 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[0] <= nb[0]);
 		Assert.assertTrue("initTab_propotionnel : nb_2 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[1] <= nb[1]);
 		Assert.assertTrue("initTab_propotionnel : nb_3 failed with config s :" + size + ", c :" + nb_cases + ", 1 :" + ref[0] + ", 2 :" + ref[1] + ", 3 :" + ref[2] + "\n Actual 1 :" + nb[0] + ", 2 :" + nb[1] + ", 3 :" + nb[2], ref[2] <= nb[2]);
@@ -402,19 +387,22 @@ public class PlateauTest {
 		Position p1 = new Position(0,0),
 				p2 = new Position(1,1),
 				p3 = new Position(2,1);
-		Pingouin pingouin = new Pingouin(1, p1);
+		Pingouin pingouin1 = new Pingouin(1, p1),
+				pingouin2 = new Pingouin(1, p1);
 		Assert.assertEquals(p, p.clone());
 		Assert.assertEquals(p, sujet);
 		sujet.getCellule(new Position(0, 0)).destroy();
 		Assert.assertNotEquals(p, sujet);
 		sujet = new Plateau(4, 2);
 		Assert.assertNotEquals(p.clone(), sujet.clone());
-		ref.setNbFish(ref.getNbFish() - ref.getCellule(0,0).getFish());
 		ref.getCellule(0,0).setFish(1);
-		ref.setNbFish(ref.getNbFish() + ref.getCellule(0,0).getFish());
-		ref.poserPingouin(p1, pingouin);
-		ref.jouer(pingouin, p2);
-		ref.jouer(pingouin, p3);
+		ref.poserPingouin(p1, pingouin1);
+		ref.jouer(pingouin1, p2);
+		pingouin2.setPosition(p2);
+		pingouin2.mangePoisson(ref.getCellule(p2).getFish());
+		ref.jouer(pingouin1, p3);
+		pingouin2.setPosition(p3);
+		pingouin2.mangePoisson(ref.getCellule(p3).getFish());
 		ref.undo();
 		sujet = ref.clone();
 
@@ -434,8 +422,8 @@ public class PlateauTest {
 	@Test
 	public void jouer() {
 		Random r = new Random();
-		int tmp, expected, nb_fish,
-			size = r.nextInt(1) + 3;
+		int expected,
+			size = r.nextInt(47) + 3;
 		Plateau sujet = new Plateau(size, r.nextInt(size * size - (size + 1) / 2)),
 				ref = sujet.clone();
 		Position current,
@@ -445,20 +433,10 @@ public class PlateauTest {
 			expected = -1;
 			current = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
 			target = new Position(r.nextInt(sujet.getSize()), r.nextInt(sujet.getSize()));
-			nb_fish = sujet.getNbFish();
 			sujet.getCellule(current).setPenguin(new Pingouin(0, current));
-			sujet.getCellule(current).setFish(0);
 			if (sujet.isInTab(target) && sujet.accessible(current).contains(target))
 				expected = sujet.getCellule(target).getFish();
-			tmp =  sujet.jouer(current, target);
-			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected,tmp);
-			if (tmp != -1) {
-				Assert.assertTrue(sujet.getCellule(current).isDestroyed());
-				Assert.assertFalse(sujet.getCellule(current).aPingouin());
-				Assert.assertEquals(sujet.getCellule(current).getFish(), 0);
-				Assert.assertEquals(sujet.getCellule(target).getFish(), 0);
-			}
-			Assert.assertEquals(nb_fish - expected, sujet.getNbFish());
+			Assert.assertEquals("Jouer : test " + i + "/100 failed with config : \nc :" + current + "\nt : " + target + "\n" + sujet.pretty(), expected, sujet.jouer(current, target));
 			sujet = ref.clone();
 		}
 	}
@@ -479,7 +457,6 @@ public class PlateauTest {
 		Assert.assertFalse(sujet.getUndoList().isEmpty());
 		Assert.assertTrue(sujet.getHistory().isEmpty());
 		Assert.assertEquals(1, sujet.getUndoList().size());
-		Assert.assertEquals(p.getNbFish(), sujet.getNbFish());
 		Assert.assertTrue(sujet.getUndoList().contains(new Move(to,from,p.getCellule(to).getFish(), pingouin)));
 		Assert.assertTrue(p.tabEquals(sujet.getTab()));
 		Assert.assertFalse(p.getCellule(to).aPingouin());
@@ -499,17 +476,21 @@ public class PlateauTest {
 				pingouin2 = new Pingouin(0, from2),
 				pingouin3 = new Pingouin(0, to2);
 		Move m1 = new Move(to1, from1, p.getCellule(to1).getFish(), pingouin1),
-				m2 = new Move(to2, from2, p.getCellule(to2).getFish(), pingouin2);
+				m2;// = new Move(to2, from2, p.getCellule(to2).getFish(), pingouin2);
 		p.getCellule(from1).setPenguin(pingouin1);
 		Plateau sujet1 = p.clone(),
 				sujet2;
 
 		sujet1.jouer(from1,to1);
+		pingouin1.mangePoisson(sujet1.getCellule(to1).getFish());
 		sujet2 = sujet1.clone();
 		sujet2.jouer(from2,to2);
 		sujet2.undo();
+		pingouin2 = sujet2.getCellule(from2).pingouin();
+		m2 = new Move(to2, from2, p.getCellule(to2).getFish(), pingouin2);
 		Assert.assertFalse(sujet2.getUndoList().isEmpty());
 		Assert.assertEquals(1, sujet2.getUndoList().size());
+
 		Assert.assertTrue(sujet2.getUndoList().contains(m2));
 		Assert.assertTrue(sujet1.tabEquals(sujet2.getTab()));
 		Assert.assertFalse(sujet2.getCellule(to2).aPingouin());
@@ -541,6 +522,7 @@ public class PlateauTest {
 		Assert.assertTrue(sujet2.getUndoList().isEmpty());
 		Assert.assertFalse(sujet2.getHistory().isEmpty());
 		Assert.assertEquals(2, sujet2.getHistory().size());
+		pingouin3 = sujet2.getCellule(m2.getTo()).pingouin();
 		Move m4 = new Move(m2.getTo(), m2.getFrom(), m2.getFishAte(), pingouin3);
 		Assert.assertTrue(sujet2.getHistory().contains(m4));
 		Move m5 = new Move(m1.getTo(), m1.getFrom(), m1.getFishAte(), pingouin3);
@@ -550,6 +532,9 @@ public class PlateauTest {
 		Assert.assertFalse(sujet2.getCellule(to1).aPingouin());
 		Assert.assertTrue(sujet2.getCellule(to2).aPingouin());
 		Assert.assertEquals(pingouin3, sujet2.getCellule(to2).pingouin());
+
+		Assert.assertTrue(sujet1.getUndoList().isEmpty());
+		Assert.assertEquals(-1, sujet2.redo());
 	}
 
 	@Test
@@ -603,7 +588,7 @@ public class PlateauTest {
 					"[Cellule{position=(5,0), destroyed=false, fish=1, pingouin=null}, Cellule{position=(5,1), destroyed=false, fish=1, pingouin=null}, Cellule{position=(5,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(5,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(5,4), destroyed=false, fish=3, pingouin=null}, Cellule{position=(5,5), destroyed=false, fish=3, pingouin=null}, Cellule{position=(5,6), destroyed=false, fish=1, pingouin=null}, Cellule{position=(5,7), destroyed=false, fish=3, pingouin=null}]\n" +
 					"[Cellule{position=(6,0), destroyed=false, fish=1, pingouin=null}, Cellule{position=(6,1), destroyed=false, fish=3, pingouin=null}, Cellule{position=(6,2), destroyed=false, fish=1, pingouin=null}, Cellule{position=(6,3), destroyed=false, fish=2, pingouin=null}, Cellule{position=(6,4), destroyed=false, fish=3, pingouin=null}, Cellule{position=(6,5), destroyed=false, fish=3, pingouin=null}, Cellule{position=(6,6), destroyed=false, fish=2, pingouin=null}, Cellule{position=(6,7), destroyed=true, fish=0, pingouin=null}]\n" +
 					"[Cellule{position=(7,0), destroyed=false, fish=3, pingouin=null}, Cellule{position=(7,1), destroyed=false, fish=3, pingouin=null}, Cellule{position=(7,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(7,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(7,4), destroyed=false, fish=1, pingouin=null}, Cellule{position=(7,5), destroyed=false, fish=2, pingouin=null}, Cellule{position=(7,6), destroyed=false, fish=1, pingouin=null}, Cellule{position=(7,7), destroyed=false, fish=2, pingouin=null}]\n" +
-					"], history=[], undoList=[], nb_fish=118}", test.toString());
+					"], history=[], undoList=[]}", test.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Assert.fail();

@@ -1,8 +1,9 @@
-package Vue.GameObject;
+package Vue.GameObject.Particules;
 
 import com.sun.javafx.geom.Vec2d;
 
 import Vue.Donnees;
+import Vue.GameObject.ParticleSystem;
 import Vue.Pane.GamePane;
 
 public class NeigeParticle extends ParticleSystem {

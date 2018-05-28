@@ -9,6 +9,7 @@ import Modele.Joueurs.JoueurPhysique;
 import Modele.Moteur.Moteur;
 import Modele.Plateau.Plateau;
 import Vue.Cadre.PlateauCadre;
+import Vue.Donnees.Niveau;
 import javafx.scene.layout.StackPane;
 
 public class GamePane extends StackPane{
@@ -31,39 +32,35 @@ public class GamePane extends StackPane{
 	/**
 	 * init : initialisation (appel�e par les constructeurs)
 	 */
-	private void init(){
-		this.plateauCadre = new PlateauCadre(moteur);
+	private void init(Niveau niveau){
+		this.plateauCadre = new PlateauCadre(moteur,niveau);
 		this.plateauCadre.prefWidthProperty().bind(this.widthProperty());
 		this.plateauCadre.prefHeightProperty().bind(this.heightProperty());
 		this.getChildren().add(plateauCadre);
-		//this.moteur.setCurrentState(State.POSER_PINGOUIN);
-		//plateauCadre.start();
 	}
 	
 	private GamePane(){
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
-		//joueurs.add(new JoueurPhysique(0,2,"Joueur 1"));
-		joueurs.add(new JoueurIA(1,2,"Loukavocat",Difficulte.FACILE));
-		//joueurs.add(new JoueurIA(2,3,"Loukanape",Difficulte.FACILE));
-		
-		joueurs.add(new JoueurIA(2,2,"Loukanape",Difficulte.DIFFICILE));
-		//joueurs.add(new JoueurIA(3,4,"Loukasscouilles",Difficulte.FACILE));
-		this.moteur = new Moteur(new Plateau(8),joueurs);
-		init();
+		joueurs.add(new JoueurPhysique(0,2,"Joueur 1"));
+		joueurs.add(new JoueurIA(1,2,"IA facile",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(2,2,"IA facile",Difficulte.FACILE));
+		joueurs.add(new JoueurIA(3,2,"IA facile",Difficulte.FACILE));
+		this.moteur = new Moteur(new Plateau(8,8),joueurs);
+		init(Niveau.BANQUISE);
 	}
-	private GamePane(Moteur m){
+	private GamePane(Moteur m,Niveau niveau){
 		this.moteur = m;
-		init();
+		init(niveau);
 	}
 	
 	/**
 	 * newInstance : remplace l'instance du singleton par une nouvelle (permet de changer le plateau)
 	 * @param p : le plateau
 	 */
-	public static void newInstance(Moteur m){
+	public static void newInstance(Moteur m,Niveau n){
 		if(GamePane.instance!=null)
 			GamePane.getPlateauCadre().animationTimer.stop();
-		GamePane.instance = new GamePane(m);
+		GamePane.instance = new GamePane(m, n);
 		GamePane.instance.plateauCadre.start();
 	}
 	

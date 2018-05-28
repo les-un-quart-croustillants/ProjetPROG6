@@ -1,9 +1,10 @@
 package Modele.Joueurs;
 
-import java.lang.System;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
+
+import Modele.Joueurs.Joueur.Difficulte;
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
 import Modele.Plateau.Pingouin;
@@ -514,6 +515,14 @@ public class UtilsIA {
 	public static int minimaxA(Noeud n, HashMap<LinkedList<Couple<Position,Position>>,Integer> r, int profondeur,Plateau plateau,int id,Plateau debase,int pmax,ArrayList<ArrayList<Integer>> scores,int monjoueur) {
 		calculFils(n,id,plateau);	//calcul des fils de la configuration
 		int heuristique;
+
+		// si la partie est finie pôur minmax
+		if(n.fils().size() == 0) {
+			heuristique = evaluerA(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+			return heuristique;
+		}
 		
 		//si on doit s'arreter
 		if (n.estFeuille() || profondeur == pmax) {
@@ -610,6 +619,14 @@ public class UtilsIA {
 		int heuristique;
 		calculFils(n,id,plateau);	//calcul des fils
 		
+		// si la partie est finie pôur minmax
+		if(n.fils().size() == 0) {
+			heuristique = evaluerB(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
+			r.put(n.listcoup(), heuristique);
+			n.setHeuristic(heuristique);
+			return heuristique;
+		}
+		
 		//si on doit s'arreter dans le calcul de l'arbre
 		if (n.estFeuille() || profondeur == pmax ) {
 			heuristique = evaluerB(n,plateau,id,debase, (ArrayList<ArrayList<Integer>>) scores.clone());
@@ -688,21 +705,41 @@ public class UtilsIA {
 	public static int evaluerProfondeur(Plateau plateau){
 		int val = 2;
 		int nbcaselibre = 0;
+		int nbpingouins = 0;
 		for(int i = 0; i < plateau.getSize();i++) {
 			for(int j = 0; j < plateau.getSize();j++) {
+				if(plateau.getCellule(new Position(i,j)).aPingouin())
+					nbpingouins++;
 				if(!plateau.getCellule(new Position(i,j)).aPingouin() && !plateau.getCellule(new Position(i,j)).isDestroyed())
 					nbcaselibre++;
 			}	
 		}
-		if(nbcaselibre < 30)
-			val ++;
-		if(nbcaselibre < 20)
-			val ++;
-		if(nbcaselibre < 10)
-			val = 50;
-		LinkedList<LinkedList<Position>> composanteConnexe = listeConnexeComposante(plateau);
-		if(composanteConnexe.size() > 1)
+		
+		if(plateau.getSize() > 8 && nbpingouins > 8)
+			val = 1;
+		
+		//grande instance
+		if(plateau.getSize() <= 8 && nbpingouins > 8)
+			val = 2;
+		
+		//classique
+		if(plateau.getSize() <= 8 && nbpingouins <= 8)
+			val = 2;
+		
+		//petit plateau et beaucoup de pingouins
+		if(plateau.getSize() <= 5 && nbpingouins <= 8)
+			val = 2;
+		//petit plateau et peu de pingouins
+		if(plateau.getSize() <= 5 && nbpingouins <= 4)
+			val = 3;
+		
+		if(plateau.getSize() <= 8 && nbpingouins <= 8 && nbcaselibre < 45)
 			val = val+1;
+	
+		if(nbcaselibre < 20)
+			val = val+2;
+		if(nbcaselibre < 10)
+			val = 10;
 		return val;
 		
 	}
@@ -715,15 +752,24 @@ public class UtilsIA {
 	 * @return un couple representant l'action a faire 
 	 */
 	@SuppressWarnings("unchecked")
-	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id,ArrayList<ArrayList<Integer>> scores) {
+	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id,ArrayList<ArrayList<Integer>> scores,Difficulte d) {
 		Plateau plateauclone = plateau.clone();
 		Random r = new Random();
 		Noeud a = new Noeud(); // construction de l'arbre des configurations
 		HashMap<LinkedList<Couple<Position,Position>>,Integer> memo = new HashMap<LinkedList<Couple<Position,Position>>,Integer>(); // memoisation
 
 
-		
-		minimaxA(a,memo,0,plateauclone,id,plateau,evaluerProfondeur(plateau), scores,id);
+		switch(d) {
+			case MOYEN:
+				minimaxA(a,memo,0,plateauclone,id,plateau,1, scores,id);
+				break;
+			case DIFFICILE:
+				minimaxA(a,memo,0,plateauclone,id,plateau,evaluerProfondeur(plateau), scores,id);
+				break;
+			default:
+				minimaxA(a,memo,0,plateauclone,id,plateau,evaluerProfondeur(plateau), scores,id);
+				break;
+		}
 		/*
 		//pour afficher chaque fils de la racine et son heuristique
 		for( int i = 0;i<a.fils().size();i++) {

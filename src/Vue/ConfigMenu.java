@@ -11,9 +11,12 @@ import Utils.GameConfig;
 public class ConfigMenu extends VBox {
 	public boolean editFlag = false;	
 	private static ConfigMenu instance = null;
-	Integer dim = 8;
 	VBox listJoueurs;
-	Button retour, map_customization, jouer;
+	Button retour, jouer, newJoueur;
+	TriSlider proportions_pingouins;
+	Integer nbP1, nbP2, nbP3;
+	Label lblS1, lblS2, lblS3;
+	Integer dim = 8;
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
@@ -23,7 +26,7 @@ public class ConfigMenu extends VBox {
 		public TextField typeJoueur;
 		private GameConfig.TypeJoueur type_joueur = GameConfig.TypeJoueur.HUMAIN;
 		private GameConfig.difficulte diff_IA = GameConfig.difficulte.FACILE;
-		private int nb_Penguin = 4;
+		private int nb_Penguin = 2;
 		
 		GameConfig.ConfigJoueur getConfig() {
 			String name = typeJoueur.getText();
@@ -36,6 +39,14 @@ public class ConfigMenu extends VBox {
 		public void editNbPenguins(int newnb) {
 			nb_Penguin = newnb >= 4 ? 4 : newnb <= 0 ? 1 : newnb;
 			nbPenguin.setText("x"+nb_Penguin);
+			if(nb_Penguin == 4)
+				plusPenguin.setVisible(false);
+			else
+				plusPenguin.setVisible(true);
+			if(nb_Penguin == 1)
+				minusPenguin.setVisible(false);
+			else
+				minusPenguin.setVisible(true);
 		}
 		
 		public void editPlayerType(GameConfig.TypeJoueur type) {
@@ -93,6 +104,7 @@ public class ConfigMenu extends VBox {
 					parent.getChildren().remove(objet); 
 					if(!ConfigMenu.getInstance().editFlag)
 						ConfigMenu.getInstance().normalize();
+					instance.update_list_joueurs_elements();
 				} 
 			});
 			
@@ -153,9 +165,11 @@ public class ConfigMenu extends VBox {
 	}
 	
 	private ConfigMenu() {
-		Font.loadFont(getClass().getResourceAsStream("LuckiestCuy.ttf"), 14);
 		this.getStyleClass().add("menu");
 		create_elements();
+		create_elements_terrain();
+		this.getChildren().addAll(jouer, retour);
+		
 	}
 	
 	private void normalize() {
@@ -164,7 +178,9 @@ public class ConfigMenu extends VBox {
 		int nbpenguins;
 		if(size == 3)
 			nbpenguins = 3;
-		else 
+		else if(size == 4)
+			nbpenguins = 2;
+		else
 			nbpenguins = 4;
 		// Type de joueur
 		//if(Menu.getInstance().getStylesheets())
@@ -173,6 +189,19 @@ public class ConfigMenu extends VBox {
 				((JoueurConfig)jc).editNbPenguins(nbpenguins);
 			}
 		}
+		update_proportions();
+	}
+	
+	private void update_list_joueurs_elements() {
+		if(listJoueurs.getChildren().size() == 8) {
+			newJoueur.setVisible(false);
+		} else {
+			newJoueur.setVisible(true);
+			if(listJoueurs.getChildren().size() == 1)
+				((JoueurConfig)listJoueurs.getChildren().get(0)).delete.setVisible(false);
+			else
+				((JoueurConfig)listJoueurs.getChildren().get(0)).delete.setVisible(true);
+		}
 	}
 	
 	private void create_elements() {
@@ -180,21 +209,19 @@ public class ConfigMenu extends VBox {
 		listJoueurs = new VBox();
 		Label configLbl = new Label("CONFIG.");
 		ScrollPane joueursPane = new ScrollPane();
-		Button newJoueur = new Button("Nouveau joueur");
+		newJoueur = new Button("Nouveau joueur");
 		Button minusDim = new Button();
 		Button plusDim = new Button();
 		VBox joueursBox = new VBox();
-		
-		map_customization = new Button("Configuration du terrain");
+	
 		retour = new Button("Retour");
 		jouer = new Button("JOUER");
 		
 		// Configuration
 		joueursBox.getStyleClass().add("center");
 		jouer.getStyleClass().add("textbutton");
-		map_customization.getStyleClass().add("textbutton");
 		listJoueurs.getStyleClass().add("center");
-		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn");
+		newJoueur.getStyleClass().addAll("textbutton", "smallerbtn", "newplayerbutton");
 		configLbl.getStyleClass().add("title");
 		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		joueursPane.setContent(listJoueurs);
@@ -207,6 +234,7 @@ public class ConfigMenu extends VBox {
 				joueursPane.setVvalue(1.0);
 				if(!editFlag)
 					normalize();
+				instance.update_list_joueurs_elements();
 			}
 		});
 		
@@ -220,7 +248,73 @@ public class ConfigMenu extends VBox {
 		}
 		
 		joueursBox.getChildren().addAll(joueursPane, newJoueur);
-		this.getChildren().addAll(configLbl, joueursBox, map_customization, jouer, retour);
+		this.getChildren().addAll(configLbl, joueursBox);
+	}
+	
+	private void create_elements_terrain() {
+		proportions_pingouins = new TriSlider();
+		Label mapDim = new Label("Dimensions");
+		Label LblDim1 = new Label(dim.toString());
+		Label repartitionPoissons = new Label("Repartition des poissons");
+		Label x = new Label("x");
+		Label LblDim2 = new Label(dim.toString());
+		HBox dimBox = new HBox();
+		Button plusDim = new Button();
+		Button minusDim = new Button();
+		
+		// Configuration
+		retour.getStyleClass().addAll("textbutton", "smallerbtn");
+		repartitionPoissons.getStyleClass().add("smaller");
+		jouer.getStyleClass().add("textbutton");
+		mapDim.getStyleClass().addAll("smaller");
+		LblDim1.getStyleClass().addAll("smaller");
+		LblDim2.getStyleClass().addAll("smaller");
+		x.getStyleClass().addAll("smaller");
+		dimBox.getStyleClass().add("center");
+		plusDim.getStyleClass().addAll("iconbutton", "rightbuttonsmall");
+		minusDim.getStyleClass().addAll("iconbutton", "leftbuttonsmall");
+		
+		plusDim.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				dim = dim+1 > 10 ? 10 : dim + 1;
+				LblDim1.setText(dim.toString());
+				LblDim2.setText(dim.toString());
+				update_proportions();
+			}
+		});
+		
+		minusDim.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				dim = ((dim-1)*(dim-1)-Double.valueOf(Math.ceil((dim-1)/2)).intValue()) < ConfigMenu.getInstance().create_config().nb_pingouins() ? dim : dim-1;
+				LblDim1.setText(dim.toString());
+				LblDim2.setText(dim.toString());
+				update_proportions();
+			}
+		});
+		
+		// TriSlider
+		lblS1 = new Label();
+		lblS2 = new Label();
+		lblS3 = new Label();
+		
+		lblS1.getStyleClass().add("smaller");
+		lblS2.getStyleClass().add("smaller");
+		lblS3.getStyleClass().add("smaller");
+		
+		proportions_pingouins.getDividers().get(0).positionProperty().addListener((observable, oldvalue, newvalue) -> {
+			update_proportions();
+		});
+		
+		proportions_pingouins.getDividers().get(1).positionProperty().addListener((observable, oldvalue, newvalue) -> {
+			update_proportions();
+		});
+		
+		proportions_pingouins.getFirstSlice().getChildren().add(lblS1);
+		proportions_pingouins.getSecondSlice().getChildren().add(lblS2);
+		proportions_pingouins.getThirdSlice().getChildren().add(lblS3);
+		
+		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
+		this.getChildren().addAll(dimBox, repartitionPoissons, proportions_pingouins);
 	}
 	
 	GameConfig create_config() {
@@ -229,5 +323,20 @@ public class ConfigMenu extends VBox {
 			gc.joueurs.add(((JoueurConfig)jc).getConfig());
 		}
 		return gc;
+	}
+	
+	private void update_proportions() {
+		Integer nbCases = (dim*dim-Double.valueOf(Math.ceil(dim/2)).intValue());
+		Double reste = .0;
+		Double minPosition = ConfigMenu.getInstance().create_config().nb_pingouins().doubleValue()/nbCases;
+		if(proportions_pingouins.getDividers().get(0).getPosition() < minPosition)
+			proportions_pingouins.getDividers().get(0).setPosition(minPosition);
+		nbP1 = Double.valueOf(Math.round(proportions_pingouins.getDividers().get(0).getPosition()*nbCases)).intValue();
+		reste = proportions_pingouins.getDividers().get(0).getPosition()*nbCases- nbP1.doubleValue();
+		nbP2 = Double.valueOf(Math.round(reste+(proportions_pingouins.getDividers().get(1).getPosition()-proportions_pingouins.getDividers().get(0).getPosition())*nbCases)).intValue();
+		nbP3 = nbCases-nbP2-nbP1;
+		lblS1.setText(nbP1.toString());
+		lblS2.setText(nbP2.toString());
+		lblS3.setText(nbP3.toString());
 	}
 }

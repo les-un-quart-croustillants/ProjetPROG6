@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import Modele.Plateau.Plateau;
 import Utils.Position;
+import Vue.Donnees.Niveau;
 import Vue.Cadre.PlateauCadre;
 
 public class PlateauGraphique extends GameObject {
@@ -13,12 +14,13 @@ public class PlateauGraphique extends GameObject {
 	public int espacement = 10;
 
 	private PlateauCadre plateauCadre;
-	private float tailleRelative = 0.8f; // facteur de taille relative au cadre
+	private float tailleRelative = 0.9f; // facteur de taille relative au cadre
 											// PlateauCadre(de 0 � 1)
-
-	public PlateauGraphique(Plateau plateau, PlateauCadre pc) {
+	private Niveau niveau;
+	public PlateauGraphique(Plateau plateau, PlateauCadre pc, Niveau n) {
 		this.plateau = plateau;
 		this.plateauCadre = pc;
+		this.niveau = n;
 		init(pc);
 	}
 
@@ -35,7 +37,7 @@ public class PlateauGraphique extends GameObject {
 			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize() * 0.75));
 		}
 		position.x = (float) (plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase + espacement) / 2);
-		position.y = (float) (plateauCadre.getHeight() / 2 - plateau.getSize() * (tailleCase + espacement) * 0.25);
+		position.y = (float) (plateauCadre.getHeight() * 0.45 - plateau.getSize() * (tailleCase + espacement) * 0.25);
 	}
 
 	/**
@@ -48,7 +50,7 @@ public class PlateauGraphique extends GameObject {
 		cases = new Case[plateau.getSize()][plateau.getSize()];
 		for (int i = 0; i < plateau.getSize(); i++) {
 			for (int j = 0; j < plateau.getSize() - (1 - i % 2); j++) {
-				cases[i][j] = new Case(this, i, j);
+				cases[i][j] = new Case(this, i, j, niveau);
 				pc.gameObjects.get(0).add(cases[i][j]);
 				if (plateau.getCellule(new Position(i, j)).isDestroyed()) {
 					cases[i][j].detruire();
