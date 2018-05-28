@@ -42,7 +42,7 @@ public class Menu extends StackPane {
 	}
 	
 	private Plateau create_plateau() {
-		Plateau p = new Plateau(TerrainMenu.getInstance().dim, TerrainMenu.getInstance().nbP1, TerrainMenu.getInstance().nbP2, TerrainMenu.getInstance().nbP3);
+		Plateau p = new Plateau(ConfigMenu.getInstance().dim, ConfigMenu.getInstance().nbP1, ConfigMenu.getInstance().nbP2, ConfigMenu.getInstance().nbP3);
 		return p;
 	}
 	
@@ -76,15 +76,15 @@ public class Menu extends StackPane {
 	}
 	
 	private void terrainMenuBehaviour() {
-		TerrainMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
+		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				instance.getChildren().remove(TerrainMenu.getInstance());
+				instance.getChildren().remove(ConfigMenu.getInstance());
 			}
 		});
 		
-		TerrainMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
+		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),Niveau.BANQUISE);
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
@@ -103,12 +103,6 @@ public class Menu extends StackPane {
 				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
-			}
-		});
-		
-		ConfigMenu.getInstance().map_customization.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				instance.getChildren().add(TerrainMenu.getInstance());
 			}
 		});
 	}
