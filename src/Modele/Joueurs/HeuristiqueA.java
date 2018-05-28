@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class HeuristiqueA {
 		@SuppressWarnings("unchecked")
-		public static int calcul(Plateau pInitial, LinkedList<Couple<Position,Position>> coups,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
+		public static int calcul(Plateau pInitial,Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
 			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
 			int heuristique = 50;
 
@@ -25,8 +25,8 @@ public class HeuristiqueA {
 					//heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
 				}
 			}
-			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial);
-			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase.clone());
+			//pInitial.jouer(coup.gauche(), coup.droit()); 
+			Plateau pCalcule = pInitial;
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
 			boolean finish = true;
@@ -80,15 +80,6 @@ public class HeuristiqueA {
 			System.out.println("-----------------------");
 */
 			
-			/*if(composantesCalcul.size() > composantesInit.size()) {
-				
-				for(int i = 0; i < composantesCalcul.size();i++) {
-					for(int j = 0; j < composantesInit.size();j++) {
-						if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
-							composantesCalcul.remove(i);
-					}
-				}*/
-				
 
 				LinkedList<Integer> nbPingouinEnnemisList = new LinkedList<Integer>();
 				LinkedList<Integer> nbPingouinAlliesList = new LinkedList<Integer>();
@@ -151,7 +142,6 @@ public class HeuristiqueA {
 						heuristique = heuristique + 2*nbPoissonsComposanteList.get(i);
 					}
 				}
-			//}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {
 						if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
@@ -169,7 +159,7 @@ public class HeuristiqueA {
 						
 					}
 				}
-			//}
+		//pInitial.undo();
 		return heuristique;
 	}
 }
