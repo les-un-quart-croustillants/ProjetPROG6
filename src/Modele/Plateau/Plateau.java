@@ -7,10 +7,7 @@ import Modele.Plateau.Exception.PlateauException;
 import Utils.Couple;
 import Utils.Position;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import static java.lang.Integer.max;
@@ -128,6 +125,15 @@ public class Plateau implements Serializable {
 		}
 	}
 
+	/**
+	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
+	 * @param nb_pingouin : equibvalent à nb_fish_1
+	 */
+	private void initTab(int nb_pingouin) {
+		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
+		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
+	}
+
 	private void initTab(Construct c, int borne) {
 		int tmp, nb_1 = 0;
 		for (int i = 0; i < this.size; i++) {
@@ -158,35 +164,72 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	/**
-	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
-	 * @param nb_pingouin : equibvalent à nb_fish_1
-	 */
-	private void initTab(int nb_pingouin) {
-		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
-		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
+	private static BufferedReader openFile(String filename) {
+		try {
+			return new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
+		int nb_pingouins = 0,
+				line_nb = 0;
+		Cellule[] line;
+		String s;
+		String[] splitted;
+		BufferedReader br = openFile(filename);
+		if (br == null)
+			return new Couple<>(false, nb_pingouins);
+		else {
+			try {
+				s = br.readLine();
+				while(s != null) {
+					splitted = s.split(" ");
+					line = new Cellule[splitted.length + ((line_nb % 2 == 0)?1:0)];
+					for (int i = 0; i < line.length; i++) {
+						if ((line_nb % 2 != 0) || (i != line.length - 1))
+							if (Integer.parseInt(splitted[i]) == 1)
+								nb_pingouins++;
+					}
+					s = br.readLine();
+				}
+			} catch (IOException | NumberFormatException e ) {
+				System.err.println(e.getMessage());
+				return new Couple<>(false, nb_pingouins);
+			}
+
+		}
+		return new Couple<>(true, nb_pingouins);
 	}
 
 	public static Plateau parse(String filename) throws IOException {
 		ArrayList<Cellule[]> list = new ArrayList<>();
 		Cellule[] line;
 		int line_nb = 0;
-		BufferedReader br = new BufferedReader(new FileReader(filename));
-		String s = br.readLine();
+		BufferedReader br = openFile(filename);
+		String s;
 		String[] splited;
 
-		while (s != null) {
-			splited = s.split(" ");
-			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
-			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
-				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
-					line[i] = new Cellule(new Position(line_nb,i),true,0);
-				else
-					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
-			}
-			line_nb++;
-			list.add(line);
+		try {
 			s = br.readLine();
+			while (s != null) {
+				splited = s.split(" ");
+				line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
+				for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
+					if (((line_nb % 2 == 0) && (i == line.length - 1)) || (Integer.parseInt(splited[i]) == 0)) // Gestion des fins de lignes
+						line[i] = new Cellule(new Position(line_nb,i),true,0);
+					else
+						line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
+				}
+				line_nb++;
+				list.add(line);
+				s = br.readLine();
+			}
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return null;
 		}
 
 		Cellule[][] tab = new Cellule[line_nb][line_nb];
@@ -485,7 +528,7 @@ public class Plateau implements Serializable {
 			currentCell.setPenguin(null);
 			pingouin.setPosition(target);
 			targetCell.setPenguin(pingouin);
-			pingouin.setNbPoissonManges(pingouin.nbPoissonManges()+targetCell.getFish());
+			pingouin.mangePoisson(targetCell.getFish());
 			res = targetCell.getFish();
 			targetCell.setFish(0);
 		}
@@ -533,6 +576,7 @@ public class Plateau implements Serializable {
 		getCellule(to).setPenguin(null); // remove pingouin from its current cell
 		tab[to.i()][to.j()].setFish(fishAte); // restore fish on left cell
 		pingouin.setPosition(from); // set pingouin to old position
+		pingouin.mangePoisson(-1 * fishAte);
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
