@@ -76,3 +76,26 @@
 .nameplayer:hover {
 	-fx-effect:  dropshadow(three-pass-box, rgba(255,255,255,1), 15, 0, 0, 0);
 }
+
+.radio-button {
+	-fx-text-fill: white;
+}
+
+.terrainchoix {
+	-fx-background-color: rgba(255, 255, 255, 0.3);
+	-fx-background-radius: 15px;
+}
+
+.split-pane-divider {
+	-fx-background-image: url("slider.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	
+	-fx-padding: 15px;
+}
+
+
+
+
+
+
