@@ -14,7 +14,7 @@ public class PlateauGraphique extends GameObject {
 	public int espacement = 10;
 
 	private PlateauCadre plateauCadre;
-	private float tailleRelative = 0.8f; // facteur de taille relative au cadre
+	private float tailleRelative = 0.9f; // facteur de taille relative au cadre
 											// PlateauCadre(de 0 � 1)
 	private Niveau niveau;
 	public PlateauGraphique(Plateau plateau, PlateauCadre pc, Niveau n) {
@@ -37,7 +37,7 @@ public class PlateauGraphique extends GameObject {
 			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize() * 0.75));
 		}
 		position.x = (float) (plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase + espacement) / 2);
-		position.y = (float) (plateauCadre.getHeight() / 2 - plateau.getSize() * (tailleCase + espacement) * 0.25);
+		position.y = (float) (plateauCadre.getHeight() * 0.45 - plateau.getSize() * (tailleCase + espacement) * 0.25);
 	}
 
 	/**
