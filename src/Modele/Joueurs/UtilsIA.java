@@ -394,7 +394,7 @@ public class UtilsIA {
 	 */
 	@SuppressWarnings("unchecked")
 	public static int evaluerA(Noeud n,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
-		return HeuristiqueA.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
+		return HeuristiqueA.calcul(p, (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
 	}
 	
 	/**
@@ -408,7 +408,7 @@ public class UtilsIA {
 	 */
 	@SuppressWarnings("unchecked")
 	public static int evaluerB(Noeud n,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
-		return HeuristiqueB.calcul(p.clone(), (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
+		return HeuristiqueB.calcul(p, (LinkedList<Couple<Position,Position>>)n.listcoup().clone(), id,debase,scores);
 	}
 	
 	
@@ -521,6 +521,7 @@ public class UtilsIA {
 			heuristique = evaluerA(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
+			plateau.undo();
 			
 			return heuristique;
 		}
@@ -531,7 +532,8 @@ public class UtilsIA {
 			heuristique = evaluerA(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
-			
+			plateau.undo();
+
 			return heuristique;
 			
 		// Le joueur A doit jouer
@@ -565,7 +567,7 @@ public class UtilsIA {
 				ArrayList<ArrayList<Integer>> newscores = simulescore(true,(ArrayList<ArrayList<Integer>>) scores.clone(),id,addscore );
 				
 				//on appelle minmax sur les autres joueurs (on essaiera de minimiser leur gain)
-				Noeud filsclone = current.clone();
+				Noeud filsclone = current;
 				int curr = minimaxB(filsclone, r, profondeur+1,plateau,newid,debase,pmax,newscores,monjoueur);
 				
 				//si on est au premier noeud, on ajoute quelques calculs pour verifier que le coup direct est bon (ne pas se suicider ..)
@@ -634,6 +636,7 @@ public class UtilsIA {
 			heuristique = evaluerB(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
+			plateau.undo();
 
 			return heuristique;
 		}
@@ -643,7 +646,8 @@ public class UtilsIA {
 			heuristique = evaluerB(n,plateau,id,debase, (ArrayList<ArrayList<Integer>>) scores.clone());
 			r.put(n.listcoup(), heuristique);
 			n.setHeuristic(heuristique);
-			
+			plateau.undo();
+
 			return heuristique;
 		
 		// Le joueur B doit jouer
@@ -675,7 +679,7 @@ public class UtilsIA {
 				
 				// on appelle minmax sur le prochain joueur (en fonction du nouvel id calcule auparavant). 
 				//minmaxA si c'est le joueur pour lequel on cherche le meilleur coup, minmaxB si c'est un adversaire
-				Noeud filsclone = current.clone();
+				Noeud filsclone = current;
 				int curr = 0;
 				if(newid == monjoueur) {
 					curr = minimaxA(filsclone, r, profondeur+1,plateau,newid,debase,pmax,newscores,monjoueur);
@@ -802,7 +806,7 @@ public class UtilsIA {
 			if(( a.filsTaggue().size()) != 0) {
 				cp = a.filsTaggue(); //recuperations des solutions
 			}
-			else {
+			else {						
 				System.out.println("pas de solution de meme heuristique que la racine, coup facile");
 				return jouerCoupFacile(plateau,id);
 			}

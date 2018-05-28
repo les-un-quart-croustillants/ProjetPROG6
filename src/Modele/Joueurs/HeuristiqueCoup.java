@@ -52,13 +52,13 @@ public class HeuristiqueCoup {
 		}	
 
 			
-		if(composantesCalcul.size() > composantesInit.size()) { // on regarde si on s'est pas isole 
+		/*if(composantesCalcul.size() > composantesInit.size()) { // on regarde si on s'est pas isole 
 			for(int i = 0; i < composantesCalcul.size();i++) {
 				for(int j = 0; j < composantesInit.size();j++) {
 					if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
 						composantesCalcul.remove(i);
 				}
-			}
+			}*/
 			LinkedList<Integer> nbPingouinEnnemisList = new LinkedList<Integer>();
 			LinkedList<Integer> nbPingouinAlliesList = new LinkedList<Integer>();
 			LinkedList<Integer> nbPoissonsComposanteList = new LinkedList<Integer>();
@@ -100,7 +100,7 @@ public class HeuristiqueCoup {
 				
 				
 			}
-		}
+		//}
 		
 
 		

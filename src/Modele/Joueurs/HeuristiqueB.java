@@ -21,7 +21,7 @@ public class HeuristiqueB {
 				}
 			}	
 			
-			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
+			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial);
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase.clone());
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
@@ -63,14 +63,14 @@ public class HeuristiqueB {
 			}
 			//IC ON MAXIMISE CE QU'ON VEUT PAS
 			
-			if(composantesCalcul.size() > composantesInit.size()) {
+			/*if(composantesCalcul.size() > composantesInit.size()) {
 				
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
 						if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
 							composantesCalcul.remove(i);
 					}
-				}
+				}*/
 				
 
 				LinkedList<Integer> nbPingouinEnnemisList = new LinkedList<Integer>();
@@ -104,7 +104,7 @@ public class HeuristiqueB {
 					nbPingouinAlliesList.add(nbPingouinAllies);
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
 					//si on a un pingouin seul sur une grosse pasrtie de banquise
-					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2.5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
 						heuristique = 10000;
 					}
 					//si une petit ile est laissée seule
@@ -134,7 +134,7 @@ public class HeuristiqueB {
 					}
 
 				}
-			}else {
+			//}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {
 						if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
@@ -152,7 +152,7 @@ public class HeuristiqueB {
 						
 					}
 				}
-			}
+			//}
 		return heuristique;
 	}
 }

@@ -25,7 +25,7 @@ public class HeuristiqueA {
 					//heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
 				}
 			}
-			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial.clone());
+			Plateau pCalcule = UtilsIA.plateaucoup(coups, pInitial);
 			LinkedList<LinkedList<Position>> composantesInit = UtilsIA.listeConnexeComposante(debase.clone());
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
@@ -36,7 +36,6 @@ public class HeuristiqueA {
 						finish = false;
 				}
 			}
-			
 			for(int i = 0;i < pCalcule.getSize();i++) {
 				for(int j = 0;j < pCalcule.getSize();j++) {
 					LinkedList<Position> voisincourant = pCalcule.getNeighbours(new Position(i,j));
@@ -81,14 +80,14 @@ public class HeuristiqueA {
 			System.out.println("-----------------------");
 */
 			
-			if(composantesCalcul.size() > composantesInit.size()) {
+			/*if(composantesCalcul.size() > composantesInit.size()) {
 				
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesInit.size();j++) {
 						if(composantesCalcul.get(i).toString() == composantesInit.get(j).toString())
 							composantesCalcul.remove(i);
 					}
-				}
+				}*/
 				
 
 				LinkedList<Integer> nbPingouinEnnemisList = new LinkedList<Integer>();
@@ -123,7 +122,7 @@ public class HeuristiqueA {
 					nbPoissonsComposanteList.add(nbPoissonsComposante);
 					
 					//si on a un pingouin seul sur une grosse pasrtie de banquise
-					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2.5) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
+					if((nbPoissonsComposanteList.get(i) > UtilsIA.nbPoissonsPlateau(debase)/2) && nbPingouinAlliesList.get(i) == 0 && nbPingouinEnnemisList.get(i) > 0) {
 						heuristique = -10000;
 					}
 					 //si une petit ile est laissée seule
@@ -152,7 +151,7 @@ public class HeuristiqueA {
 						heuristique = heuristique + 2*nbPoissonsComposanteList.get(i);
 					}
 				}
-			}else {
+			//}else {
 				for(int i = 0; i < composantesCalcul.size();i++) {
 					for(int j = 0; j < composantesCalcul.get(i).size();j++) {
 						if(pCalcule.getCellule(composantesCalcul.get(i).get(j)).aPingouin() && pCalcule.getCellule(composantesCalcul.get(i).get(j)).pingouin().employeur() == id) {
@@ -170,7 +169,7 @@ public class HeuristiqueA {
 						
 					}
 				}
-			}
+			//}
 		return heuristique;
 	}
 }
