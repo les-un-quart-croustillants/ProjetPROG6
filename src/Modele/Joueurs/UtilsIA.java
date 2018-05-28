@@ -279,12 +279,13 @@ public class UtilsIA {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void calculFils(Noeud n,int id,Plateau plateau) {
-		Plateau plat = plateau;
-		LinkedList<Couple<Position,Position>> list = (LinkedList<Couple<Position,Position>>)n.listcoup().clone();
-		Plateau p = plateaucoup(  list,  plat );
-		
-		Cellule [][] tab = p.getTab();
-		int size = p.getSize();
+		//Plateau plat = plateau;
+		//LinkedList<Couple<Position,Position>> list = (LinkedList<Couple<Position,Position>>)n.listcoup().clone();
+		//Plateau p = plateaucoup(  list,  plat );
+		if(n.listcoup().size() != 0)
+			plateau.jouer(n.listcoup().get(0).gauche(), n.listcoup().get(0).droit());
+		Cellule [][] tab = plateau.getTab();
+		int size = plateau.getSize();
 		Noeud cur = new Noeud();
 		LinkedList<Position> accessible = new LinkedList<Position>();
 		LinkedList<Couple<Position,Position>> add = new LinkedList<Couple<Position,Position>>();
@@ -293,7 +294,7 @@ public class UtilsIA {
 			for(int j = 0; j < size; j++) {
 				if(tab[i][j].aPingouin() && tab[i][j].pingouin().employeur() == id) { // si il y a un pingouin allie sur la case courante
 					Pingouin current  = tab[i][j].pingouin(); // on le recupere
-					accessible = p.accessible(new Position(i,j)); // on calcule ses cases directement accessible
+					accessible = plateau.accessible(new Position(i,j)); // on calcule ses cases directement accessible
 					for(Iterator<Position> ite = accessible.iterator(); ite.hasNext();) { // et pour toutes ces cases
 						Position danslist = ite.next();
 						add.add(new Couple<Position,Position>(current.position(), danslist));
@@ -315,7 +316,7 @@ public class UtilsIA {
 				}
 			}
 		}
-		plat.undo();
+		plateau.undo();
 	}
 	
 
