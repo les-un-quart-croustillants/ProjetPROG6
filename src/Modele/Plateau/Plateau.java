@@ -508,7 +508,7 @@ public class Plateau implements Serializable {
 			currentCell.setPenguin(null);
 			pingouin.setPosition(target);
 			targetCell.setPenguin(pingouin);
-			pingouin.setNbPoissonManges(pingouin.nbPoissonManges()+targetCell.getFish());
+			pingouin.mangePoisson(targetCell.getFish());
 			res = targetCell.getFish();
 			targetCell.setFish(0);
 		}
@@ -556,6 +556,7 @@ public class Plateau implements Serializable {
 		getCellule(to).setPenguin(null); // remove pingouin from its current cell
 		tab[to.i()][to.j()].setFish(fishAte); // restore fish on left cell
 		pingouin.setPosition(from); // set pingouin to old position
+		pingouin.mangePoisson(-1 * fishAte);
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
 		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));

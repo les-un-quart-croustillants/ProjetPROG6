@@ -14,9 +14,13 @@ public class Pingouin implements Serializable {
 		this(e, new Position(0,0));
 	}
 
-	public Pingouin(int e, Position p){
+	public Pingouin(int e, Position p) {
+		this(e,p,0);
+	}
+
+	public Pingouin(int e, Position p, int nbPoissonManges){
 		this.employeur = e;
-		this.nbPoissonManges = 0;
+		this.nbPoissonManges = nbPoissonManges;
 		this.position = p;
 	}
 
@@ -36,8 +40,12 @@ public class Pingouin implements Serializable {
 		this.employeur = e;
 	}
 
-	public void setNbPoissonManges(int nbP) {
-		this.nbPoissonManges = nbP;
+	public void setNbPoissonManges(int nbPoissonManges) {
+		this.nbPoissonManges = nbPoissonManges;
+	}
+
+	public void mangePoisson(int nbP) {
+		this.nbPoissonManges += nbP;
 	}
 
 	public void setPosition(Position p) {
@@ -66,7 +74,7 @@ public class Pingouin implements Serializable {
 
 	@Override
 	public Pingouin clone() {
-		return new Pingouin(this.employeur, this.position.clone());
+		return new Pingouin(this.employeur, this.position.clone(), this.nbPoissonManges);
 	}
 
 	@Override
