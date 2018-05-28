@@ -90,7 +90,7 @@
 }
 
 .center {
-	-fx-alignment: center;
+	-fx-alignment: top-center;
 	-fx-spacing: 15px;
 	-fx-padding: 15px;
 }
@@ -101,7 +101,7 @@
 
 .trislider .slice {
 	-fx-min-width: 0px;
-	-fx-pref-height: 32px;
+	-fx-pref-height: 96px;
 	-fx-alignment:	center;
 }
 
@@ -119,4 +119,26 @@
 
 .trislider-third {
 	-fx-background-color: #d3c173;
+}
+
+.terrainlayout {
+	-fx-spacing: 100px;
+	-fx-max-width: 1000px;
+	-fx-align: center;
+}
+
+.onepoisson {
+	-fx-image: url("1poisson.png");
+}
+
+.twopoisson {
+	-fx-image: url("2poissons.png");
+}
+
+.threepoisson {
+	-fx-image: url("3poissons.png");
+}
+
+.terrain {
+	-fx-pref-width: 600px;
 }

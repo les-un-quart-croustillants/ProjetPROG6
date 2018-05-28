@@ -1,22 +1,33 @@
 package Vue;
 
+import java.io.File;
+import javafx.stage.FileChooser;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.*;
-import javafx.scene.text.*;
 import Utils.GameConfig;
+import javafx.scene.image.ImageView;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 public class ConfigMenu extends VBox {
 	public boolean editFlag = false;	
 	private static ConfigMenu instance = null;
 	VBox listJoueurs;
-	Button retour, jouer, newJoueur;
+	Button retour, jouer, newJoueur, charger;
 	TriSlider proportions_pingouins;
 	Integer nbP1, nbP2, nbP3;
 	Label lblS1, lblS2, lblS3;
 	Integer dim = 8;
+	HBox terrainLayout;
+	RadioButton rb_config, rb_load;
+	FileChooser loadChooser;
+	ToggleGroup tg;
+	File terrainCharge;
+	VBox configTerrain;
+	VBox loadTerrain;
 	
 	public class JoueurConfig extends HBox {
 		JoueurConfig objet = this;
@@ -252,6 +263,12 @@ public class ConfigMenu extends VBox {
 	}
 	
 	private void create_elements_terrain() {
+		tg = new ToggleGroup();
+		Label terrainChargeLbl = new Label();
+		terrainLayout = new HBox();
+		VBox configTerrain = new VBox();
+		VBox loadTerrain = new VBox();
+		charger = new Button("Charger un terrain");
 		proportions_pingouins = new TriSlider();
 		Label mapDim = new Label("Dimensions");
 		Label LblDim1 = new Label(dim.toString());
@@ -261,16 +278,28 @@ public class ConfigMenu extends VBox {
 		HBox dimBox = new HBox();
 		Button plusDim = new Button();
 		Button minusDim = new Button();
+		rb_config = new RadioButton("Configuration manuelle");
+		rb_load = new RadioButton("Terrain chargé");
+		loadChooser = new FileChooser();
+		loadChooser.setTitle("Choisissez un fichier de terrain");
 		
 		// Configuration
+		terrainChargeLbl.getStyleClass().add("smaller");
+		rb_load.setToggleGroup(tg);
+		rb_load.setDisable(true);
+		rb_config.setToggleGroup(tg);
+		charger.getStyleClass().addAll("smallerbtn", "textbutton");
 		retour.getStyleClass().addAll("textbutton", "smallerbtn");
 		repartitionPoissons.getStyleClass().add("smaller");
+		configTerrain.getStyleClass().addAll("center", "terrain");
 		jouer.getStyleClass().add("textbutton");
 		mapDim.getStyleClass().addAll("smaller");
 		LblDim1.getStyleClass().addAll("smaller");
+		terrainLayout.getStyleClass().addAll("terrainlayout");
 		LblDim2.getStyleClass().addAll("smaller");
 		x.getStyleClass().addAll("smaller");
 		dimBox.getStyleClass().add("center");
+		loadTerrain.getStyleClass().addAll("center", "terrain");
 		plusDim.getStyleClass().addAll("iconbutton", "rightbuttonsmall");
 		minusDim.getStyleClass().addAll("iconbutton", "leftbuttonsmall");
 		
@@ -292,10 +321,31 @@ public class ConfigMenu extends VBox {
 			}
 		});
 		
+		charger.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				terrainCharge = loadChooser.showOpenDialog(InterfaceGraphique.stage);
+				if(terrainCharge != null) {
+					terrainChargeLbl.setText(terrainCharge.getName());
+					tg.selectToggle(rb_load);
+					rb_load.setDisable(false);
+				} else {
+					tg.selectToggle(rb_config);
+					rb_load.setDisable(true);
+				}
+			}
+		});
+		
 		// TriSlider
 		lblS1 = new Label();
 		lblS2 = new Label();
 		lblS3 = new Label();
+		ImageView p1 = new ImageView();
+		ImageView p2 = new ImageView();
+		ImageView p3 = new ImageView();
+		
+		p1.getStyleClass().addAll("onepoisson");
+		p2.getStyleClass().addAll("twopoisson");
+		p3.getStyleClass().addAll("threepoisson");
 		
 		lblS1.getStyleClass().add("smaller");
 		lblS2.getStyleClass().add("smaller");
@@ -309,12 +359,29 @@ public class ConfigMenu extends VBox {
 			update_proportions();
 		});
 		
-		proportions_pingouins.getFirstSlice().getChildren().add(lblS1);
-		proportions_pingouins.getSecondSlice().getChildren().add(lblS2);
-		proportions_pingouins.getThirdSlice().getChildren().add(lblS3);
+		tg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
+			   if(tg.getSelectedToggle() != null && new_toggle.equals(rb_config)) {
+				   configTerrain.getStyleClass().add("terrainchoix");
+				   loadTerrain.getStyleClass().remove("terrainchoix");
+			   } else {
+				   configTerrain.getStyleClass().remove("terrainchoix");
+				   loadTerrain.getStyleClass().add("terrainchoix");
+			   }
+			}
+		});
 		
-		dimBox.getChildren().addAll(mapDim, new Label(), minusDim, LblDim1, x, LblDim2, plusDim);
-		this.getChildren().addAll(dimBox, repartitionPoissons, proportions_pingouins);
+		proportions_pingouins.getFirstSlice().getChildren().addAll(lblS1, p1);
+		proportions_pingouins.getSecondSlice().getChildren().addAll(lblS2, p2);
+		proportions_pingouins.getThirdSlice().getChildren().addAll(lblS3, p3);
+		
+		dimBox.getChildren().addAll(mapDim, minusDim, LblDim1, x, LblDim2, plusDim);
+		configTerrain.getChildren().addAll(rb_config, dimBox, repartitionPoissons, proportions_pingouins);
+		loadTerrain.getChildren().addAll(rb_load, charger, terrainChargeLbl);
+		terrainLayout.getChildren().addAll(configTerrain, loadTerrain);
+		this.getChildren().add(terrainLayout);
+		
+		tg.selectToggle(rb_config);
 	}
 	
 	GameConfig create_config() {
@@ -338,5 +405,6 @@ public class ConfigMenu extends VBox {
 		lblS1.setText(nbP1.toString());
 		lblS2.setText(nbP2.toString());
 		lblS3.setText(nbP3.toString());
+		tg.selectToggle(rb_config);
 	}
 }
