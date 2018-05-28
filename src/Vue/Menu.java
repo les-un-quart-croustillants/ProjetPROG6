@@ -84,7 +84,7 @@ public class Menu extends StackPane {
 		
 		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),Niveau.BANQUISE);
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
