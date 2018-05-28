@@ -128,6 +128,15 @@ public class Plateau implements Serializable {
 		}
 	}
 
+	/**
+	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
+	 * @param nb_pingouin : equibvalent à nb_fish_1
+	 */
+	private void initTab(int nb_pingouin) {
+		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
+		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
+	}
+
 	private void initTab(Construct c, int borne) {
 		int tmp, nb_1 = 0;
 		for (int i = 0; i < this.size; i++) {
@@ -156,15 +165,6 @@ public class Plateau implements Serializable {
 				nb_1++;
 			}
 		}
-	}
-
-	/**
-	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
-	 * @param nb_pingouin : equibvalent à nb_fish_1
-	 */
-	private void initTab(int nb_pingouin) {
-		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
-		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
 
 	public static Plateau parse(String filename) throws IOException {
