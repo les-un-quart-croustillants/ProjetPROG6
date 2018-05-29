@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 
 public class HeuristiqueA {
-		@SuppressWarnings("unchecked")
-		public static int calcul(Plateau pInitial,Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
-			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
+		public static int calcul(Plateau pInitial,Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
 			int heuristique = 50;
 
 			int nbPingouins = 0;
@@ -22,7 +20,7 @@ public class HeuristiqueA {
 				
 			for(int i = 0; i < scores.size();i++) {
 				if(scores.get(i).get(0) != id) {
-					//heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
+					heuristique = heuristique + (scores.get(id).get(1)-scores.get(i).get(1))*2; 
 				}
 			}
 			//pInitial.jouer(coup.gauche(), coup.droit()); 

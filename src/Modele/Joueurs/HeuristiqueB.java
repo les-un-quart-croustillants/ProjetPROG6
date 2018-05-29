@@ -8,9 +8,7 @@ import java.util.ArrayList;
 
 
 public class HeuristiqueB {
-		@SuppressWarnings("unchecked")
-		public static int calcul(Plateau pInitial, Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> score) {
-			ArrayList<ArrayList<Integer>> scores = (ArrayList<ArrayList<Integer>>) score.clone();
+		public static int calcul(Plateau pInitial, Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
 			int heuristique = 50;
 			
 			int nbPingouins = 0;
@@ -25,7 +23,7 @@ public class HeuristiqueB {
 			Plateau pCalcule = pInitial;
 			LinkedList<LinkedList<Position>> composantesCalcul = UtilsIA.listeConnexeComposante(pCalcule);
 			
-/* possiblement pas utile
+// possiblement pas utile
 			
 			boolean finish = true;
 			for(int i = 0; i < pCalcule.getSize();i++) {
@@ -45,7 +43,7 @@ public class HeuristiqueB {
 			}
 			if(gagne && finish)
 				return -10000;
-*/
+
 			
 			for(int i = 0;i < pCalcule.getSize();i++) {
 				for(int j = 0;j < pCalcule.getSize();j++) {
