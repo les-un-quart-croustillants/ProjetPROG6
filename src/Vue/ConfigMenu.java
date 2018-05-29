@@ -180,7 +180,7 @@ public class ConfigMenu extends VBox {
 		create_elements();
 		create_elements_terrain();
 		this.getChildren().addAll(jouer, retour);
-		
+		nbP1 = 20; nbP2 = 20; nbP3 = 20;
 	}
 	
 	private void normalize() {

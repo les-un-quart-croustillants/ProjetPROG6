@@ -90,8 +90,7 @@
 	-fx-background-image: url("slider.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
-	
-	-fx-padding: 15px;
+	-fx-padding: 8px;
 }
 
 
