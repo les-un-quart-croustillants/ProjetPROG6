@@ -239,7 +239,7 @@ public class Plateau implements Serializable {
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param i : la ligne
-	 * @param j : la colonn
+	 * @param j : la colonne
 	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
 	 * faux sinon.
 	 */
