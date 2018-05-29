@@ -14,7 +14,7 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./image/} }
 
 % There are many different themes available for Beamer. A comprehensive
 % list with examples is given here:
@@ -59,7 +59,7 @@
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
-\institute[Universities of Somewhere and Elsewhere] % (optional, but mostly needed)
+\institute[Université Grenoble-Alpes] % (optional, but mostly needed)
 {
   UFR IM²AG\\
   Université Grenoble-Alpes
@@ -67,11 +67,19 @@
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
 
-\date{Présentation finale, 2018}
+\date{Vendredi 1 Juin 2018}
 % - Either use conference name or its abbreviation.
 % - Not really informative to the audience, more for people (including
 %   yourself) who are reading the slides online
 
+% logo of my university
+\titlegraphic{
+ {\centering
+ \vspace{-1.5cm}
+ \includegraphics[height=1cm]{logoUnQuart}\hspace*{6.5cm}~%
+ \includegraphics[height=1cm]{logo_im2ag}
+ }
+}
 
 \subject{Informatique}
 % This is only inserted into the PDF information catalog. Can be left
@@ -88,7 +96,7 @@
 % the beginning of each subsection:
 \AtBeginSubsection[]
 {
-  \begin{frame}<beamer>{Outline}
+  \begin{frame}<beamer>{}
     \tableofcontents[currentsection,currentsubsection]
   \end{frame}
 }
@@ -111,7 +119,7 @@
 
 \subsection{Menu}
 
-\begin{frame}{First Slide Title}{Optional Subtitle}
+\begin{frame}{}{Optional Subtitle}
   \begin{itemize}
   \item {
     My first point.
@@ -126,7 +134,7 @@
 
 % You can reveal the parts of a slide one at a time
 % with the \pause command:
-\begin{frame}{Second Slide Title}
+\begin{frame}{}
   \begin{itemize}
   \item {
     First item.
@@ -151,22 +159,55 @@
   \end{itemize}
 \end{frame}
 
-\section{Fonctionnalités}
+\section{Aspects techniques}
+
+%Tests JUnit
 
 \subsection{Moteur}
 
 \begin{frame}{Structure}
-\begin{block}{Composition du moteur}
+\begin{block}{}
 \begin{itemize}
-\item Automate a états fini détérministe
-\item Données sur l'état courant
-\item Fonctions publiques qui modifients l'état selon les règles du jeu
+\item<1-> Automate à états fini détérministe privées
+\item<2-> Données privées sur l'état courant
+\item<3-> Fonctions publiques qui modifients l'état selon les règles du jeu
 \end{itemize}
 \end{block}
 \end{frame}
 
-\begin{frame}{AFD}
+\begin{frame}{Automate à états fini détérministe}
 \includegraphics[scale=0.4]{AFD}
+\end{frame}
+
+\subsection{Génération de terrains}
+
+\begin{frame}{}
+\begin{block}{Choix possibles}
+\begin{itemize}
+\item<1-> Taille du terrain
+\item<2-> Proportion de cases à 1,2 et 3 pingouins
+\item<3-> Chargement terrains dans un format prédéfinis
+\item<4-> Génération paramétrée
+\end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{fonctionnalités}
+\begin{frame}{}
+\begin{block}<1->{Défaire/Refaire} %C'est l'undo-rados
+Deux piles: 
+\begin{itemize}
+ \item historique des coups faits 
+ \item historique des coups annulés
+\end{itemize}
+Et une classe Move pour stocker un coup
+\end{block}
+\begin{block}<2->{Sauvegarde/Chargement}
+\begin{itemize}
+\item Complet
+\item Non modifiables (donnée sérialisée)
+\end{itemize}
+\end{block}
 \end{frame}
 
 

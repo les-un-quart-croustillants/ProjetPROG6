@@ -4,6 +4,7 @@ import Modele.Plateau.Construct.Construct;
 import Modele.Plateau.Exception.BewareOfOrcasException;
 import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
+import Modele.Plateau.Exception.PlateauFileFormatException;
 import Utils.Couple;
 import Utils.Position;
 
@@ -48,15 +49,16 @@ public class Plateau implements Serializable {
 
 	@Deprecated
 	public Plateau(int size, Construct c) {
-		this(size,1,c);
+		this(c);
 	}
 
+	@Deprecated
 	public Plateau(int size, int nb_pingouins, Construct c) {
-		this.size = size;
-		this.tab = new Cellule[size][size];
-		this.history = new LinkedList<>();
-		this.undoList = new LinkedList<>();
-		initTab(c, nb_pingouins);
+		this(c);
+	}
+
+	public Plateau(Construct c) {
+		this(c.constructTab(),new LinkedList<>(),new LinkedList<>());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,23 +136,6 @@ public class Plateau implements Serializable {
 		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
 
-	private void initTab(Construct c, int borne) {
-		int tmp, nb_1 = 0;
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				if (!(((i % 2) == 0) && (j == (size - 1)))) {
-					tmp = c.getCellValue(i,j);
-					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
-					if (tmp == 1)
-						nb_1++;
-				}
-				else {
-					tab[i][j] = new Cellule(new Position(i,j), true, 0);
-				}
-			}
-		}
-		verif_borne(borne, nb_1);
-	}
 
 	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
 		Random r = new Random();
@@ -164,43 +149,43 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	private static BufferedReader openFile(String filename) {
-		try {
-			return new BufferedReader(new FileReader(filename));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
+	private static BufferedReader openFile(String filename) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(filename));
 	}
 
 	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
 		int nb_pingouins = 0,
-				line_nb = 0;
-		Cellule[] line;
+				ref_size = 0,
+				line_nb = 0,
+				size = 0,
+				tmp;
 		String s;
 		String[] splitted;
-		BufferedReader br = openFile(filename);
-		if (br == null)
-			return new Couple<>(false, nb_pingouins);
-		else {
+		BufferedReader br;
 			try {
+				br = openFile(filename);
 				s = br.readLine();
+				if (s != null)
+					ref_size = s.split(" ").length + 1;
 				while(s != null) {
 					splitted = s.split(" ");
-					line = new Cellule[splitted.length + ((line_nb % 2 == 0)?1:0)];
-					for (int i = 0; i < line.length; i++) {
-						if ((line_nb % 2 != 0) || (i != line.length - 1))
-							if (Integer.parseInt(splitted[i]) == 1)
+					size = splitted.length + ((line_nb % 2 == 0)? 1 : 0);
+					if (size != ref_size)
+						throw new PlateauFileFormatException(filename);
+					for (int i = 0; i < size; i++) {
+						if ((line_nb % 2 != 0) || (i != size - 1)) {
+							tmp = Integer.parseInt(splitted[i]);
+							if (tmp == 1)
 								nb_pingouins++;
+						}
 					}
 					s = br.readLine();
+					line_nb++;
 				}
-			} catch (IOException | NumberFormatException e ) {
+			} catch (PlateauFileFormatException | IndexOutOfBoundsException | IOException | NumberFormatException e ) {
 				System.err.println(e.getMessage());
 				return new Couple<>(false, nb_pingouins);
 			}
-
-		}
 		return new Couple<>(true, nb_pingouins);
 	}
 

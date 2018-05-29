@@ -1,5 +1,7 @@
 package Modele.Plateau.Construct;
 
+import Modele.Plateau.Cellule;
+
 public abstract class Construct {
 	int size;
 	int nb_pingouins;
@@ -8,6 +10,7 @@ public abstract class Construct {
 		this.size = size;
 		this.nb_pingouins = nb_pingouins;
 	}
-	abstract public int getCellValue(int i, int j);
+
+	abstract public Cellule[][] constructTab();
 }
 
