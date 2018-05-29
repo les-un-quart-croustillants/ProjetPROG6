@@ -600,7 +600,7 @@ public class PlateauTest {
 	@Ignore
 	@Test
 	public void testKingOfTheHillConstruct() {
-		Plateau sujet = new Plateau(20, 5, new KingOfTheHillConstruct(20, 5));
+		Plateau sujet = new Plateau(new KingOfTheHillConstruct(20, 5));
 		System.out.println(sujet.pretty());
 	}
 }
