@@ -14,6 +14,7 @@ import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
 import Modele.Joueurs.UtilsIA;
+import Modele.Plateau.Move;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -509,15 +510,21 @@ public class Moteur implements Serializable {
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
-			Couple<Boolean, Couple<Integer, Integer>> res;
+			Move res;
 
 			this.selected = null;
 			
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
-				if (res.droit().gauche() >= 0) {
-					if ((indexJoueurCourant = indexJoueur(res.droit().droit())) >= 0) {
-						joueurCourant().undo(res.droit().gauche(), res.gauche());
+				if (res.getFishAte() >= 0) {
+					if ((indexJoueurCourant = indexJoueur(res.getPingouin().employeur())) >= 0) {
+						if(res.getFrom().equals(new Position(-1,-1))) {
+							joueurCourant().undo(res.getFishAte(), true);
+							this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getTo(),null));
+						} else {
+							joueurCourant().undo(res.getFishAte(), false);
+							this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getFrom(),res.getTo()));
+						}
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -526,7 +533,7 @@ public class Moteur implements Serializable {
 				}
 			} while (joueurCourant().estIA());
 
-			if (!res.gauche()) {
+			if (!res.getFrom().equals(new Position(-1,-1))) {
 				transition(Action.UNDO);
 			} else {
 				transition(Action.UNDOPHASEMODIFIER);
@@ -547,14 +554,16 @@ public class Moteur implements Serializable {
 	public Joueur redo() {
 
 		if (this.undoRedoAutorise) {
-			int fishAte;
+			Move res;
 
 			do {
-				if ((fishAte = plateau.redo()) > 0) {
+				if ((res = plateau.redo()).getFishAte() > 0) {
 					if (currentState == State.POSER_PINGOUIN) {
-						joueurSuivant().redo(fishAte, 0);
+						this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getTo(),null));
+						joueurSuivant().redo(res.getFishAte(), 0);
 					} else {
-						joueurSuivant().redo(fishAte, 1);
+						this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getFrom(),res.getTo()));
+						joueurSuivant().redo(res.getFishAte(), 1);
 					}
 				} else {
 					return null;
