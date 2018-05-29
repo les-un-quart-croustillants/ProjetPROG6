@@ -148,13 +148,8 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	private static BufferedReader openFile(String filename) {
-		try {
-			return new BufferedReader(new FileReader(filename));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
+	private static BufferedReader openFile(String filename) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(filename));
 	}
 
 	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
@@ -163,28 +158,29 @@ public class Plateau implements Serializable {
 		Cellule[] line;
 		String s;
 		String[] splitted;
-		BufferedReader br = openFile(filename);
-		if (br == null)
-			return new Couple<>(false, nb_pingouins);
-		else {
+		BufferedReader br;
+
 			try {
-				s = br.readLine();
-				while(s != null) {
-					splitted = s.split(" ");
-					line = new Cellule[splitted.length + ((line_nb % 2 == 0)?1:0)];
-					for (int i = 0; i < line.length; i++) {
-						if ((line_nb % 2 != 0) || (i != line.length - 1))
-							if (Integer.parseInt(splitted[i]) == 1)
-								nb_pingouins++;
-					}
+				br = openFile(filename);
+				if (br == null)
+					return new Couple<>(false, nb_pingouins);
+				else {
 					s = br.readLine();
+					while (s != null) {
+						splitted = s.split(" ");
+						line = new Cellule[splitted.length + ((line_nb % 2 == 0) ? 1 : 0)];
+						for (int i = 0; i < line.length; i++) {
+							if ((line_nb % 2 != 0) || (i != line.length - 1))
+								if (Integer.parseInt(splitted[i]) == 1)
+									nb_pingouins++;
+						}
+						s = br.readLine();
+					}
 				}
-			} catch (IOException | NumberFormatException e ) {
+			}catch (IOException | NumberFormatException e) {
 				System.err.println(e.getMessage());
 				return new Couple<>(false, nb_pingouins);
 			}
-
-		}
 		return new Couple<>(true, nb_pingouins);
 	}
 
