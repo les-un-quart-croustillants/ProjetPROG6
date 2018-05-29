@@ -25,7 +25,7 @@ public abstract class Donnees {
 	public static Font FONT_SCORES_FINAUX = Font.loadFont(ClassLoader.getSystemClassLoader().getResourceAsStream("LuckiestGuy.ttf"), 32);
 
 	private static Color[] COULEURS_JOUEURS = {Color.DARKBLUE,Color.GREEN,Color.MEDIUMPURPLE,Color.DARKGOLDENROD};
-	public static Color[] COULEURS_NIVEAUX = {new Color(70.0/255.0,190.0/255.0,255.0/255.0,1),new Color(255.0/255.0,70.0/255.0,0.0/255.0,1)};
+	public static Color[] COULEURS_NIVEAUX = {new Color(70.0/255.0,190.0/255.0,255.0/255.0,1),new Color(170.0/255.0,70.0/255.0,0.0/255.0,1)};
 	public static Image IMG_GLACIER = new Image("bg_glacier.png");
 	public static Image[] IMG_BLOC = {new Image("bloc_glace3.png"),new Image("bloc_lave.png")};
 	public static Image[] IMG_BLOC_P1 = {new Image("bloc_glace_p1.png"), new Image("bloc_lave_p1.png")};
