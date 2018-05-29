@@ -48,15 +48,16 @@ public class Plateau implements Serializable {
 
 	@Deprecated
 	public Plateau(int size, Construct c) {
-		this(size,1,c);
+		this(c);
 	}
 
+	@Deprecated
 	public Plateau(int size, int nb_pingouins, Construct c) {
-		this.size = size;
-		this.tab = new Cellule[size][size];
-		this.history = new LinkedList<>();
-		this.undoList = new LinkedList<>();
-		initTab(c, nb_pingouins);
+		this(c);
+	}
+
+	public Plateau(Construct c) {
+		this(c.constructTab(),new LinkedList<>(),new LinkedList<>());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,23 +135,6 @@ public class Plateau implements Serializable {
 		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
 
-	private void initTab(Construct c, int borne) {
-		int tmp, nb_1 = 0;
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				if (!(((i % 2) == 0) && (j == (size - 1)))) {
-					tmp = c.getCellValue(i,j);
-					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
-					if (tmp == 1)
-						nb_1++;
-				}
-				else {
-					tab[i][j] = new Cellule(new Position(i,j), true, 0);
-				}
-			}
-		}
-		verif_borne(borne, nb_1);
-	}
 
 	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
 		Random r = new Random();
