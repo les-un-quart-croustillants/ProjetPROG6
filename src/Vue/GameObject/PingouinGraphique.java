@@ -108,7 +108,7 @@ public class PingouinGraphique extends GameObject {
 					pg.tailleCase * 0.6 * f, pg.tailleCase * 0.3 * f);
 			if(GamePane.moteur().indexJoueurCourant()==pingouin.employeur() && GamePane.moteur().currentState()==State.SELECTIONNER_PINGOUIN && !GamePane.moteur().plateau().estIsolee(pingouin.position())) {
 				gc.setEffect(new Shadow(1,Donnees.getCouleur(pingouin.employeur())));
-				gc.drawImage(Donnees.IMG_SELECTEUR_PINGOUIN, position.x-width*0.4, position.y-height*1.2+f*100-100);
+				gc.drawImage(Donnees.IMG_SELECTEUR_PINGOUIN, position.x-width*0.3, position.y-height*1.2+f*100-100); //changer a 0.4 pour l'ancien modele
 				gc.setEffect(null);
 			}
 		}
