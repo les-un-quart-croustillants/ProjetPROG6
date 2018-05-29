@@ -11,7 +11,6 @@ import Vue.Donnees;
 import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Bloom;
 import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -22,6 +21,7 @@ public class Case extends GameObject {
 	private int[] py;
 	private boolean selected;
 	private boolean miseEnValeur;
+	private boolean suggere;
 	private PlateauGraphique pg;
 
 	public PingouinGraphique pingouinGraphique;
@@ -103,7 +103,7 @@ public class Case extends GameObject {
 			gc.setStroke(new Color(1, 0, 0, 1));
 			gc.setLineWidth(3);
 		}
-		if (selected || miseEnValeur) {
+		if (selected || miseEnValeur  || suggere) {
 			double[] dpx = new double[polygon.npoints];
 			double[] dpy = new double[polygon.npoints];
 			for (int i = 0; i < polygon.npoints; i++) {
@@ -122,6 +122,12 @@ public class Case extends GameObject {
 					gc.fillPolygon(dpx, dpy, polygon.npoints);
 					gc.setGlobalAlpha(1);
 				}
+			}
+			if(suggere){
+				gc.setStroke(Donnees.COULEUR_SUGGESTION);
+				gc.setLineWidth(5);
+				gc.setGlobalAlpha(0.70);
+				gc.fillPolygon(dpx, dpy, polygon.npoints);
 			}
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}
@@ -180,6 +186,10 @@ public class Case extends GameObject {
 		selected = false;
 		if(pingouinGraphique!=null)
 			pingouinGraphique.transformer(false);
+	}
+	
+	public void setSuggere(boolean b){
+		suggere = b;
 	}
 
 	public void mettreEnValeur() {

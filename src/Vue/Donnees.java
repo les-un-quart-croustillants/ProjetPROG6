@@ -26,7 +26,10 @@ public abstract class Donnees {
 
 	private static Color[] COULEURS_JOUEURS = {Color.DARKBLUE,Color.GREEN,Color.MEDIUMPURPLE,Color.DARKGOLDENROD};
 	public static Color[] COULEURS_NIVEAUX = {new Color(70.0/255.0,190.0/255.0,255.0/255.0,1),new Color(170.0/255.0,70.0/255.0,0.0/255.0,1)};
-	public static Image IMG_GLACIER = new Image("bg_glacier.png");
+	public static Color COULEUR_SUGGESTION = Color.ORANGE;
+	public static Color[] COULEURS_TEXTES_NIVEAUX = {Color.CORNFLOWERBLUE, Color.ANTIQUEWHITE };
+	
+	public static Image IMG_GLACIER = new Image("bg_glacier.png");	
 	public static Image[] IMG_BLOC = {new Image("bloc_glace3.png"),new Image("bloc_lave.png")};
 	public static Image[] IMG_BLOC_P1 = {new Image("bloc_glace_p1.png"), new Image("bloc_lave_p1.png")};
 	public static Image[] IMG_BLOC_P2 = {new Image("bloc_glace_p2.png"), new Image("bloc_lave_p2.png")};
@@ -49,13 +52,12 @@ public abstract class Donnees {
 	public static Image IMG_CADENAS = new Image("cadenas.png");
 	public static Image IMG_POISSON = new Image("poisson_scores.png");
 	public static Image IMG_PARTICLE_AURA = new Image("particle_feu.png");
-	public static Color[] COULEURS_TEXTES_NIVEAUX = {Color.CORNFLOWERBLUE, Color.ANTIQUEWHITE };
 	public static Image[] IMG_REDO = {new Image("redo.png"),new Image("redo_enfer.png")};
 	public static Image[] IMG_UNDO = {new Image("undo.png"),new Image("undo_enfer.png")};
 	public static Image[] IMG_PARAMETRE = {new Image("bouton_parametre.png"),new Image("bouton_parametre_enfer.png")};
 	public static Image[] IMG_PARAMETRE_HOVER = {new Image("bouton_parametre_hover.png"),new Image("bouton_parametre_hover_enfer.png")};
 	public static Image IMG_SELECTEUR_PINGOUIN = new Image("selecteur_pingouin.png");
-
+	
 	public static Color getCouleur(int index){
 		return Donnees.COULEURS_JOUEURS[index%4];
 	}

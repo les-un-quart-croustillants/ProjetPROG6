@@ -24,8 +24,11 @@ import Vue.GameObject.PlateauGraphique;
 import Vue.GameObject.ScoresGraphique;
 import Vue.Pane.GamePane;
 import Vue.Pane.ParametrePane;
+import Vue.Pane.TutoPane;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -164,6 +167,10 @@ public class PlateauCadre extends Cadre {
 		});
 		plateauGraphique.start();
 		animationTimer.start();
+		boolean tuto = false;
+		if(tuto){
+			TutoPane.lancer_tuto();
+		}
 	}
 
 	private HBox construire_entete() {
@@ -326,13 +333,21 @@ public class PlateauCadre extends Cadre {
 
 	private Button creer_suggestion(){
 		Button b = new Button("suggestion");
-		b.setStyle("-fx-background-color: transparent; -fx-border-color: red; -fx-text-fill: red;");
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				Couple<Position,Position> coup = moteur.sugestion();
-				GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].select();;
-				GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].select();;
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].setSuggere(true);
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].setSuggere(true);
+				Timeline tl = new Timeline(new KeyFrame(new Duration(1000)));
+				tl.setOnFinished(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].setSuggere(false);
+						GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].setSuggere(false);
+					}
+				});
+				tl.playFromStart();
 			}
 		});
 		return b;
