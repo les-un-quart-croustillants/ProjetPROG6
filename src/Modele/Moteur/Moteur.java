@@ -31,6 +31,7 @@ public class Moteur implements Serializable {
 	private int indexJoueurCourant = 0;
 	private Position selected;
 	private boolean undoRedoAutorise;
+	private ArrayList<Couple<Position,Position>> historiqueCoups;
 
 	// AUTOMATE
 	private State currentState;
@@ -109,10 +110,12 @@ public class Moteur implements Serializable {
 		this.joueurs = joueurs;
 		this.undoRedoAutorise = false;
 		this.selected = null;
+		this.historiqueCoups = new ArrayList<Couple<Position,Position>>();
 		for (Joueur j : joueurs) {
 			if (!j.estIA()) {
 				this.undoRedoAutorise = true;
 			}
+			this.historiqueCoups.add(null);
 		}
 
 		currentState = State.POSER_PINGOUIN;
@@ -276,6 +279,10 @@ public class Moteur implements Serializable {
 		}
 		return -1;
 	}
+	
+	public ArrayList<Couple<Position,Position>> historiqueCoups(){
+		return this.historiqueCoups;
+	}
 
 	/**
 	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
@@ -392,6 +399,7 @@ public class Moteur implements Serializable {
 					transition(Action.PINGOUINPOSES);
 					this.indexJoueurCourant = 0;
 				} else {
+					this.historiqueCoups.set(this.joueurCourant().id(), new Couple<Position,Position>(tmp,null));
 					transition(Action.SELECTION_VALIDE);
 					this.joueurSuivant();
 				}
@@ -476,6 +484,7 @@ public class Moteur implements Serializable {
 					if (joueurSuivant() == null) {
 						transition(Action.FIN_PARTIE);
 					} else {
+						this.historiqueCoups.set(this.joueurCourant().id(), new Couple<Position,Position>(selected,tmp));
 						transition(Action.SELECTION_VALIDE);
 					}
 					return tmp;
