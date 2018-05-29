@@ -643,7 +643,6 @@ public class Moteur implements Serializable {
 	}
 
 	public Couple<Position, Position> sugestion() {
-		return null;
-		//return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id());
+		return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id(), this.scores(false), Joueur.Difficulte.DIFFICILE);
 	}
 }
