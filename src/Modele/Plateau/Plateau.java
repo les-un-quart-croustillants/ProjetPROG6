@@ -4,6 +4,7 @@ import Modele.Plateau.Construct.Construct;
 import Modele.Plateau.Exception.BewareOfOrcasException;
 import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
+import Modele.Plateau.Exception.PlateauFileFormatException;
 import Utils.Couple;
 import Utils.Position;
 
@@ -154,30 +155,34 @@ public class Plateau implements Serializable {
 
 	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
 		int nb_pingouins = 0,
-				line_nb = 0;
-		Cellule[] line;
+				ref_size = 0,
+				line_nb = 0,
+				size = 0,
+				tmp;
 		String s;
 		String[] splitted;
 		BufferedReader br;
-
 			try {
 				br = openFile(filename);
-				if (br == null)
-					return new Couple<>(false, nb_pingouins);
-				else {
-					s = br.readLine();
-					while (s != null) {
-						splitted = s.split(" ");
-						line = new Cellule[splitted.length + ((line_nb % 2 == 0) ? 1 : 0)];
-						for (int i = 0; i < line.length; i++) {
-							if ((line_nb % 2 != 0) || (i != line.length - 1))
-								if (Integer.parseInt(splitted[i]) == 1)
-									nb_pingouins++;
+				s = br.readLine();
+				if (s != null)
+					ref_size = s.split(" ").length + 1;
+				while(s != null) {
+					splitted = s.split(" ");
+					size = splitted.length + ((line_nb % 2 == 0)? 1 : 0);
+					if (size != ref_size)
+						throw new PlateauFileFormatException(filename);
+					for (int i = 0; i < size; i++) {
+						if ((line_nb % 2 != 0) || (i != size - 1)) {
+							tmp = Integer.parseInt(splitted[i]);
+							if (tmp == 1)
+								nb_pingouins++;
 						}
-						s = br.readLine();
 					}
+					s = br.readLine();
+					line_nb++;
 				}
-			}catch (IOException | NumberFormatException e) {
+			} catch (PlateauFileFormatException | IndexOutOfBoundsException | IOException | NumberFormatException e ) {
 				System.err.println(e.getMessage());
 				return new Couple<>(false, nb_pingouins);
 			}
