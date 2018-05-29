@@ -6,6 +6,7 @@ import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
@@ -308,7 +309,7 @@ public class PlateauCadre extends Cadre {
 				executer_undo_redo(false);
 			}
 		});
-				return b;
+		return b;
 	}
 	
 	private HBox creer_cadre_undo_redo(){
@@ -319,7 +320,22 @@ public class PlateauCadre extends Cadre {
 		redoBouton = creer_bouton_redo();
 		hbox.getChildren().add(undoBouton);
 		hbox.getChildren().add(redoBouton);
+		hbox.getChildren().add(creer_suggestion());
 		return hbox;
 	}
 
+	private Button creer_suggestion(){
+		Button b = new Button("suggestion");
+		b.setStyle("-fx-background-color: transparent; -fx-border-color: red; -fx-text-fill: red;");
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Couple<Position,Position> coup = moteur.sugestion();
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].select();;
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].select();;
+			}
+		});
+		return b;
+	}
+	
 }
