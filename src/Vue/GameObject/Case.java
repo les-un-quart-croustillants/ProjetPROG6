@@ -11,6 +11,7 @@ import Vue.Donnees;
 import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Bloom;
 import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -111,12 +112,16 @@ public class Case extends GameObject {
 			}
 			if (selected) {
 				gc.setFill(couleurSelected);
-				if (miseEnValeur)
-					gc.setGlobalAlpha((Math.cos(0.01 * System.currentTimeMillis()) + 1) / 2);
-				else
-					gc.setGlobalAlpha(0.5);
-				gc.fillPolygon(dpx, dpy, polygon.npoints);
-				gc.setGlobalAlpha(1);
+				if (!miseEnValeur) {
+					gc.setGlobalAlpha((Math.cos(0.007 * System.currentTimeMillis()) + 1) / 4+0.1);
+					gc.fillPolygon(dpx, dpy, polygon.npoints);
+					gc.setGlobalAlpha(1);
+				}
+				else {
+					gc.setGlobalAlpha(0);
+					gc.fillPolygon(dpx, dpy, polygon.npoints);
+					gc.setGlobalAlpha(1);
+				}
 			}
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}

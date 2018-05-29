@@ -39,14 +39,16 @@ public class ScoresGraphique extends GameObject{
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.99);
 			gc.drawImage(Donnees.IMG_POISSON, x-Donnees.IMG_POISSON.getWidth()*1.3, y-Donnees.IMG_POISSON.getHeight()*0.9);
 			gc.fillText(score, x, y);
-			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-GamePane.getPlateauCadre().getWidth()*0.15/2);
+			w = (int) (GamePane.getPlateauCadre().getWidth()*0.10);
+			h = (int) (GamePane.getPlateauCadre().getHeight()*0.06);
+			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-w/2);
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.845);
 			gc.setEffect(null);
 			if(GamePane.moteur().indexJoueurCourant()==i) {	
-				gc.setEffect(new Shadow(10,Donnees.getCouleur(i)));
-				gc.drawImage(Donnees.IMG_SELECTEUR, x-5 , y-5, GamePane.getPlateauCadre().getWidth()*0.15+10, GamePane.getPlateauCadre().getHeight()*0.08+5);
+				gc.setEffect(new Shadow(1,Donnees.getCouleur(i)));
+				gc.drawImage(Donnees.IMG_SELECTEUR, x , y, w, h);
 				gc.setEffect(null);
-				gc.drawImage(Donnees.IMG_SELECTEUR, x , y, GamePane.getPlateauCadre().getWidth()*0.15, GamePane.getPlateauCadre().getHeight()*0.08);
+				//gc.drawImage(Donnees.IMG_SELECTEUR, x , y, GamePane.getPlateauCadre().getWidth()*0.15, GamePane.getPlateauCadre().getHeight()*0.08);
 			}
 			if(GamePane.moteur().joueur(i).estElimine()) {
 				w = (int) (GamePane.getPlateauCadre().getWidth()*0.015);

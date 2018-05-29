@@ -54,7 +54,7 @@ public abstract class Donnees {
 	public static Image[] IMG_UNDO = {new Image("undo.png"),new Image("undo_enfer.png")};
 	public static Image[] IMG_PARAMETRE = {new Image("bouton_parametre.png"),new Image("bouton_parametre_enfer.png")};
 	public static Image[] IMG_PARAMETRE_HOVER = {new Image("bouton_parametre_hover.png"),new Image("bouton_parametre_hover_enfer.png")};
-
+	public static Image IMG_SELECTEUR_PINGOUIN = new Image("selecteur_pingouin.png");
 
 	public static Color getCouleur(int index){
 		return Donnees.COULEURS_JOUEURS[index%4];

@@ -31,13 +31,13 @@ public class PlateauGraphique extends GameObject {
 	
 	@Override
 	public void update() {
-		if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize() * 0.75)) {
+		if (plateauCadre.getWidth() / plateau.getSize() < plateauCadre.getHeight() / (plateau.getSize() * 0.71)) {
 			tailleCase = (int) (plateauCadre.getWidth() * tailleRelative / plateau.getSize());
 		} else {
-			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize() * 0.75));
+			tailleCase = (int) (plateauCadre.getHeight() * tailleRelative / (plateau.getSize() * 0.71));
 		}
 		position.x = (float) (plateauCadre.getWidth() / 2 - plateau.getSize() * (tailleCase + espacement) / 2);
-		position.y = (float) (plateauCadre.getHeight() * 0.45 - plateau.getSize() * (tailleCase + espacement) * 0.25);
+		position.y = (float) (plateauCadre.getHeight() * 0.45 - plateau.getSize() * (tailleCase + espacement) * 0.21);
 	}
 
 	/**
