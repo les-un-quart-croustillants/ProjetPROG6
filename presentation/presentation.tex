@@ -67,11 +67,19 @@
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
 
-\date{Présentation finale, 2018}
+\date{Vendredi 1 Juin 2018}
 % - Either use conference name or its abbreviation.
 % - Not really informative to the audience, more for people (including
 %   yourself) who are reading the slides online
 
+% logo of my university
+\titlegraphic{
+ {\centering
+ \vspace{-1.5cm}
+ \includegraphics[height=1cm]{logoUnQuart}\hspace*{6.5cm}~%
+ \includegraphics[height=1cm]{logo_im2ag}
+ }
+}
 
 \subject{Informatique}
 % This is only inserted into the PDF information catalog. Can be left
@@ -186,13 +194,18 @@
 
 \subsection{fonctionnalités}
 \begin{frame}{}
-\begin{block}{Défaire/Refaire} %C'est l'undo-rados
-Deux piles, l'historique des coups fait et l'historique des coups annulés. Une classe Move pour stocker un coup.
-\end{block}
-\begin{block}{Sauvegarde/Chargement}
+\begin{block}<1->{Défaire/Refaire} %C'est l'undo-rados
+Deux piles: 
 \begin{itemize}
-\item Sauvegarde complète
-\item Non modifiable
+ \item historique des coups faits 
+ \item historique des coups annulés
+\end{itemize}
+Et une classe Move pour stocker un coup
+\end{block}
+\begin{block}<2->{Sauvegarde/Chargement}
+\begin{itemize}
+\item Complet
+\item Non modifiables (donnée sérialisée)
 \end{itemize}
 \end{block}
 \end{frame}
