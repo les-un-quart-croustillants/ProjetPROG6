@@ -24,7 +24,6 @@ import Vue.GameObject.PlateauGraphique;
 import Vue.GameObject.ScoresGraphique;
 import Vue.Pane.GamePane;
 import Vue.Pane.ParametrePane;
-import Vue.Pane.TutoPane;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -39,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -56,6 +56,8 @@ public class PlateauCadre extends Cadre {
 	
 	public AnimationTimer animationTimer;
 	public Niveau niveau = Niveau.ENFER;
+	
+	public Button suggestion;
 
 
 	/**
@@ -167,10 +169,6 @@ public class PlateauCadre extends Cadre {
 		});
 		plateauGraphique.start();
 		animationTimer.start();
-		boolean tuto = false;
-		if(tuto){
-			TutoPane.lancer_tuto();
-		}
 	}
 
 	private HBox construire_entete() {
@@ -327,12 +325,25 @@ public class PlateauCadre extends Cadre {
 		redoBouton = creer_bouton_redo();
 		hbox.getChildren().add(undoBouton);
 		hbox.getChildren().add(redoBouton);
-		hbox.getChildren().add(creer_suggestion());
+		Pane p = new Pane();
+		p.setPrefWidth(30);
+		hbox.getChildren().add(p);
+		suggestion = creer_suggestion();
+		hbox.getChildren().add(suggestion);
 		return hbox;
 	}
 
 	private Button creer_suggestion(){
 		Button b = new Button("suggestion");
+		b.setStyle("-fx-background-color: transparent;"+
+				"   -fx-min-height: 50px;\n" + 
+ 				"   -fx-min-width: 100px;" +
+				"   -fx-border-width: 2;"+
+			    "   -fx-border-color:red;"+
+				"	-fx-background-size: 100 50;" +
+				"	-fx-text-fill: red;"+
+				"	-fx-font-size: 14px;"+
+				"	-fx-font-family: \"Luckiest Guy\";\n");
 		b.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -345,8 +356,10 @@ public class PlateauCadre extends Cadre {
 					public void handle(ActionEvent event) {
 						GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].setSuggere(false);
 						GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].setSuggere(false);
+						b.setDisable(false);
 					}
 				});
+				b.setDisable(true);
 				tl.playFromStart();
 			}
 		});
