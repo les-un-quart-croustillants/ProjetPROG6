@@ -1,13 +1,16 @@
 package Vue;
 
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import Modele.Moteur.*;
 import Modele.Joueurs.*;
 import Modele.Plateau.*;
 import Utils.GameConfig;
 import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
+import Vue.Pane.ParametrePane;
 
+import java.io.File;
 import java.util.*;
 import javafx.event.*;
 import Modele.Moteurs.*;
@@ -18,57 +21,66 @@ public class Menu extends StackPane {
 	private static MoteurApp mApp;
 	private static InterfaceGraphique ig;
 	public static Niveau niveau = Niveau.BANQUISE;
-	
+
 	public static Menu getInstance() {
-		if(instance == null)
+		if (instance == null)
 			instance = new Menu();
 		return instance;
 	}
-	
+
 	public static void setMoteurApp(MoteurApp mApp) {
 		System.out.println("moteur ajouté");
 		Menu.mApp = mApp;
 	}
-	
+
 	public static void setInterfaceGraphique(InterfaceGraphique ig) {
 		Menu.ig = ig;
 	}
-	
-	private Menu() {		
+
+	private Menu() {
 		this.getStylesheets().add("menus.css");
 		this.getStylesheets().add("banquise.css");
 		this.getChildren().add(MainMenu.getInstance());
 		button_behaviour();
 	}
-	
+
 	private Plateau create_plateau() {
-		Plateau p = new Plateau(ConfigMenu.getInstance().dim, ConfigMenu.getInstance().nbP1, ConfigMenu.getInstance().nbP2, ConfigMenu.getInstance().nbP3);
+		Plateau p = new Plateau(ConfigMenu.getInstance().dim, ConfigMenu.getInstance().nbP1,
+				ConfigMenu.getInstance().nbP2, ConfigMenu.getInstance().nbP3);
 		return p;
 	}
-	
+
 	public static void reload_css() {
 		Menu.getInstance().getStylesheets().clear();
 		Menu.getInstance().getStylesheets().add("menus.css");
-		if(niveau==Niveau.BANQUISE)
+		if (niveau == Niveau.BANQUISE)
 			Menu.getInstance().getStylesheets().add("banquise.css");
 		else
 			Menu.getInstance().getStylesheets().add("enfer.css");
 	}
-	
+
 	private ArrayList<Joueur> create_joueurs() {
 		GameConfig gc = ConfigMenu.getInstance().create_config();
 		ArrayList<Joueur> j = new ArrayList<Joueur>();
 		int ids = 0;
-		for(GameConfig.ConfigJoueur cj : gc.joueurs) {
-			if(cj.type == GameConfig.TypeJoueur.HUMAIN) {
+		for (GameConfig.ConfigJoueur cj : gc.joueurs) {
+			if (cj.type == GameConfig.TypeJoueur.HUMAIN) {
 				j.add(new JoueurPhysique(ids, cj.nb_pingouins, cj.name));
 			} else {
 				Joueur.Difficulte d;
-				switch(cj.difficulte_ia) {
-				case FACILE:	d = Joueur.Difficulte.FACILE;		break;
-				case MOYEN:		d = Joueur.Difficulte.MOYEN;		break;
-				case DIFFICILE:	d = Joueur.Difficulte.DIFFICILE;	break;
-				default:		d = Joueur.Difficulte.PHYSIQUE;		break; // inaccessible
+				switch (cj.difficulte_ia) {
+				case FACILE:
+					d = Joueur.Difficulte.FACILE;
+					break;
+				case MOYEN:
+					d = Joueur.Difficulte.MOYEN;
+					break;
+				case DIFFICILE:
+					d = Joueur.Difficulte.DIFFICILE;
+					break;
+				default:
+					d = Joueur.Difficulte.PHYSIQUE;
+					break; // inaccessible
 				}
 				j.add(new JoueurIA(ids, cj.nb_pingouins, cj.name, d));
 			}
@@ -76,59 +88,59 @@ public class Menu extends StackPane {
 		}
 		return j;
 	}
-	
+
 	private void button_behaviour() {
 		mainMenuBehaviour();
 		newGameBehaviour();
 		configMenuBehaviour();
 		terrainMenuBehaviour();
 	}
-	
+
 	private void terrainMenuBehaviour() {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
 			}
 		});
-		
+
 		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()), niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
 		});
 	}
-	
+
 	private void configMenuBehaviour() {
 		ConfigMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(ConfigMenu.getInstance());
 			}
 		});
-		
+
 		ConfigMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()), niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
 		});
 	}
-	
+
 	private void mainMenuBehaviour() {
 		MainMenu.getInstance().new_game.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().add(NewGameMenu.getInstance());
 			}
 		});
-		
+
 		MainMenu.getInstance().regles.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 
 			}
 		});
-		
+
 		MainMenu.getInstance().quit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				mApp.transition(Action.QUITTER_APPLI);
@@ -136,16 +148,16 @@ public class Menu extends StackPane {
 			}
 		});
 	}
-	
+
 	private void newGameBehaviour() {
 		NewGameMenu.getInstance().leftMap.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				if(instance.getStylesheets().contains("enfer.css")) {
+				if (instance.getStylesheets().contains("enfer.css")) {
 					instance.getStylesheets().remove("enfer.css");
 					NewGameMenu.getInstance().mapName.setText("BANQUISE");
 					instance.getStylesheets().add("banquise.css");
 					niveau = Niveau.BANQUISE;
-				} else if(instance.getStylesheets().contains("banquise.css")) {
+				} else if (instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
 					NewGameMenu.getInstance().mapName.setText("ENFER");
 					instance.getStylesheets().add("enfer.css");
@@ -153,15 +165,15 @@ public class Menu extends StackPane {
 				}
 			}
 		});
-		
+
 		NewGameMenu.getInstance().rightMap.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				if(instance.getStylesheets().contains("enfer.css")) {
+				if (instance.getStylesheets().contains("enfer.css")) {
 					instance.getStylesheets().remove("enfer.css");
 					NewGameMenu.getInstance().mapName.setText("BANQUISE");
 					instance.getStylesheets().add("banquise.css");
 					niveau = Niveau.BANQUISE;
-				} else if(instance.getStylesheets().contains("banquise.css")) {
+				} else if (instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
 					NewGameMenu.getInstance().mapName.setText("ENFER");
 					instance.getStylesheets().add("enfer.css");
@@ -169,24 +181,42 @@ public class Menu extends StackPane {
 				}
 			}
 		});
-		
+
 		NewGameMenu.getInstance().config.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().add(ConfigMenu.getInstance());
 			}
 		});
-		
+
 		NewGameMenu.getInstance().jouer.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()),niveau);
+				GamePane.newInstance(new Moteur(create_plateau(), create_joueurs()), niveau);
 				mApp.transition(Action.NOUVELLE_PARTIE);
 				ig.graphic_state();
 			}
 		});
-		
+
 		NewGameMenu.getInstance().retour.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				instance.getChildren().remove(NewGameMenu.getInstance());
+			}
+		});
+
+		MainMenu.getInstance().load_game.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				FileChooser fileChooser = new FileChooser();
+				// fileChooser.setInitialDirectory(new File("rsc/save/"));
+				File file = fileChooser.showOpenDialog(InterfaceGraphique.stage);
+				if (file != null) {
+					Moteur m = Moteur.charger(file);
+					if (m != null) {
+						GamePane.newInstance(m, GamePane.getPlateauCadre().niveau);
+						mApp.transition(Action.NOUVELLE_PARTIE);
+						ig.graphic_state();
+					}
+				}
 			}
 		});
 	}
