@@ -489,213 +489,7 @@ public class UtilsIA {
 	}
 	
 	
-	
-	
-	
-	
-	/**
-	 * calcule les fils de la configuration courant et les evalue pour trouver le meilleur coup pour le joueur monjoueur
-	 * @param n : noeud contenant les coups a effectuer
-	 * @param r : memoisation
-	 * @param profondeur : profondeur courante dans l'arbre
-	 * @param plateau : plateau sur lequel effectuer les modifications de n
-	 * @param id : joueur courant
-	 * @param debase : plateau initial, (plateau de la racine)
-	 * @param pmax : profondeur maximale a laquelle on peut descendre
-	 * @param scores : tableau des scores courants
-	 * @param monjoueur : id du joueur pour lequel on essaie de maximiser le gain
-	 * @return l'heuristique de la racine
-	 */
-	/*@SuppressWarnings("unchecked")
-	public static int minimaxA(Noeud n, int profondeur,Plateau plateau,int id,Plateau debase,int pmax,ArrayList<ArrayList<Integer>> scores,int monjoueur) {
-		calculFils(n,id,plateau);	//calcul des fils de la configuration
-		int heuristique= -100000000;// moins l'infini
-		// si la partie est finie pôur minmax
-		if(n.fils().size() == 0) {
-			heuristique = evaluerA(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
-			n.setHeuristic(heuristique);
-			plateau.undo();
-			
-			return heuristique;
-		}
-		
-		//si on doit s'arreter
-		if (n.estFeuille() || profondeur == pmax) {
-			
-			heuristique = evaluerA(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
-			n.setHeuristic(heuristique);
-			plateau.undo();
 
-			return heuristique;
-			
-		// Le joueur A doit jouer
-		} else {
-
-			n.setHeuristic(heuristique); // mise a jour de l'heuristique 
-			
-			//calcul de l'ID du prochain joueur
-			int newid;
-			if(id < scores.size()-1)
-				newid = id+1;
-			else 
-				newid = 0;
-			
-			// on calcule le plateau courant du noeud
-			
-			//Plateau pcurr = plateaucoup(n.listcoup(), plateau); 
-			if(profondeur != 0)
-				plateau.jouer(n.listcoup().get(0).gauche(), n.listcoup().get(0).droit());
-				
-				
-	
-			//on parcours la liste des fils
-
-			for(Iterator<Noeud> it = n.fils().iterator(); it.hasNext() ;) {
-				Noeud current = it.next();
-				
-				//on simule le score de si le coup du fils courant etant joue
-				int addscore = plateau.getCellule(current.listcoup().get(0).gauche()).getFish();
-				ArrayList<ArrayList<Integer>> newscores = simulescore(true,(ArrayList<ArrayList<Integer>>) scores.clone(),id,addscore );
-				
-				//on appelle minmax sur les autres joueurs (on essaiera de minimiser leur gain)
-				Noeud filsclone = current;
-				int curr = minimaxB(filsclone, profondeur+1,plateau,newid,debase,pmax,newscores,monjoueur);
-				
-				//si on est au premier noeud, on ajoute quelques calculs pour verifier que le coup direct est bon (ne pas se suicider ..)
-				if(profondeur == 0) {
-					int [][] tableauval = new int[plateau.getSize()][plateau.getSize()];
-					tableauval = valcases(plateau,id);
-					if(plateau.getNeighbours(current.listcoup().get(0).gauche()).size() == 1) {
-						curr = curr + 25;
-					}
-					curr = curr + tableauval[current.listcoup().get(0).droit().i()][current.listcoup().get(0).droit().j()];
-					curr = curr + HeuristiqueCoup.calcul(curr,plateau,current.listcoup() , id);
-				}
-				
-				// on place l'heuristique dans le noeud
-				current.setHeuristic(curr);
-				
-				if(heuristique < curr) { // on fait (ou non) remonter l'heuristique au pere, en fonction de sa valeur
-					heuristique = curr;
-					n.setHeuristic(heuristique);
-				}
-				
-				//elagage alpha beta (on arrete les calculs des que possible)
-				if(profondeur > 0 && n.pere().heuristique() != -100000 && n.heuristique() > n.pere().heuristique() && n.heuristique() != 0) {
-					heuristique = filsclone.heuristique();
-					n.setHeuristic(heuristique);
-					plateau.undo();
-					return heuristique;
-				}
-				
-				//on reviens en arriere sur le score simule
-				scores = (ArrayList<ArrayList<Integer>>)simulescore(false,newscores,id,addscore).clone();
-			} 				
-			plateau.undo();
-
-			return heuristique;
-		}
-	}*/
-	
-	/**
-	 * calcule les fils de la configuration courant et les evalue pour trouver le meilleur coup pour le joueur id
-	 * @param n : noeud contenant les coups a effectuer
-	 * @param r : memoisation
-	 * @param profondeur : profondeur courante dans l'arbre
-	 * @param plateau : plateau sur lequel effectuer les modifications de n
-	 * @param id : joueur courant
-	 * @param debase : plateau initial, (plateau de la racine)
-	 * @param pmax : profondeur maximale a laquelle on peut descendre
-	 * @param scores : tableau des scores courants
-	 * @param monjoueur : id du joueur pour lequel on essaie de maximiser le gain
-	 * @return l'heuristique de la racine
-	 */
-
-	//@SuppressWarnings("unchecked")
-	/*public static int minimaxB(Noeud n, int profondeur,Plateau plateau,int id,Plateau debase,int pmax,ArrayList<ArrayList<Integer>> scores,int monjoueur) {
-		int heuristique;
-		calculFils(n,id,plateau);	//calcul des fils
-		
-		// si la partie est finie pôur minmax
-		if(n.fils().size() == 0) {
-			heuristique = evaluerB(n,plateau,id,debase,(ArrayList<ArrayList<Integer>>) scores.clone()); // on evalue la configuration
-			n.setHeuristic(heuristique);
-			plateau.undo();
-
-			return heuristique;
-		}
-		
-		//si on doit s'arreter dans le calcul de l'arbre
-		if (n.estFeuille() || profondeur == pmax ) {
-			heuristique = evaluerB(n,plateau,id,debase, (ArrayList<ArrayList<Integer>>) scores.clone());
-			n.setHeuristic(heuristique);
-			plateau.undo();
-
-			return heuristique;
-		
-		// Le joueur B doit jouer
-		} else {
-			
-			// on initialise l'heuristique courante
-			heuristique = 1000000; // + infini
-			n.setHeuristic(heuristique);
-			
-			//on calcule l'ID du prochain joueur
-			int newid;
-			if(id < scores.size()-1)
-				newid = id+1;
-			else 
-				newid = 0;
-			
-			plateau.jouer(n.listcoup().get(0).gauche(), n.listcoup().get(0).droit());
-			
-			// On parcours l'ensemble des coups jouables par B
-			//Plateau pcurr = plateaucoup(n.listcoup(), plateau);
-			for(Iterator<Noeud> it = n.fils().iterator(); it.hasNext() ;) {
-				Noeud current = it.next();
-				
-				//on simule le score de si le coup du fils courant etant joue
-				int addscore = plateau.getCellule(current.listcoup().get(0).gauche()).getFish();
-				ArrayList<ArrayList<Integer>> newscores = simulescore(true,(ArrayList<ArrayList<Integer>>) scores.clone(),id, addscore );
-
-				
-				// on appelle minmax sur le prochain joueur (en fonction du nouvel id calcule auparavant). 
-				//minmaxA si c'est le joueur pour lequel on cherche le meilleur coup, minmaxB si c'est un adversaire
-				Noeud filsclone = current;
-				int curr = 0;
-				if(newid == monjoueur) {
-					curr = minimaxA(filsclone, profondeur+1,plateau,newid,debase,pmax,newscores,monjoueur);
-				}else {
-					curr = minimaxB(filsclone, profondeur+1,plateau,newid,debase,pmax,newscores,monjoueur);
-				}
-				
-				//MAJ de l'heuristique
-				current.setHeuristic(curr);
-
-				
-				if(heuristique > curr) {	//MAJ de l'heuristique du pere
-					heuristique = curr;
-					n.setHeuristic(heuristique);
-				}
-				
-				//elagage alpha beta(on arrete les calculs des que possible)
-				if(profondeur > 0 && n.pere().heuristique() != -100000 &&  n.heuristique() < n.pere().heuristique() && n.heuristique() != 0) {
-					heuristique = filsclone.heuristique();
-					n.setHeuristic(heuristique);		
-					plateau.undo();
-					return heuristique;
-				}		
-
-				//on reviens en arriere sur le score simule
-				scores = (ArrayList<ArrayList<Integer>>)simulescore(false,newscores,id,addscore).clone();
-		
-			}				
-			plateau.undo();
-
-			return heuristique;
-		}
-	}*/
-	
 	/**
 	 * calcule les fils de la configuration courant et les evalue pour trouver le meilleur coup pour le joueur monjoueur
 	 * @param n : noeud contenant les coups a effectuer
@@ -918,7 +712,7 @@ public class UtilsIA {
 			val = val+2;
 		if(nbcaselibre < 10)
 			val = 10;
-		return val+1;
+		return val;
 		
 	}
 	
@@ -949,7 +743,7 @@ public class UtilsIA {
 			//Couple<Position,Position> c = fils.get(0);
 			switch(d) {
 				case MOYEN:
-					cur = minimaxB(c,cur,0,plateauclone,newid,plateau,1, scores,id);
+					cur = minimaxB(c,cur,0,plateauclone,newid,plateau,2, scores,id);
 					break;
 				case DIFFICILE:
 					 cur = minimaxB(c,cur,1,plateauclone,newid,plateau,evaluerProfondeur(plateau), scores,id);
@@ -976,7 +770,7 @@ public class UtilsIA {
 			}
 			else if(cur == max)
 				solutions.add(c);
-			System.out.println("fils "+c+" et son heuristique "+cur);
+			//System.out.println("fils "+c+" et son heuristique "+cur);
 		}
 
 		
