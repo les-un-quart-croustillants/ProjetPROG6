@@ -42,7 +42,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 10;
+	private double delay = 500;
 
 	@Override
 	public void update() {
