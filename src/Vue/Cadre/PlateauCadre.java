@@ -339,9 +339,9 @@ public class PlateauCadre extends Cadre {
 				"   -fx-min-height: 50px;\n" + 
  				"   -fx-min-width: 100px;" +
 				"   -fx-border-width: 2;"+
-			    "   -fx-border-color:red;"+
+			    "   -fx-border-color:black;"+
 				"	-fx-background-size: 100 50;" +
-				"	-fx-text-fill: red;"+
+				"	-fx-text-fill: black;"+
 				"	-fx-font-size: 14px;"+
 				"	-fx-font-family: \"Luckiest Guy\";\n");
 		b.setOnAction(new EventHandler<ActionEvent>() {

@@ -26,7 +26,7 @@ public abstract class Donnees {
 
 	private static Color[] COULEURS_JOUEURS = {Color.DARKBLUE,Color.GREEN,Color.MEDIUMPURPLE,Color.DARKGOLDENROD,Color.FUCHSIA,Color.GRAY,Color.CHOCOLATE,Color.GREENYELLOW};
 	public static Color[] COULEURS_NIVEAUX = {new Color(70.0/255.0,190.0/255.0,255.0/255.0,1),new Color(170.0/255.0,70.0/255.0,0.0/255.0,1)};
-	public static Color COULEUR_SUGGESTION = Color.RED;
+	public static Color COULEUR_SUGGESTION = Color.BLACK;
 	public static Color[] COULEURS_TEXTES_NIVEAUX = {Color.CORNFLOWERBLUE, Color.ANTIQUEWHITE };
 	
 	public static Image IMG_GLACIER = new Image("bg_glacier.png");	
