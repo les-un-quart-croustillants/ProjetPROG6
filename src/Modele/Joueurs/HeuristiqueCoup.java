@@ -7,6 +7,13 @@ import Utils.Couple;
 import Utils.Position;
 
 public class HeuristiqueCoup {
+	/**
+	 * @param heuristique : l'heuristique courante
+	 * @param pInitial : Le plateau Initial
+	 * @param coups : le coup a juger
+	 * @param id :l'id du joueur qui joue
+	 * @return l'heuristique modifiee
+	 */
 	public static int calcul(int heuristique, Plateau pInitial,Couple<Position,Position> coups,int id) {
 		
 		
@@ -142,7 +149,10 @@ public class HeuristiqueCoup {
 				heuristique = heuristique + nbPoissonsComposanteList.get(i) - 10*nbPingouinAlliesList.get(i);
 			}
 		}
-		
+		if(pCalcule.getNeighbours(coups.droit()).size() == 1) {
+			heuristique = heuristique -25;
+		}
+			
 		// on retourne en arriere
 		pCalcule.undo();
 		return heuristique;

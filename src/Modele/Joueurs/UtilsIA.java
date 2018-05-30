@@ -12,7 +12,6 @@ import Utils.Position;
 import Utils.Couple;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.HashMap;
 
 public class UtilsIA {
 
@@ -243,7 +242,6 @@ public class UtilsIA {
 	 * @param id : l'id du joueur IA
 	 * @return La meilleure position pour placer un pingouin dans la configuration actuelle du plateau de jeu
 	 */
-	
 	public static Position bestplace(Plateau T,int id) {
 		LinkedList<Position> bestmatch = new LinkedList<Position>();
 		int [][] tab = new int[T.getSize()][T.getSize()];
@@ -276,12 +274,13 @@ public class UtilsIA {
 	
 	////////////////////////////////////////////
 	////////////////////////////////////////////
-	////////////////////////////////////////////
 	
+
 	/**
-	 * Calcule les configurations filles d'une configuration pour IA difficile
-	 * @param n : le noeud dont il faut calculer les fils 
-	 * @param id : l'id du joueur courant
+	 * calcule les fils d'une configuration
+	 * @param id : l'id du joueur pour lequel on doit calculer les fils
+	 * @param plateau : le plateau de jeu courant
+	 * @return une linkedlist des coups possible pour ce joueur
 	 */
 	public static LinkedList<Couple<Position,Position>> calculFils(int id,Plateau plateau) {
 		LinkedList<Couple<Position,Position>> res = new LinkedList<Couple<Position,Position>>();
@@ -384,36 +383,33 @@ public class UtilsIA {
 
 	
 	/**
-	 * 
-	 * @param n le noeud a evaluer
-	 * @param p le plateau courant 
-	 * @param id du joueur courant
-	 * @param debase plateau de base
-	 * @param scores tableau des scores
-	 * @return l'heuristique
+	 * @param coup : le coup a evaluer
+	 * @param p : sur ce plateau
+	 * @param id : pour ce joueur
+	 * @param debase : plateau initial
+	 * @param scores : scores courants
+	 * @return l'heuristique du coup
 	 */
 	public static int evaluerA(Couple<Position,Position> coup,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
 		return HeuristiqueA.calcul(p, coup, id,debase,scores);
 	}
 	
 	/**
-	 * 
-	 * @param n le noeud a evaluer
-	 * @param p le plateau courant 
-	 * @param id du joueur courant
-	 * @param debase plateau de base
-	 * @param scores tableau des scores
-	 * @return l'heuristique
+	 * @param coup : le coup a evaluer
+	 * @param p : sur ce plateau
+	 * @param id : pour ce joueur
+	 * @param debase : plateau initial
+	 * @param scores : scores courants
+	 * @return l'heuristique du coup
 	 */
 	public static int evaluerB(Couple<Position,Position> coup,Plateau p, int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
 		return HeuristiqueB.calcul(p, coup, id,debase,scores);
 	}
 	
-	
+
 	/**
-	 * calcule un plateau de jeu
-	 * @param l liste des coups a effectuer sur le tableau
-	 * @param p plateau sur lequel executer les coups
+	 * @param l : le coup a jouer
+	 * @param p : sur ce plateau
 	 * @return le plateau modifie
 	 */
 	public static Plateau plateaucoup(Couple<Position,Position> l, Plateau p) {
@@ -448,60 +444,18 @@ public class UtilsIA {
 		return res;
 	}
 	
-	
-	/**
-	 * modifie de score en fonction des parametres courants
-	 * @param add true si addition, false si soustraction
-	 * @param score : tableau des scores a modifier
-	 * @param id : id du joueur pour lequel le score doit etre modifie
-	 * @param ajout : valeur a ajouter ou a soustraire au score du joueur ID
-	 * @return les scores modifies
-	 */
-	@SuppressWarnings("unchecked")
-	public static ArrayList<ArrayList<Integer>> simulescore(boolean add,ArrayList<ArrayList<Integer>> score,int id, int ajout) {
-
-		ArrayList<ArrayList<Integer>> scoreclone = (ArrayList<ArrayList<Integer>>) score.clone();
-		ArrayList<ArrayList<Integer>> newscore = new ArrayList<ArrayList<Integer>>();
-		ArrayList<Integer> current = new ArrayList<Integer>();
-		
-		for(int i = 0; i < scoreclone.size(); i++) {
-			if(scoreclone.get(i).get(0) != id) {
-				current = (ArrayList<Integer>)scoreclone.get(i).clone();
-				newscore.add((ArrayList<Integer>) current.clone());
-			}else{
-				for(int j = 0; j < scoreclone.get(i).size();j++) {
-					if(j != 1) {
-						current.add(((ArrayList<Integer>)scoreclone.get(i).clone()).get(j));
-					}else {
-						if(add)
-							current.add(scoreclone.get(i).get(j)+ajout);
-						else
-							current.add(scoreclone.get(i).get(j)-ajout);
-					}
-				}
-				newscore.add((ArrayList<Integer>) current.clone());
-
-			}
-			current.clear();
-		}		
-		return newscore;
-		
-	}
-	
-	
 
 	/**
-	 * calcule les fils de la configuration courant et les evalue pour trouver le meilleur coup pour le joueur monjoueur
-	 * @param n : noeud contenant les coups a effectuer
-	 * @param r : memoisation
-	 * @param profondeur : profondeur courante dans l'arbre
-	 * @param plateau : plateau sur lequel effectuer les modifications de n
-	 * @param id : joueur courant
-	 * @param debase : plateau initial, (plateau de la racine)
-	 * @param pmax : profondeur maximale a laquelle on peut descendre
-	 * @param scores : tableau des scores courants
-	 * @param monjoueur : id du joueur pour lequel on essaie de maximiser le gain
-	 * @return l'heuristique de la racine
+	 * @param coup : le coup courant a juger
+	 * @param valpere : l'heuristique du pere
+	 * @param profondeur : la profondeur courante
+	 * @param plateau : le plateau de jeu courant
+	 * @param id : l'id du joueur courant
+	 * @param debase : la plateau initial
+	 * @param pmax : la profondeur maximale
+	 * @param scores : les scores courants
+	 * @param monjoueur : l'id du joueur qu'on priorise
+	 * @return l'heuristique du coup
 	 */
 	@SuppressWarnings("unchecked")
 	public static int minimaxA(Couple<Position,Position> coup,int valpere, int profondeur,Plateau plateau,int id,Plateau debase,int pmax,ArrayList<ArrayList<Integer>> scores,int monjoueur) {
@@ -577,20 +531,19 @@ public class UtilsIA {
 		}
 	}
 	
-	/**
-	 * calcule les fils de la configuration courant et les evalue pour trouver le meilleur coup pour le joueur id
-	 * @param n : noeud contenant les coups a effectuer
-	 * @param r : memoisation
-	 * @param profondeur : profondeur courante dans l'arbre
-	 * @param plateau : plateau sur lequel effectuer les modifications de n
-	 * @param id : joueur courant
-	 * @param debase : plateau initial, (plateau de la racine)
-	 * @param pmax : profondeur maximale a laquelle on peut descendre
-	 * @param scores : tableau des scores courants
-	 * @param monjoueur : id du joueur pour lequel on essaie de maximiser le gain
-	 * @return l'heuristique de la racine
-	 */
 
+	/**
+	 * @param coup : le coup courant a juger
+	 * @param valpere : l'heuristique du pere
+	 * @param profondeur : la profondeur courante
+	 * @param plateau : le plateau de jeu courant
+	 * @param id : l'id du joueur courant
+	 * @param debase : la plateau initial
+	 * @param pmax : la profondeur maximale
+	 * @param scores : les scores courants
+	 * @param monjoueur : l'id du joueur qu'on priorise
+	 * @return l'heuristique du coup
+	 */
 	@SuppressWarnings("unchecked")
 	public static int minimaxB(Couple<Position,Position> coup,int valpere, int profondeur,Plateau plateau,int id,Plateau debase,int pmax,ArrayList<ArrayList<Integer>> scores,int monjoueur) {
 		int heuristique;
@@ -669,6 +622,59 @@ public class UtilsIA {
 			return heuristique;
 		}
 	}
+	@SuppressWarnings("unchecked")
+	public static Couple<Position,Position> eulerien(LinkedList<Pingouin>mesPingouinsdeplacables,Plateau plateau, int id,boolean eulerien){
+
+		LinkedList< LinkedList<Position> > meschemins= new LinkedList< LinkedList<Position> >();
+		LinkedList<Position> current = new LinkedList<Position>();
+		LinkedList<Position> currentaccessible = new LinkedList<Position>();
+		current.add(mesPingouinsdeplacables.get(0).position());
+		meschemins.addLast((LinkedList<Position>) current.clone());
+		current.clear();
+		//calcul de tout les chemins possibles, depuis une position vers toutes les destinations (oui c'est un poil lourd)
+		for (int i = 0;i < meschemins.size();i++) {
+			current = (LinkedList<Position>) meschemins.get(i).clone();
+			Plateau platclone = plateau.clone();
+			for (int k = 0;k < current.size();k++) {
+				platclone.getCellule(current.get(k)).destroy();
+			}
+			Position curr = current.getLast().clone();
+
+			if(eulerien)
+				currentaccessible = platclone.accessible(curr);
+			else
+				currentaccessible = platclone.getNeighbours(curr);
+			
+			for (int j = 0;j < currentaccessible.size();j++) {
+				if(!current.contains(currentaccessible.get(j) ) ) {
+					current.addLast(currentaccessible.get(j));
+					meschemins.add( (LinkedList<Position>) current.clone());
+					current.removeLast();
+				}	
+			}
+			current.clear();
+		}
+		//calcul des poids de chaque chemin (en fonction de leur nombre de poissons)
+		LinkedList<Integer> poid = new LinkedList<Integer>();
+		Integer taillecourante;
+		for (int i = 0;i < meschemins.size();i++) {
+			taillecourante = 0;
+			for (int j = 0;j < meschemins.get(i).size();j++) {
+				taillecourante = taillecourante +  plateau.getCellule(meschemins.get(i).get(j)).getFish();
+			}
+			poid.add(taillecourante);
+		}
+		//recuperation du max
+		Integer maxcourant = 0;
+		for (int i = 1;i < poid.size();i++) {
+			if(poid.get(i) > poid.get(maxcourant)) {
+				maxcourant = i;
+			}
+		}	
+		//return du max
+		return new Couple<Position,Position>(meschemins.get(maxcourant).get(0),meschemins.get(maxcourant).get(1));
+	}
+		
 	/**
 	 * evalue la profondeur d'arbre maximale a laquelle on peut aller 
 	 * @param plateau a evaluer
@@ -717,11 +723,11 @@ public class UtilsIA {
 	}
 	
 	/**
-	 * retourne le meilleur coup a faire pour l'IA
-	 * @param plateau sur lequel jouer
-	 * @param id du joueur a faire jouer
-	 * @param scores courants de la partie
-	 * @return un couple representant l'action a faire 
+	 * @param plateau : le plateau sur lequel determiner le meilleur coup
+	 * @param id : l'id du joueur qu idoit jouer
+	 * @param scores : les scores courants
+	 * @param d : la difficulte
+	 * @return : le couple de coups 
 	 */
 	@SuppressWarnings("unchecked")
 	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id,ArrayList<ArrayList<Integer>> scores,Difficulte d) {
@@ -739,8 +745,8 @@ public class UtilsIA {
 			newid = 0;
 		int cur= -100000000;
 
+		//pour tout les fils
 		for(Couple<Position,Position> c : fils) {
-			//Couple<Position,Position> c = fils.get(0);
 			switch(d) {
 				case MOYEN:
 					cur = minimaxB(c,cur,0,plateauclone,newid,plateau,2, scores,id);
@@ -758,11 +764,12 @@ public class UtilsIA {
 			if(plateau.getNeighbours(c.gauche()).size() == 1) {
 				cur = cur + 25;
 			}
+			// ajustage des heuristiques par rapport au coup courant
 			cur = cur + tableauval[c.droit().i()][c.droit().j()];
 			cur = cur + HeuristiqueCoup.calcul(cur,plateau,c , id);
 			
 
-			
+			//recuperation de la meilleure heuristique 
 			if(cur > max) {
 				max = cur;
 				solutions.clear();
@@ -773,9 +780,6 @@ public class UtilsIA {
 			//System.out.println("fils "+c+" et son heuristique "+cur);
 		}
 
-		
-
-		
 		// au moins un pingouin pas isole
 		if(fils.size() != 0) { 
 			LinkedList<Couple<Position,Position>> cp;
@@ -792,7 +796,6 @@ public class UtilsIA {
 	
 		}
 		else { // cas ou tout les pingouins sont isoles (parcours eulerien)
-			
 			//on recupere tout les pingouins deplacables
 			LinkedList<Pingouin> mesPingouinsdeplacables = new LinkedList<Pingouin>();
 			for (int i = 0; i < plateau.getSize();i++) {
@@ -801,121 +804,29 @@ public class UtilsIA {
 						mesPingouinsdeplacables.add(plateau.getCellule(new Position(i,j)).pingouin());                                                                                            
 				}
 			}
-			
 			//parcours eulerien dans le cas ou on a moins de 10 cases a calculer
 			if(composanteConnexePingouin(plateau,mesPingouinsdeplacables.get(0)).size() < 10 ) {
-				LinkedList< LinkedList<Position> > meschemins= new LinkedList< LinkedList<Position> >();
-				LinkedList<Position> current = new LinkedList<Position>();
-				LinkedList<Position> currentaccessible = new LinkedList<Position>();
-				
-				current.add(mesPingouinsdeplacables.get(0).position());
-				meschemins.addLast((LinkedList<Position>) current.clone());
-				current.clear();
-	
-				//calcul de tout les chemins possibles, depuis une position vers toutes les destinations (oui c'est un poil lourd)
-				for (int i = 0;i < meschemins.size();i++) {
-					current = (LinkedList<Position>) meschemins.get(i).clone();
-					
-					Plateau platclone = plateau.clone();
-					for (int k = 0;k < current.size();k++) {
-						platclone.getCellule(current.get(k)).destroy();
-					}
-					Position curr = current.getLast().clone();
-					currentaccessible = platclone.accessible(curr);
-					for (int j = 0;j < currentaccessible.size();j++) {
-						if(!current.contains(currentaccessible.get(j) ) ) {
-							current.addLast(currentaccessible.get(j));
-							meschemins.add( (LinkedList<Position>) current.clone());
-							current.removeLast();
-						}	
-					}
-					current.clear();
-				}
-				
-				//calcul des poids de chaque chemin (en fonction de leur nombre de poissons)
-				LinkedList<Integer> poid = new LinkedList<Integer>();
-				Integer taillecourante;
-				for (int i = 0;i < meschemins.size();i++) {
-					taillecourante = 0;
-					for (int j = 0;j < meschemins.get(i).size();j++) {
-						taillecourante = taillecourante +  plateau.getCellule(meschemins.get(i).get(j)).getFish();
-					}
-					poid.add(taillecourante);
-				}
-	
-				//recuperation du max
-				Integer maxcourant = 0;
-				for (int i = 1;i < poid.size();i++) {
-					if(poid.get(i) > poid.get(maxcourant)) {
-						maxcourant = i;
-					}
-				}	
-				//return du max
-				return new Couple<Position,Position>(meschemins.get(maxcourant).get(0),meschemins.get(maxcourant).get(1));
+				return eulerien(mesPingouinsdeplacables,plateau,id,true);
 			}
-			
 			//parcours "eulerien" (on ne prend que les voisin graphiques en compte) dans le cas ou on a moins de 15 cases a calculer
 			else if (composanteConnexePingouin(plateau,mesPingouinsdeplacables.get(0)).size() < 15 ) {
-				LinkedList< LinkedList<Position> > meschemins= new LinkedList< LinkedList<Position> >();
-				LinkedList<Position> current = new LinkedList<Position>();
-				LinkedList<Position> currentaccessible = new LinkedList<Position>();
-				
-				current.add(mesPingouinsdeplacables.get(0).position());
-				meschemins.addLast((LinkedList<Position>) current.clone());
-				current.clear();
-				
-				//calcul de tout les chemins possibles de proche en proche, depuis une position vers toutes les destinations (deja bien moins lourd)
-				for (int i = 0;i < meschemins.size();i++) {
-					current = (LinkedList<Position>) meschemins.get(i).clone();
-					
-					Plateau platclone = plateau.clone();
-					for (int k = 0;k < current.size();k++) {
-						platclone.getCellule(current.get(k)).destroy();
-					}
-					Position curr = current.getLast().clone();
-					currentaccessible = platclone.getNeighbours(curr);
-					for (int j = 0;j < currentaccessible.size();j++) {
-						if(!current.contains(currentaccessible.get(j) ) ) {
-							current.addLast(currentaccessible.get(j));
-							meschemins.add( (LinkedList<Position>) current.clone());
-							current.removeLast();
-						}	
-					}
-					current.clear();
-				}
-				
-				//calcul des poids de chaque chemin (en fonction de leur nombre de poissons)
-				LinkedList<Integer> poid = new LinkedList<Integer>();
-				Integer taillecourante;
-				for (int i = 0;i < meschemins.size();i++) {
-					taillecourante = 0;
-					for (int j = 0;j < meschemins.get(i).size();j++) {
-						taillecourante = taillecourante +  plateau.getCellule(meschemins.get(i).get(j)).getFish();
-					}
-					poid.add(taillecourante);
-				}
-	
-				//calcul du max
-				Integer maxcourant = 0;
-				for (int i = 1;i < poid.size();i++) {
-					if(poid.get(i) > poid.get(maxcourant)) {
-						maxcourant = i;
-					}
-				}
-				//return du max;
-				return new Couple<Position,Position>(meschemins.get(maxcourant).get(0),meschemins.get(maxcourant).get(1));
+				return eulerien(mesPingouinsdeplacables,plateau,id,false);
 			}
 			//coup facile si plus de 15 cases a calculer : 
 			//l'idee etant que si on a 15 cases, il est peu probable de casser de le chemin eulerien en jouant de facon aleatoire quelques fois, 
 			//et si on doit jouer de facon aleatoire pendant longtemps, on a surement gagne de toutes facons
 			else {
+				LinkedList<Position> voisins = plateau.getNeighbours(mesPingouinsdeplacables.get(0).position());
+				for(Iterator<Position> it = voisins.iterator();it.hasNext();) {
+					Position current = it.next();
+					if(plateau.getNeighbours(current).size() >= 1)
+						return new Couple<Position,Position>(mesPingouinsdeplacables.get(0).position(),current);
+				}
 				return jouerCoupFacile(plateau,id);
 			}
-			
-			
-			
 		}
 	}
+	
 	
 	
 }
