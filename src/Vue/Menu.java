@@ -120,9 +120,9 @@ public class Menu extends StackPane {
 			}
 		});
 		
-		MainMenu.getInstance().highscores.setOnAction(new EventHandler<ActionEvent>() {
+		MainMenu.getInstance().regles.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				
+
 			}
 		});
 		

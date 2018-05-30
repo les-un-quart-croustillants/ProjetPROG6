@@ -39,7 +39,7 @@ public class ScoresGraphique extends GameObject{
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.99);
 			gc.drawImage(Donnees.IMG_POISSON, x-Donnees.IMG_POISSON.getWidth()*1.3, y-Donnees.IMG_POISSON.getHeight()*0.9);
 			gc.fillText(score, x, y);
-			w = (int) (GamePane.getPlateauCadre().getWidth()*0.10);
+			w = (int) (GamePane.getPlateauCadre().getWidth()*0.05);
 			h = (int) (GamePane.getPlateauCadre().getHeight()*0.04);
 			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1)-w/2);
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.860);

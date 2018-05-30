@@ -124,10 +124,12 @@ public class Case extends GameObject {
 				}
 			}
 			if(suggere){
+				gc.setEffect(null);
 				gc.setStroke(Donnees.COULEUR_SUGGESTION);
-				gc.setLineWidth(5);
-				gc.setGlobalAlpha(0.70);
+				gc.setLineWidth(6);
+				gc.setGlobalAlpha(0.2);
 				gc.fillPolygon(dpx, dpy, polygon.npoints);
+				gc.setGlobalAlpha(1);
 			}
 			gc.strokePolygon(dpx, dpy, polygon.npoints);
 		}
