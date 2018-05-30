@@ -1,5 +1,6 @@
 package Vue.GameObject;
 
+import Modele.Moteur.Moteur.State;
 import Vue.Donnees;
 import Vue.Pane.GamePane;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,10 +23,6 @@ public class ScoresGraphique extends GameObject{
 	public void draw(GraphicsContext gc){
 		String nom,score;
 		gc.setFont(Donnees.FONT_SCORES_FINAUX);
-		/*Lighting l = new Lighting();
-		l.setSurfaceScale(3);
-		l.setDiffuseConstant(3);
-		gc.setEffect(l);*/
 		for(int i=0;i<GamePane.moteur().njoueurs();i++){
 			nom = GamePane.moteur().joueur(i).nom();
 			score = Integer.toString(GamePane.moteur().joueur(i).scoreFish());
@@ -48,7 +45,15 @@ public class ScoresGraphique extends GameObject{
 				gc.setEffect(new Shadow(1,Donnees.getCouleur(i)));
 				gc.drawImage(Donnees.IMG_SELECTEUR, x , y, w, h);
 				gc.setEffect(null);
-				//gc.drawImage(Donnees.IMG_SELECTEUR, x , y, GamePane.getPlateauCadre().getWidth()*0.15, GamePane.getPlateauCadre().getHeight()*0.08);
+			}
+			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1));
+			w =  (int) (GamePane.getPlateauCadre().getWidth()*0.025);
+			h = (int) (GamePane.getPlateauCadre().getHeight()*0.04);
+			y = (int) (GamePane.getPlateauCadre().getHeight()*0.890);
+			if(GamePane.moteur().currentState() == State.POSER_PINGOUIN){
+				int n = GamePane.moteur().joueur(i).nbPingouin()-GamePane.moteur().joueur(i).pingouins().size();
+				for(int j = 0;j<n;j++)
+					gc.drawImage(Donnees.IMG_PINGOUIN_BD, x+(j-n*0.55)*w*0.8, y, w, h);
 			}
 			if(GamePane.moteur().joueur(i).estElimine()) {
 				w = (int) (GamePane.getPlateauCadre().getWidth()*0.015);
@@ -57,7 +62,6 @@ public class ScoresGraphique extends GameObject{
 				y = (int) (GamePane.getPlateauCadre().getHeight()*0.88);
 				gc.drawImage(Donnees.IMG_CADENAS,x,y,w,h);
 			}
-			//gc.setEffect(l);
 		}		
 		gc.setEffect(null);
 	}
