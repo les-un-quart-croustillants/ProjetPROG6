@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 public class ConfirmationQuitter extends PopupPane {
 
@@ -23,6 +24,7 @@ public class ConfirmationQuitter extends PopupPane {
 		Label l = new Label("Voulez vous vraiment\nquitter l'application?");
 		l.setFont(Donnees.FONT_SCORES_FINAUX);
 		l.setTextFill(Color.BLACK);
+		l.setMaxSize(450, 300);
 		pane.setMaxWidth(450);
 		pane.setMaxHeight(300);
 		pane.getChildren().add(l);

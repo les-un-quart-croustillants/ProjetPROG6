@@ -14,7 +14,6 @@ import java.util.Comparator;
 
 import Modele.Joueurs.Joueur;
 import Modele.Joueurs.UtilsIA;
-import Modele.Plateau.Move;
 import Modele.Plateau.Pingouin;
 import Modele.Plateau.Plateau;
 import Utils.Couple;
@@ -32,7 +31,6 @@ public class Moteur implements Serializable {
 	private int indexJoueurCourant = 0;
 	private Position selected;
 	private boolean undoRedoAutorise;
-	private ArrayList<Couple<Position,Position>> historiqueCoups;
 
 	// AUTOMATE
 	private State currentState;
@@ -111,12 +109,10 @@ public class Moteur implements Serializable {
 		this.joueurs = joueurs;
 		this.undoRedoAutorise = false;
 		this.selected = null;
-		this.historiqueCoups = new ArrayList<Couple<Position,Position>>();
 		for (Joueur j : joueurs) {
 			if (!j.estIA()) {
 				this.undoRedoAutorise = true;
 			}
-			this.historiqueCoups.add(null);
 		}
 
 		currentState = State.POSER_PINGOUIN;
@@ -280,10 +276,6 @@ public class Moteur implements Serializable {
 		}
 		return -1;
 	}
-	
-	public ArrayList<Couple<Position,Position>> historiqueCoups(){
-		return this.historiqueCoups;
-	}
 
 	/**
 	 * Renvois un tableau d'entier a deux dimentions, chaque ligne du tableau
@@ -400,7 +392,6 @@ public class Moteur implements Serializable {
 					transition(Action.PINGOUINPOSES);
 					this.indexJoueurCourant = 0;
 				} else {
-					this.historiqueCoups.set(this.joueurCourant().id(), new Couple<Position,Position>(tmp,null));
 					transition(Action.SELECTION_VALIDE);
 					this.joueurSuivant();
 				}
@@ -485,7 +476,6 @@ public class Moteur implements Serializable {
 					if (joueurSuivant() == null) {
 						transition(Action.FIN_PARTIE);
 					} else {
-						this.historiqueCoups.set(this.joueurCourant().id(), new Couple<Position,Position>(selected,tmp));
 						transition(Action.SELECTION_VALIDE);
 					}
 					return tmp;
@@ -510,21 +500,15 @@ public class Moteur implements Serializable {
 	public Joueur undo() throws Exception {
 
 		if (this.undoRedoAutorise) {
-			Move res;
+			Couple<Boolean, Couple<Integer, Integer>> res;
 
 			this.selected = null;
 			
 			do { // On remonte dans les joueurs jusqu'a en trouver un humain
 				res = plateau.undo();
-				if (res.getFishAte() >= 0) {
-					if ((indexJoueurCourant = indexJoueur(res.getPingouin().employeur())) >= 0) {
-						if(res.getFrom().equals(new Position(-1,-1))) {
-							joueurCourant().undo(res.getFishAte(), true);
-							this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getTo(),null));
-						} else {
-							joueurCourant().undo(res.getFishAte(), false);
-							this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getFrom(),res.getTo()));
-						}
+				if (res.droit().gauche() >= 0) {
+					if ((indexJoueurCourant = indexJoueur(res.droit().droit())) >= 0) {
+						joueurCourant().undo(res.droit().gauche(), res.gauche());
 					} else {
 						throw new Exception("Le joueur renvoyé par undo est introuvable");
 					}
@@ -533,7 +517,7 @@ public class Moteur implements Serializable {
 				}
 			} while (joueurCourant().estIA());
 
-			if (!res.getFrom().equals(new Position(-1,-1))) {
+			if (!res.gauche()) {
 				transition(Action.UNDO);
 			} else {
 				transition(Action.UNDOPHASEMODIFIER);
@@ -554,16 +538,14 @@ public class Moteur implements Serializable {
 	public Joueur redo() {
 
 		if (this.undoRedoAutorise) {
-			Move res;
+			int fishAte;
 
 			do {
-				if ((res = plateau.redo()).getFishAte() > 0) {
+				if ((fishAte = plateau.redo()) > 0) {
 					if (currentState == State.POSER_PINGOUIN) {
-						this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getTo(),null));
-						joueurSuivant().redo(res.getFishAte(), 0);
+						joueurSuivant().redo(fishAte, 0);
 					} else {
-						this.historiqueCoups.set(joueurCourant().id(), new Couple<Position,Position>(res.getFrom(),res.getTo()));
-						joueurSuivant().redo(res.getFishAte(), 1);
+						joueurSuivant().redo(fishAte, 1);
 					}
 				} else {
 					return null;

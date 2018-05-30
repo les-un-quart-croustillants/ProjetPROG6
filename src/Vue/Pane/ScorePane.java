@@ -28,9 +28,10 @@ public class ScorePane extends PopupPane {
 	private void remplir_pane_central() {		
 		//Titre
 		Label titre = new Label("Scores");
+		titre.getStylesheets().clear();
+		titre.getStyleClass().clear();
 		titre.setFont(Donnees.FONT_PLAY);
-		titre.setTextFill(Color.YELLOW);
-		titre.setEffect(new Glow(1));
+		titre.setTextFill(Color.CORNFLOWERBLUE);
 		titre.setPadding(new Insets(5));
 		pane.getChildren().add(titre);
 		
@@ -109,6 +110,8 @@ public class ScorePane extends PopupPane {
 	
 	private Label nom_joueur(String str) {
 		Label l = new Label(str);
+		l.getStyleClass().clear();
+		l.getStylesheets().clear();
 		l.setFont(Donnees.FONT_SCORE);
 		Lighting effect = new Lighting();
 		effect.setSurfaceScale(3);

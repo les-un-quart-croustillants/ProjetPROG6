@@ -2,6 +2,9 @@ package Vue.Pane;
 
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
+import Vue.MainMenu;
+import Vue.Menu;
+import Vue.Donnees.Niveau;
 
 import java.io.File;
 

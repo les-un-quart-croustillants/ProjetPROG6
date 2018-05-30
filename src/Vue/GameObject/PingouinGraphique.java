@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -105,6 +106,11 @@ public class PingouinGraphique extends GameObject {
 			gc.setStroke(couleur);
 			gc.strokeOval(position.x - pg.tailleCase * 0.3 * f, position.y - pg.tailleCase * 0.2 * f,
 					pg.tailleCase * 0.6 * f, pg.tailleCase * 0.3 * f);
+			if(GamePane.moteur().indexJoueurCourant()==pingouin.employeur() && GamePane.moteur().currentState()==State.SELECTIONNER_PINGOUIN && !GamePane.moteur().plateau().estIsolee(pingouin.position())) {
+				gc.setEffect(new Shadow(1,Donnees.getCouleur(pingouin.employeur())));
+				gc.drawImage(Donnees.IMG_SELECTEUR_PINGOUIN, position.x-width*0.3, position.y-height*1.2+f*100-100); //changer a 0.4 pour l'ancien modele
+				gc.setEffect(null);
+			}
 		}
 		gc.drawImage(currentSprite, position.x + offset.x, position.y + offset.y, width, height);
 	}

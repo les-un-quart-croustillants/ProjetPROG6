@@ -567,13 +567,13 @@ public class Plateau implements Serializable {
 	 *     boolean : si on a undo la pose d'un pingouin
 	 *     couple<integer,integer> : le nombre de poissons mangés et l'id du pingouin
 	 */
-	public Move undo() {
+	public Couple<Boolean, Couple<Integer,Integer>> undo() {
 		if (history.isEmpty())
-			return null;
+			return new Couple<>(false, new Couple<>(-1, -1));
 
 		Move m = history.removeLast();
 		Position from = m.getFrom(),
-		to = m.getTo();
+				to = m.getTo();
 		boolean undoPosePingouin = from.equals(Plateau.source);
 		Pingouin pingouin = m.getPingouin();
 		int fishAte = m.getFishAte();
@@ -587,7 +587,7 @@ public class Plateau implements Serializable {
 		pingouin.mangePoisson(-1 * fishAte);
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-		return m;
+		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
 	}
 
 	/**
@@ -595,21 +595,22 @@ public class Plateau implements Serializable {
 	 * @return la valeur du coup exécuté si il y'en a un,
 	 * -1 sinon
 	 */
-	public Move redo() {
+	public int redo() {
 		if (undoList.isEmpty())
-			return null;
+			return -1;
 		Move m = undoList.removeLast();
-
+		int res;
 		if (m.getFrom().equals(Plateau.source))
-			poserPingouin_pr(m.getTo(),m.getPingouin());
+			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
 		else {
 			try {
-				jouer_pr(m.getFrom(), m.getTo());
+				res = jouer_pr(m.getFrom(), m.getTo());
 			} catch (PlateauException e) {
 				System.err.println(e.getMessage());
+				res = -1;
 			}
 		}
-		return m;
+		return res;
 	}
 
 	/**

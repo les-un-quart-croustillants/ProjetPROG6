@@ -17,7 +17,7 @@ public class Menu extends StackPane {
 	private static Menu instance = null;
 	private static MoteurApp mApp;
 	private static InterfaceGraphique ig;
-	private Niveau niveau = Niveau.BANQUISE;
+	public static Niveau niveau = Niveau.BANQUISE;
 	
 	public static Menu getInstance() {
 		if(instance == null)
@@ -49,7 +49,10 @@ public class Menu extends StackPane {
 	public static void reload_css() {
 		Menu.getInstance().getStylesheets().clear();
 		Menu.getInstance().getStylesheets().add("menus.css");
-		Menu.getInstance().getStylesheets().add("banquise.css");
+		if(niveau==Niveau.BANQUISE)
+			Menu.getInstance().getStylesheets().add("banquise.css");
+		else
+			Menu.getInstance().getStylesheets().add("enfer.css");
 	}
 	
 	private ArrayList<Joueur> create_joueurs() {
@@ -120,9 +123,9 @@ public class Menu extends StackPane {
 			}
 		});
 		
-		MainMenu.getInstance().highscores.setOnAction(new EventHandler<ActionEvent>() {
+		MainMenu.getInstance().regles.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
-				
+
 			}
 		});
 		
