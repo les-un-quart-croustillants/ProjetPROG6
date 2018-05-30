@@ -8,6 +8,7 @@ import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.*;
 import Utils.GameConfig;
+import Vue.Donnees.Niveau;
 import javafx.scene.image.ImageView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 public class ConfigMenu extends VBox {
 	public boolean editFlag = false;	
 	private static ConfigMenu instance = null;
+	GameConfig.difficulte difficulte; 
 	VBox listJoueurs;
 	Button retour, jouer, newJoueur, charger;
 	TriSlider proportions_pingouins;
@@ -390,6 +392,12 @@ public class ConfigMenu extends VBox {
 			gc.joueurs.add(((JoueurConfig)jc).getConfig());
 		}
 		return gc;
+	}
+	
+	public void update_all_IAs(GameConfig.difficulte diff) {
+		for(Node jc : listJoueurs.getChildren()) {
+			((JoueurConfig)jc).editIA(diff);
+		}
 	}
 	
 	private void update_proportions() {

@@ -142,14 +142,16 @@ public class Menu extends StackPane {
 			public void handle(ActionEvent e) {
 				if(instance.getStylesheets().contains("enfer.css")) {
 					instance.getStylesheets().remove("enfer.css");
-					NewGameMenu.getInstance().mapName.setText("BANQUISE");
+					NewGameMenu.getInstance().mapName.setText("BANQUISE (facile)");
 					instance.getStylesheets().add("banquise.css");
 					niveau = Niveau.BANQUISE;
+					ConfigMenu.getInstance().update_all_IAs(GameConfig.difficulte.FACILE);
 				} else if(instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
-					NewGameMenu.getInstance().mapName.setText("ENFER");
+					NewGameMenu.getInstance().mapName.setText("ENFER (difficile)");
 					instance.getStylesheets().add("enfer.css");
 					niveau = Niveau.ENFER;
+					ConfigMenu.getInstance().update_all_IAs(GameConfig.difficulte.DIFFICILE);
 				}
 			}
 		});
@@ -158,14 +160,16 @@ public class Menu extends StackPane {
 			public void handle(ActionEvent e) {
 				if(instance.getStylesheets().contains("enfer.css")) {
 					instance.getStylesheets().remove("enfer.css");
-					NewGameMenu.getInstance().mapName.setText("BANQUISE");
+					NewGameMenu.getInstance().mapName.setText("BANQUISE (facile)");
+					ConfigMenu.getInstance().update_all_IAs(GameConfig.difficulte.FACILE);
 					instance.getStylesheets().add("banquise.css");
 					niveau = Niveau.BANQUISE;
 				} else if(instance.getStylesheets().contains("banquise.css")) {
 					instance.getStylesheets().remove("banquise.css");
-					NewGameMenu.getInstance().mapName.setText("ENFER");
+					NewGameMenu.getInstance().mapName.setText("ENFER (difficile)");
 					instance.getStylesheets().add("enfer.css");
 					niveau = Niveau.ENFER;
+					ConfigMenu.getInstance().update_all_IAs(GameConfig.difficulte.DIFFICILE);
 				}
 			}
 		});
