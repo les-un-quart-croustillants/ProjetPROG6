@@ -2,6 +2,9 @@ package Vue.Pane;
 
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
+import Vue.MainMenu;
+import Vue.Menu;
+import Vue.Donnees.Niveau;
 
 import java.io.File;
 
@@ -9,6 +12,8 @@ import Modele.Moteur.Moteur;
 import Modele.Moteurs.MoteurApp.Action;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -17,6 +22,8 @@ public class ParametrePane extends PopupPane {
 
 	public ParametrePane() {
 		super();
+		this.setAlignment(Pos.TOP_RIGHT);
+		this.setPadding(new Insets(20));
 		remplir_pane_central();
 	}
 

@@ -21,6 +21,7 @@ public class Case extends GameObject {
 	private int[] py;
 	private boolean selected;
 	private boolean miseEnValeur;
+	private boolean suggere;
 	private PlateauGraphique pg;
 
 	public PingouinGraphique pingouinGraphique;
@@ -102,7 +103,7 @@ public class Case extends GameObject {
 			gc.setStroke(new Color(1, 0, 0, 1));
 			gc.setLineWidth(3);
 		}
-		if (selected || miseEnValeur) {
+		if (selected || miseEnValeur  || suggere) {
 			double[] dpx = new double[polygon.npoints];
 			double[] dpy = new double[polygon.npoints];
 			for (int i = 0; i < polygon.npoints; i++) {
@@ -111,10 +112,22 @@ public class Case extends GameObject {
 			}
 			if (selected) {
 				gc.setFill(couleurSelected);
-				if (miseEnValeur)
-					gc.setGlobalAlpha((Math.cos(0.01 * System.currentTimeMillis()) + 1) / 2);
-				else
-					gc.setGlobalAlpha(0.5);
+				if (!miseEnValeur) {
+					gc.setGlobalAlpha((Math.cos(0.003 * System.currentTimeMillis()) + 1) / 4+0.1);
+					gc.fillPolygon(dpx, dpy, polygon.npoints);
+					gc.setGlobalAlpha(1);
+				}
+				else {
+					gc.setGlobalAlpha(0);
+					gc.fillPolygon(dpx, dpy, polygon.npoints);
+					gc.setGlobalAlpha(1);
+				}
+			}
+			if(suggere){
+				gc.setEffect(null);
+				gc.setStroke(Donnees.COULEUR_SUGGESTION);
+				gc.setLineWidth(6);
+				gc.setGlobalAlpha(0.2);
 				gc.fillPolygon(dpx, dpy, polygon.npoints);
 				gc.setGlobalAlpha(1);
 			}
@@ -175,6 +188,10 @@ public class Case extends GameObject {
 		selected = false;
 		if(pingouinGraphique!=null)
 			pingouinGraphique.transformer(false);
+	}
+	
+	public void setSuggere(boolean b){
+		suggere = b;
 	}
 
 	public void mettreEnValeur() {

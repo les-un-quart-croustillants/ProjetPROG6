@@ -57,13 +57,13 @@ public class JeuConsole {
 	public static void main(String[] args) throws Exception {
 
 		Position res;
-		Plateau p = new Plateau(8, 8);
+		Plateau p = new Plateau(8, 9);
 		ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
 		boolean fin_partie = false;
 
 		/* Initialisation moteur */
-		joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
-		//joueurs.add(new JoueurIA(0, 3, "Henry", Difficulte.FACILE));
+		//joueurs.add(new JoueurPhysique(0, 3, "Loukavocat"));
+		joueurs.add(new JoueurIA(0, 3, "Henry", Difficulte.FACILE));
 		joueurs.add(new JoueurIA(1, 3, "Chris. P. Beacon", Difficulte.FACILE));
 		joueurs.add(new JoueurIA(2, 3, "Johny cash", Difficulte.FACILE));
 		m = new Moteur(p, joueurs);
@@ -185,6 +185,7 @@ public class JeuConsole {
 	 */
 	private static void processInput(Position input) throws Exception {
 		Moteur tmp;
+		Position output = null;
 		
 		if (input.equals(undo)) {
 			if(m.undo() == null) {
@@ -206,20 +207,22 @@ public class JeuConsole {
 				System.out.println("Chargement impossible.");
 			}
 		} else if (m.currentState() == State.POSER_PINGOUIN) {
-			if (!(input = m.poserPingouin(input)).equals(error)) {
-				System.out.println("Pingouin pose en (" + input.i() + "," + input.j() + ")");
+			while((output = m.poserPingouin(input)) == null) {}
+			if (!output.equals(error)) {
+				System.out.println("Pingouin pose en (" + output.i() + "," + output.j() + ")");
 			} else {
 				System.out.println("Position invalide.");
 			}
 		} else if (m.currentState() == State.SELECTIONNER_PINGOUIN) {
-			if (!(input = m.selectionnerPingouin(input)).equals(error)) {
-				System.out.println("Selection du pingouin en (" + input.i() + "," + input.j() + ")");
+			while((output = m.selectionnerPingouin(input)) == null) {}
+			if (!output.equals(error)) {
+				System.out.println("Selection du pingouin en (" + output.i() + "," + output.j() + ")");
 			} else {
 				System.out.println("Mauvaise selection.");
 			}
 		} else if (m.currentState() == State.SELECTIONNER_DESTINATION) {
-			if (!(input = m.selectionnerDestination(input)).equals(error)) {
-				System.out.println("Pingouin deplace en (" + input.i() + "," + input.j() + ")");
+			if (!(output = m.selectionnerDestination(input)).equals(error)) {
+				System.out.println("Pingouin deplace en (" + output.i() + "," + output.j() + ")");
 			} else {
 				System.out.println("Deplacement impossible.");
 			}

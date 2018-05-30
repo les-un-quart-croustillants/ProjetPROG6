@@ -1,20 +1,29 @@
 package Vue;
 
-import java.io.File;
-import javafx.stage.FileChooser;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.scene.control.*;
-import javafx.scene.*;
+import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.GameConfig;
+import Vue.Donnees.Niveau;
 import javafx.scene.image.ImageView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class ConfigMenu extends VBox {
 	public boolean editFlag = false;	
 	private static ConfigMenu instance = null;
+	GameConfig.difficulte difficulte; 
 	VBox listJoueurs;
 	Button retour, jouer, newJoueur, charger;
 	TriSlider proportions_pingouins;
@@ -328,6 +337,16 @@ public class ConfigMenu extends VBox {
 					terrainChargeLbl.setText(terrainCharge.getName());
 					tg.selectToggle(rb_load);
 					rb_load.setDisable(false);
+					Couple<Boolean,Integer> res = Plateau.checkFileToParse(terrainCharge.getAbsolutePath());
+					if (!res.gauche()) {
+						terrainChargeLbl.getStyleClass().add("file_disable");
+						tg.selectToggle(rb_config);
+						rb_load.setDisable(true);
+					}
+					else {
+						terrainChargeLbl.getStyleClass().remove("file_disable");
+						nbP1 = res.droit();
+					}
 				} else {
 					tg.selectToggle(rb_config);
 					rb_load.setDisable(true);
@@ -390,6 +409,12 @@ public class ConfigMenu extends VBox {
 			gc.joueurs.add(((JoueurConfig)jc).getConfig());
 		}
 		return gc;
+	}
+	
+	public void update_all_IAs(GameConfig.difficulte diff) {
+		for(Node jc : listJoueurs.getChildren()) {
+			((JoueurConfig)jc).editIA(diff);
+		}
 	}
 	
 	private void update_proportions() {

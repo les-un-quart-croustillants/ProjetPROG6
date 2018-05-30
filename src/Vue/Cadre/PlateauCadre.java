@@ -6,6 +6,7 @@ import Modele.Moteur.Moteur;
 import Modele.Moteur.Moteur.State;
 import Modele.Plateau.Cellule;
 import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.Position;
 import Vue.Donnees;
 import Vue.InterfaceGraphique;
@@ -25,6 +26,8 @@ import Vue.Pane.GamePane;
 import Vue.Pane.ParametrePane;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -35,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -52,6 +56,8 @@ public class PlateauCadre extends Cadre {
 	
 	public AnimationTimer animationTimer;
 	public Niveau niveau = Niveau.ENFER;
+	
+	public Button suggestion;
 
 
 	/**
@@ -308,7 +314,7 @@ public class PlateauCadre extends Cadre {
 				executer_undo_redo(false);
 			}
 		});
-				return b;
+		return b;
 	}
 	
 	private HBox creer_cadre_undo_redo(){
@@ -319,7 +325,45 @@ public class PlateauCadre extends Cadre {
 		redoBouton = creer_bouton_redo();
 		hbox.getChildren().add(undoBouton);
 		hbox.getChildren().add(redoBouton);
+		Pane p = new Pane();
+		p.setPrefWidth(30);
+		hbox.getChildren().add(p);
+		suggestion = creer_suggestion();
+		hbox.getChildren().add(suggestion);
 		return hbox;
 	}
 
+	private Button creer_suggestion(){
+		Button b = new Button("suggestion");
+		b.setStyle("-fx-background-color: transparent;"+
+				"   -fx-min-height: 50px;\n" + 
+ 				"   -fx-min-width: 100px;" +
+				"   -fx-border-width: 2;"+
+			    "   -fx-border-color:black;"+
+				"	-fx-background-size: 100 50;" +
+				"	-fx-text-fill: black;"+
+				"	-fx-font-size: 14px;"+
+				"	-fx-font-family: \"Luckiest Guy\";\n");
+		b.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Couple<Position,Position> coup = moteur.sugestion();
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].setSuggere(true);
+				GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].setSuggere(true);
+				Timeline tl = new Timeline(new KeyFrame(new Duration(1000)));
+				tl.setOnFinished(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						GamePane.getPlateauCadre().plateauGraphique.cases[coup.gauche().i()][coup.gauche().j()].setSuggere(false);
+						GamePane.getPlateauCadre().plateauGraphique.cases[coup.droit().i()][coup.droit().j()].setSuggere(false);
+						b.setDisable(false);
+					}
+				});
+				b.setDisable(true);
+				tl.playFromStart();
+			}
+		});
+		return b;
+	}
+	
 }

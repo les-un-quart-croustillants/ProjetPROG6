@@ -13,7 +13,7 @@ public class NeigeParticle extends ParticleSystem {
 		setDirection(new Vec2d(0,1));
 		setVitesse(25,75);
 		setLifeTime(2000, 4000);
-		setSize(0.01f,0.04f);
+		setSize(0.1f,0.4f);
 		setEmission(50);
 	}
 		

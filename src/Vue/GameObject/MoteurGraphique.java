@@ -42,7 +42,7 @@ public class MoteurGraphique extends GameObject {
 
 	private StateGraph currentState = StateGraph.ATTENDRE_MOTEUR;
 	private double time = System.currentTimeMillis();
-	private double delay = 100;
+	private double delay = 10;
 
 	@Override
 	public void update() {
@@ -91,7 +91,7 @@ public class MoteurGraphique extends GameObject {
 		case POSER_PINGOUIN:
 			if (moteur.joueurCourant().estIA()) {
 				GamePane.getPlateauCadre().infoGraphique.setText("Attendez votre tour");
-			setCurrentState(StateGraph.POSER_PINGOUIN_GRAPH_INIT);
+				setCurrentState(StateGraph.POSER_PINGOUIN_GRAPH_INIT);
 			}
 			else{
 				GamePane.getPlateauCadre().infoGraphique.setText("Poser un pingouin sur une case");
@@ -103,8 +103,9 @@ public class MoteurGraphique extends GameObject {
 				GamePane.getPlateauCadre().infoGraphique.setText("Attendez votre tour");
 				setCurrentState(StateGraph.SELECTIONNER_PINGOUIN_GRAPH);
 			}
-			else
+			else {
 				GamePane.getPlateauCadre().infoGraphique.setText("Selectionnez un pingouin");
+			}
 			break;
 		case RESULTATS:
 			GamePane.getPlateauCadre().infoGraphique.setText("Fin de la partie");

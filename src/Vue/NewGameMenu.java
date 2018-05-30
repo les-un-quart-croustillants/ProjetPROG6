@@ -34,7 +34,7 @@ private void create_elements() {
 		rightMap = new Button();
 		mapButton = new Button();
 		VBox playAndBackButtons = new VBox();
-		mapName = new Label("BANQUISE");
+		mapName = new Label("BANQUISE (facile)");
 		HBox mapSelection = new HBox();
 		
 		

@@ -134,29 +134,25 @@
 
 % You can reveal the parts of a slide one at a time
 % with the \pause command:
+\begin{frame}{Le plateau de jeu}
+  \begin{block}{Identification des besoins}
+    \begin{itemize}
+    \item <1-> Information sur le plateau (pingouins, cases détruites, ...)
+    \item <2-> Information sur l'état courant des joueurs (joueur courant, scores, ...)
+    \item <3-> Que doit faire le joueur?
+    \item <4-> Que peut faire le joueur?
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \begin{frame}{}
-  \begin{itemize}
-  \item {
-    First item.
-    \pause % The slide will pause after showing the first item
-  }
-  \item {   
-    Second item.
-  }
-  % You can also specify when the content should appear
-  % by using <n->:
-  \item<3-> {
-    Third item.
-  }
-  \item<4-> {
-    Fourth item.
-  }
-  % or you can use the \uncover command to reveal general
-  % content (not just \items):
-  \item<5-> {
-    Fifth item. \uncover<6->{Extra text in the fifth item.}
-  }
-  \end{itemize}
+  \begin{block}{Autres options}
+    \begin{itemize}
+    \item <1-> undo/redo
+    \item <2-> suggestion
+    \item <3-> Autres options (sauvegarder, charger, quitter, ...)
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \section{Aspects techniques}
@@ -212,6 +208,118 @@ Et une classe Move pour stocker un coup
 
 
 \section{IA}
+
+\subsection{Placement en début de partie}
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+ \item<1-> le plus proche possible des bancs de poissons
+ \item<2-> en evitant les bords autant que p
+ \item<3-> en essayant de bloquer l'ennemi autant que possible
+ \item<4-> en essayant de ne pas coller tout ses poissons
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{Placement en début de partie}
+\begin{itemize}
+ \item<1->\includegraphics[scale=0.2]{IA1}
+ \item<2->\includegraphics[scale=0.2]{IA2}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{Spécificité de notre MinMax}
+\begin{itemize}
+ \item{
+  \includegraphics[scale=0.4]{IA4}}
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\subsection{Evaluation des coups à venir}
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+ \item<1-> Bloquer un pingouin ennemi
+ \item<2-> \includegraphics[scale=0.1]{IA5}
+ \item<3-> \includegraphics[scale=0.1]{IA6}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+ \item<1-> Ne pas se faire bloquer un pingouin
+ \item<2-> Ne pas condamner un pingouin
+ \item<3-> \includegraphics[scale=0.09]{IA7}
+ \item<4-> \includegraphics[scale=0.09]{IA8}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{Evaluation des feuilles}
+\begin{itemize}
+ \item<1-> On essaie de ne pas laisser de trop grande partie de banquise à un pingouin ennemi seul
+ \item<2-> On essai de s'isoler sur une grande partie de banquise
+ \item<3-> On évite de laisser des grandes îles sans aucun Pingouins dessus.
+ \item<4-> Si la partie est finie et que notre score est le plus élevé, on renvoie 
+une heuristique maximale.
+ \item<5-> Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour s'assurer la victoire, on renvoie une heuristique minimale.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+ \item{ \includegraphics[scale=0.4]{IA9}}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{Fin de partie}
+\begin{itemize}
+  \item{On fait un parcours Eulérien}
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\subsection{Améliorations}
+\begin{frame}{}
+\begin{block}{Améliorations possibles}
+\begin{itemize}
+ \item<1-> Multi-threader le calcul de l’arbre
+ \item<2-> Faire en sorte que l’IA difficile puisse changer de stratégie selon la situation
+ \item<3-> Optimiser le calcul du parcours Eulérien
+\end{itemize}
+\end{block}
+\begin{block}{Améliorations testées et abandonnées}
+\begin{itemize}
+ \item<1-> Multi-threader le calcul de l’arbre
+ \item<2-> Faire en sorte que l’IA difficile puisse changer de stratégie selon la situation
+ \item<3-> Calculer la profondeur a calculer de façon dynamique, pour chaque branches
+\end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{Testes}
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+ \item<1-> \includegraphics[scale=0.2]{IA10}
+ \item<2-> \includegraphics[scale=0.2]{IA11}
+\end{itemize}
+\end{block}
+\end{frame}
+
 
 \subsection{Another Subsection}
 

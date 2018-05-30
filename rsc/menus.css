@@ -19,6 +19,10 @@
 	-fx-font-size: 58px;
 }
 
+.moyen {
+	-fx-font-size: 42px;
+}
+
 .smaller {
 	-fx-font-size: 28px;
 }
@@ -137,6 +141,11 @@
 
 .threepoisson {
 	-fx-image: url("3poissons.png");
+}
+
+.file_disable {
+	-fx-strikethrough: true;
+	-fx-text-fill : darkred;
 }
 
 .terrain {

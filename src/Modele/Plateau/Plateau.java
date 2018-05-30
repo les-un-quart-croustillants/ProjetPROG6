@@ -4,6 +4,7 @@ import Modele.Plateau.Construct.Construct;
 import Modele.Plateau.Exception.BewareOfOrcasException;
 import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
+import Modele.Plateau.Exception.PlateauFileFormatException;
 import Utils.Couple;
 import Utils.Position;
 
@@ -148,55 +149,56 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	private static BufferedReader openFile(String filename) {
-		try {
-			return new BufferedReader(new FileReader(filename));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
+	private static BufferedReader openFile(String filename) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(filename));
 	}
 
 	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
 		int nb_pingouins = 0,
-				line_nb = 0;
-		Cellule[] line;
+				ref_size = 0,
+				line_nb = 0,
+				size = 0,
+				tmp;
 		String s;
 		String[] splitted;
-		BufferedReader br = openFile(filename);
-		if (br == null)
-			return new Couple<>(false, nb_pingouins);
-		else {
+		BufferedReader br;
 			try {
+				br = openFile(filename);
 				s = br.readLine();
+				if (s != null)
+					ref_size = s.split(" ").length + 1;
 				while(s != null) {
 					splitted = s.split(" ");
-					line = new Cellule[splitted.length + ((line_nb % 2 == 0)?1:0)];
-					for (int i = 0; i < line.length; i++) {
-						if ((line_nb % 2 != 0) || (i != line.length - 1))
-							if (Integer.parseInt(splitted[i]) == 1)
+					size = splitted.length + ((line_nb % 2 == 0)? 1 : 0);
+					if (size != ref_size)
+						throw new PlateauFileFormatException(filename);
+					for (int i = 0; i < size; i++) {
+						if ((line_nb % 2 != 0) || (i != size - 1)) {
+							tmp = Integer.parseInt(splitted[i]);
+							if (tmp == 1)
 								nb_pingouins++;
+						}
 					}
 					s = br.readLine();
+					line_nb++;
 				}
-			} catch (IOException | NumberFormatException e ) {
+			} catch (PlateauFileFormatException | IndexOutOfBoundsException | IOException | NumberFormatException e ) {
 				System.err.println(e.getMessage());
 				return new Couple<>(false, nb_pingouins);
 			}
-
-		}
 		return new Couple<>(true, nb_pingouins);
 	}
 
-	public static Plateau parse(String filename) throws IOException {
+	public static Plateau parse(String filename) {
 		ArrayList<Cellule[]> list = new ArrayList<>();
 		Cellule[] line;
 		int line_nb = 0;
-		BufferedReader br = openFile(filename);
+		BufferedReader br;
 		String s;
 		String[] splited;
 
 		try {
+			br = openFile(filename);
 			s = br.readLine();
 			while (s != null) {
 				splited = s.split(" ");
@@ -211,7 +213,7 @@ public class Plateau implements Serializable {
 				list.add(line);
 				s = br.readLine();
 			}
-		} catch (NumberFormatException e) {
+		} catch (IOException | NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return null;
 		}
@@ -238,7 +240,7 @@ public class Plateau implements Serializable {
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param i : la ligne
-	 * @param j : la colonn
+	 * @param j : la colonne
 	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
 	 * faux sinon.
 	 */
@@ -295,7 +297,30 @@ public class Plateau implements Serializable {
 		}
 		return r;
 	}
+	
+	/**
+	 * getNeighbours : récupère la liste des cases voisine de {@code p}
+	 * @param p : la position de la case courante
+	 * @return : une LinkedList de Cellule
+	 * @See Cellule
+	 */
+	public LinkedList<Position> getNeighboursSansPingouins(Position p) {
+		LinkedList<Position> r = new LinkedList<>();
+		int dec = (p.i() % 2 == 0) ? 0 : 1;
 
+		for (Position candidat: new Position[]{
+				new Position(p.i() - 1,p.j() - dec),
+				new Position(p.i() - 1,p.j() + 1 - dec),
+				new Position(p.i(),p.j() - 1),
+				new Position(p.i(),p.j() + 1),
+				new Position(p.i() + 1,p.j() - dec),
+				new Position(p.i() + 1,p.j() + 1 - dec)}) {
+			if (isInTab(candidat))
+				if (!getCellule(candidat).isDestroyed())
+					r.add(candidat);
+		}
+		return r;
+	}
 	/**
 	 * safeAdd : ajoute une position dans la liste si elle n'y est pas déjà présente,
 	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
