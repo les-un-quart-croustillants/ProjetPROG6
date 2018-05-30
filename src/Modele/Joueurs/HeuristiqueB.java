@@ -8,6 +8,14 @@ import java.util.ArrayList;
 
 
 public class HeuristiqueB {
+	/**
+	 * @param pCalcule : le plateau de jeu
+	 * @param coup : le dernier coup a jouer
+	 * @param id : l'id du joueur courant
+	 * @param debase : le plateau initial
+	 * @param scores : les scores courants
+	 * @return : l'heuristique de la feuille
+	 */
 	public static int calcul(Plateau pCalcule, Couple<Position,Position> coup,int id,Plateau debase,ArrayList<ArrayList<Integer>> scores) {
 		int heuristique = 50;
 		

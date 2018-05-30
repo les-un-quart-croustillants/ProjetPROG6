@@ -113,7 +113,7 @@ public class Case extends GameObject {
 			if (selected) {
 				gc.setFill(couleurSelected);
 				if (!miseEnValeur) {
-					gc.setGlobalAlpha((Math.cos(0.007 * System.currentTimeMillis()) + 1) / 4+0.1);
+					gc.setGlobalAlpha((Math.cos(0.003 * System.currentTimeMillis()) + 1) / 4+0.1);
 					gc.fillPolygon(dpx, dpy, polygon.npoints);
 					gc.setGlobalAlpha(1);
 				}
