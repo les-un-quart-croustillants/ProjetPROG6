@@ -29,6 +29,7 @@ public class InterfaceGraphique extends Application {
 		stage.show();
 		stage.setMinHeight(400);
 		stage.setMinWidth(600);
+		stage.setTitle("Pingouins");
 	}
 	
 	public static void transition(Action action) {

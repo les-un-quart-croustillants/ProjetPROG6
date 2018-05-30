@@ -2,7 +2,7 @@ package Default;
 import Vue.InterfaceGraphique;
 import Modele.Moteurs.MoteurApp;
 
-public class PremiereFenetre {
+public class JeuGraphique {
 	public static void main(String[] args) {
 		MoteurApp mApp = new MoteurApp();
 		System.out.println(mApp.toString());
