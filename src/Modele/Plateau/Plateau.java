@@ -189,15 +189,16 @@ public class Plateau implements Serializable {
 		return new Couple<>(true, nb_pingouins);
 	}
 
-	public static Plateau parse(String filename) throws IOException {
+	public static Plateau parse(String filename) {
 		ArrayList<Cellule[]> list = new ArrayList<>();
 		Cellule[] line;
 		int line_nb = 0;
-		BufferedReader br = openFile(filename);
+		BufferedReader br;
 		String s;
 		String[] splited;
 
 		try {
+			br = openFile(filename);
 			s = br.readLine();
 			while (s != null) {
 				splited = s.split(" ");
@@ -212,7 +213,7 @@ public class Plateau implements Serializable {
 				list.add(line);
 				s = br.readLine();
 			}
-		} catch (NumberFormatException e) {
+		} catch (IOException | NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return null;
 		}
@@ -239,7 +240,7 @@ public class Plateau implements Serializable {
 	/**
 	 * isInTab : si une position est dans le tableau
 	 * @param i : la ligne
-	 * @param j : la colonn
+	 * @param j : la colonne
 	 * @return vrai si la position de coordonnées (i,j) est dans le tableau
 	 * faux sinon.
 	 */

@@ -1,6 +1,7 @@
 .button {
 	-fx-border-color: rgb(68,68,68);
 	-fx-border-width: 2;
+	-fx-border-insets: 3;
 	-fx-background-color: transparent;	
 	-fx-font-family: "Luckiest Guy";
 	-fx-font-size: 28px;
@@ -16,4 +17,5 @@
 
 .button:hover{
 	-fx-border-width: 5;
+	-fx-border-insets: 0;
 }

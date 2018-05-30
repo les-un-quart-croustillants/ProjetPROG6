@@ -6,17 +6,21 @@
 \usepackage{titlesec}
 \usepackage{color}
 \usepackage{graphicx}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=3.5cm}
 
 \titleformat{\chapter}[display]
             {\normalfont\bfseries}{}{0pt}{\Huge}
 
 \lstset{ escapeinside={(*}{*)} }
 
-\title{Rapport IA PROG6}
-\author{Castel Antonin}
-\begin{document}
-\maketitle{}
+\title{\textbf{Rapport IA PROG6}\\Pingouin}
 
+\author{Castel Antonin, Reboul Paul, Soret Louka, Sorin Gaëtan, Vandendorpe Thomas}
+\begin{document}
+
+\maketitle{}
+\tableofcontents
 \chapter{Introduction}
 Le jeu Pingouin est un jeu à somme nulle où un certain nombre de joueurs s'affrontent à tour de rôles. Une IA difficile peut donc utiliser un algorithme de type MinMax pour évaluer les coups possibles.Pour créer l'IA la plus efficace possible, nous avons identifié trois grandes phases de jeu lors du déroulement de chaque parties :
 \newline
@@ -60,7 +64,6 @@ La raison pour cette re-évaluation des heuristiques est double :
 
 \hspace{0.5cm}	-D'une part, cela permet de départager les fils de la racine qui ont une heuristique identique, c'est donc très bien en début de partie, ou MinMax ne calcule pas une profondeur assez grande pour que les heuristiques soient pertinentes. \newline
 Si deux fils de la racine (donc deux coups possibles) ont la même heuristiques calculée par le MinMax, il vaut mieux choisir celui dont le coup est le plus avantageux.
-
 \hspace{0.5cm}	-D'autre part, cela permet à l'IA de ne pas faire de coups mauvais, car comme on calcule les heuristiques aux feuilles, on évalue un ensemble de coups dans sa globalité, par conséquent il est possible qu'un configuration soit considérée comme favorable par le MinMax alors qu'un coup très mauvais fait partie de l'ensemble de coups permettant d'aboutir à cette configuration (par exemple ça évite d'isoler un pingouin allié, ce qui est toujours une mauvaise idée).
 
 \vspace{0.7cm}
@@ -70,7 +73,8 @@ Cela represente donc bien les deux grandes phases de jeu :
 \newline
 -Celle où la re-évaluation des heuristiques est utile pour choisir le meilleur coup.
 -Celle où les heuristiques calculés par le MinMax sont les plus importantes.
-\newpage
+
+\vspace{0.3cm}
 \textbf{Heuristiques calculées sur les feuilles :}
 \newline
 Les heuristiques sur les feuilles sont calculés en fonction des îles présentes sur le plateau de jeu, et sur les scores des différents joueurs.
@@ -108,37 +112,28 @@ C'est donc à la fin de la partie que l'on doit calculer le meilleur chemin sur 
 Pour ce faire, on calcule un parcours Eulérien sur l'île. La complexité pour trouver un parcours Eulérien est telle que malheureusement sur une grande île, on ne peut pas le calculer. Quand c'est le cas, on fait un coup pseudo-aléatoire (on essaye de ne pas casser le parcours Eulérien, sans le calculer) jusqu'à que la taille de l'île soit suffisamment petite pour qu'on puisse faire le parcours.
 
 \chapter{IA facile et IA moyenne}
+\section{IA facile}
+L'IA facile se comporte comme l'IA difficile pour la première phase de jeu, mais sa stratégie est très différente, elle n'est pas aléatoire mais essaie de récupérer le plus de poisson possible en le minimum de coups, elle récupère donc rapidement beaucoup de points, mais elle ne priorise pas forcement le fait de bloquer un ennemi.
+Cela donne une IA qui n'est pas très performante quand il y a peu de pingouins pour beaucoup de cases, mais une IA très correcte lorsque la tendance s'inverse.
 
 \section{IA moyenne}
 L'IA moyenne est basée sur l'IA difficile, sauf qu'elle calcule une partie de l'arbre bien inférieure à l'IA difficile, et par conséquent ses coups sont moins réfléchis.
 Pour l'IA moyenne, le calcul heuristique des fils de la racine est aussi important que celui des feuilles.
-\section{IA facile}
-L'IA facile se comporte comme l'IA difficile pour la première phase de jeu, mais sa stratégie est très différente, elle n'est pas aléatoire mais essaie de récupérer le plus de poisson possible en le minimum de coups, elle récupère donc rapidement beaucoup de points, mais elle ne priorise pas forcement le fait de bloquer un ennemi.
-Cela donne une IA qui n'est pas très performante quand il y a peu de pingouins pour beaucoup de cases, mais une IA très correcte lorsque la tendance s'inverse.
 
 
 \chapter{Changements possibles}
 \section{Améliorations possibles des IA}
 
--L'IA difficile ne change pas de stratégie quand la sienne n'est pas la bonne. Il a été dit plus haut que la stratégie de l'IA facile était très correcte quand le nombre de pingouins est très grand comparé au nombre de cases, par conséquent, l'IA difficile pourrait changer de stratégie dans ce genre de cas.
+-L'IA difficile ne change pas de stratégie quand la sienne n'est pas la bonne. Il a été dit auparavant que la stratégie de l'IA facile était très correcte quand le nombre de pingouins est très grand comparé au nombre de cases, par conséquent, l'IA difficile pourrait changer de stratégie dans ce genre de cas.
 \newline
--Le parcours Eulérien en fin de partie sur les grandes îles est largement améliorable.
+-Le parcours Eulérien en fin de partie sur les grandes îles est améliorable.
 \newline 
 -On pourrait Multithreader le calcul de l'arbre pour améliorer significativement la profondeur calculable de ce dernier, et donc largement améliorer le niveau de jeu de l'IA.
 
 \section{Pistes explorées mais non concluantes}
--On pourrait utiliser MinMax pour calculer le parcours Eulérien en fin de partie, comme il essaie de maximiser le score, on obtiendrait un chemin très correct.
+-On pourrait utiliser le MinMax pour calculer le parcours Eulérien en fin de partie, comme il essaie de maximiser le score, on obtiendrait un chemin correct.
 \newline
 -Nous avons essayé de modifier la profondeur de calcul de l'arbre localement, pour que les branches prometteuses soit calculées plus profondément que les branches où les premiers coups sont mauvais, mais les résultats n’étaient pas très concluants en terme de niveau de jeu de l'IA.
-
-
-
-
-
-
-
-
-
 
 
 \chapter{Résultats}
@@ -151,7 +146,7 @@ Cela donne une IA qui n'est pas très performante quand il y a peu de pingouins 
   \includegraphics[width=9cm]{graph2.png}
 \end{center}
 \textbf{\textit{Moyenne vs facile sur différents plateaux.}}
-\chapter{Conclusion}
+\chapter{Interpretation}
 
 Nous pouvons voir que les IA respectent assez bien la hiérarchie difficile > moyenne > facile entre elles. 
 Les parties représentées dans ces graphiques représentent des parties à deux joueurs avec 4 pingouins, les tendances sont exactement les mêmes si on modifie le nombre de pingouins par joueurs.
@@ -159,7 +154,7 @@ Cette hiérarchie est aussi assez bien respectée lors des parties avec un nombr
 \newline
 Par exemple, une partie à quatre joueurs, avec 3 IA difficiles et une IA facile sur un plateau de taille standard sera souvent remportée par l'IA facile, simplement car sa stratégie est bien supérieure à celles des IA difficiles dans cette situation.
 \newline
-Contre les humains, un graphique du même genre serait malheureusement assez trompeur. En effet, l'IA difficile gagne rarement, mais sans que ce soit une victoire écrasante pour le joueur. Les scores finaux sont généralement très proche l'un de l'autre.
+Contre les humains, un graphique du même genre serait malheureusement assez trompeur. En effet, l'IA difficile gagne rarement contre un joueur expérimenté, mais sans que ce soit une victoire écrasante pour le joueur. Les scores finaux sont généralement très proche l'un de l'autre.
 
 
 \end{document}

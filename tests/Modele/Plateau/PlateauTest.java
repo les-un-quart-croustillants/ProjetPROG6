@@ -581,12 +581,7 @@ public class PlateauTest {
 		Assert.assertTrue(r.gauche());
 		Assert.assertEquals(21, (int) r.droit());
 		Plateau test = null;
-		try {
-			test = Plateau.parse(filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
+		test = Plateau.parse(filename);
 		Assert.assertEquals("Plateau{size=8, tab=[\n" +
 				"[Cellule{position=(0,0), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,1), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(0,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,4), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,5), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,6), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,7), destroyed=true, fish=0, pingouin=null}]\n" +
 				"[Cellule{position=(1,0), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,1), destroyed=false, fish=3, pingouin=null}, Cellule{position=(1,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,4), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,5), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,6), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,7), destroyed=false, fish=2, pingouin=null}]\n" +
@@ -600,12 +595,7 @@ public class PlateauTest {
 		filename = "tests/rsc/test_parse_terrain_cplx";
 		Assert.assertTrue(r.gauche());
 		Assert.assertEquals(21, (int) r.droit());
-		try {
-			test = Plateau.parse(filename);
-		} catch(IOException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
+		test = Plateau.parse(filename);
 		Assert.assertEquals("Plateau{size=8, tab=[\n" +
 				"[Cellule{position=(0,0), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,1), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(0,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(0,4), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,5), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,6), destroyed=false, fish=3, pingouin=null}, Cellule{position=(0,7), destroyed=true, fish=0, pingouin=null}]\n" +
 				"[Cellule{position=(1,0), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,1), destroyed=false, fish=3, pingouin=null}, Cellule{position=(1,2), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,3), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,4), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,5), destroyed=false, fish=1, pingouin=null}, Cellule{position=(1,6), destroyed=false, fish=2, pingouin=null}, Cellule{position=(1,7), destroyed=false, fish=2, pingouin=null}]\n" +
