@@ -1,16 +1,22 @@
 package Vue;
 
-import java.io.File;
-import javafx.stage.FileChooser;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.scene.control.*;
-import javafx.scene.*;
+import Modele.Plateau.Plateau;
+import Utils.Couple;
 import Utils.GameConfig;
-import javafx.scene.image.ImageView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class ConfigMenu extends VBox {
 	public boolean editFlag = false;	
@@ -328,6 +334,16 @@ public class ConfigMenu extends VBox {
 					terrainChargeLbl.setText(terrainCharge.getName());
 					tg.selectToggle(rb_load);
 					rb_load.setDisable(false);
+					Couple<Boolean,Integer> res = Plateau.checkFileToParse(terrainCharge.getAbsolutePath());
+					if (!res.gauche()) {
+						terrainChargeLbl.getStyleClass().add("file_disable");
+						tg.selectToggle(rb_config);
+						rb_load.setDisable(true);
+					}
+					else {
+						terrainChargeLbl.getStyleClass().remove("file_disable");
+						nbP1 = res.droit();
+					}
 				} else {
 					tg.selectToggle(rb_config);
 					rb_load.setDisable(true);

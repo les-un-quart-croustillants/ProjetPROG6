@@ -134,29 +134,25 @@
 
 % You can reveal the parts of a slide one at a time
 % with the \pause command:
+\begin{frame}{Le plateau de jeu}
+  \begin{block}{Identification des besoins}
+    \begin{itemize}
+    \item <1-> Information sur le plateau (pingouins, cases détruites, ...)
+    \item <2-> Information sur l'état courant des joueurs (joueur courant, scores, ...)
+    \item <3-> Que doit faire le joueur?
+    \item <4-> Que peut faire le joueur?
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \begin{frame}{}
-  \begin{itemize}
-  \item {
-    First item.
-    \pause % The slide will pause after showing the first item
-  }
-  \item {   
-    Second item.
-  }
-  % You can also specify when the content should appear
-  % by using <n->:
-  \item<3-> {
-    Third item.
-  }
-  \item<4-> {
-    Fourth item.
-  }
-  % or you can use the \uncover command to reveal general
-  % content (not just \items):
-  \item<5-> {
-    Fifth item. \uncover<6->{Extra text in the fifth item.}
-  }
-  \end{itemize}
+  \begin{block}{Autres options}
+    \begin{itemize}
+    \item <1-> undo/redo
+    \item <2-> suggestion
+    \item <3-> Autres options (sauvegarder, charger, quitter, ...)
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \section{Aspects techniques}

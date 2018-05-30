@@ -26,7 +26,7 @@ public class ScoresGraphique extends GameObject{
 		for(int i=0;i<GamePane.moteur().njoueurs();i++){
 			nom = GamePane.moteur().joueur(i).nom();
 			score = Integer.toString(GamePane.moteur().joueur(i).scoreFish());
-			gc.setFill(Donnees.getCouleur(GamePane.moteur().joueur(i).id()%4));
+			gc.setFill(Donnees.getCouleur(GamePane.moteur().joueur(i).id()));
 			gc.setTextAlign(TextAlignment.CENTER);
 			x = (int) (GamePane.getPlateauCadre().getWidth()*0.15+(GamePane.getPlateauCadre().getWidth()*0.7/(GamePane.moteur().njoueurs()+1))*(i+1));
 			y = (int) (GamePane.getPlateauCadre().getHeight()*0.95);
