@@ -14,10 +14,10 @@ public class EnferParticle extends ParticleSystem{
 		setDirection(new Vec2d(0,-1));
 		setVitesse(10,20);
 		setLifeTime(1000, 2000);
-		setSize(0.02f,0.08f);
+		setSize(0.2f,0.8f);
 		setReduireTaille(true);
 		setEmission(20);
-		setBlendMode(BlendMode.ADD);
+		//setBlendMode(BlendMode.ADD);
 	}
 		
 	public void update() {
