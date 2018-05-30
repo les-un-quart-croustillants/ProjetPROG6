@@ -24,7 +24,7 @@ public abstract class Donnees {
 	public static Font FONT_SCORE = Font.loadFont(ClassLoader.getSystemClassLoader().getResourceAsStream("LuckiestGuy.ttf"), 18);
 	public static Font FONT_SCORES_FINAUX = Font.loadFont(ClassLoader.getSystemClassLoader().getResourceAsStream("LuckiestGuy.ttf"), 32);
 
-	private static Color[] COULEURS_JOUEURS = {Color.DARKBLUE,Color.GREEN,Color.MEDIUMPURPLE,Color.DARKGOLDENROD};
+	private static Color[] COULEURS_JOUEURS = {Color.DARKBLUE,Color.GREEN,Color.MEDIUMPURPLE,Color.DARKGOLDENROD,Color.FUCHSIA,Color.GRAY,Color.CHOCOLATE,Color.GREENYELLOW};
 	public static Color[] COULEURS_NIVEAUX = {new Color(70.0/255.0,190.0/255.0,255.0/255.0,1),new Color(170.0/255.0,70.0/255.0,0.0/255.0,1)};
 	public static Color COULEUR_SUGGESTION = Color.RED;
 	public static Color[] COULEURS_TEXTES_NIVEAUX = {Color.CORNFLOWERBLUE, Color.ANTIQUEWHITE };
@@ -35,6 +35,7 @@ public abstract class Donnees {
 	public static Image[] IMG_BLOC_P2 = {new Image("bloc_glace_p2.png"), new Image("bloc_lave_p2.png")};
 	public static Image[] IMG_BLOC_P3 = {new Image("bloc_glace_p3.png"), new Image("bloc_lave_p3.png")};
 	public static Image IMG_BLOC_GLACE_RIPPLE = new Image("blocRipple256x221.png");
+
 	public static Image IMG_PINGOUIN_BD= new Image("pingouin_BD.png");
 	public static Image IMG_PINGOUIN_BG= new Image("pingouin_BG.png");
 	public static Image IMG_PINGOUIN_D= new Image("pingouin_D.png");
@@ -59,6 +60,6 @@ public abstract class Donnees {
 	public static Image IMG_SELECTEUR_PINGOUIN = new Image("selecteur_pingouin.png");
 	
 	public static Color getCouleur(int index){
-		return Donnees.COULEURS_JOUEURS[index%4];
+		return Donnees.COULEURS_JOUEURS[index%8];
 	}
 }
