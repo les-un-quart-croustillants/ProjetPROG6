@@ -46,6 +46,12 @@ public class Menu extends StackPane {
 		return p;
 	}
 	
+	public static void reload_css() {
+		Menu.getInstance().getStylesheets().clear();
+		Menu.getInstance().getStylesheets().add("menus.css");
+		Menu.getInstance().getStylesheets().add("banquise.css");
+	}
+	
 	private ArrayList<Joueur> create_joueurs() {
 		GameConfig gc = ConfigMenu.getInstance().create_config();
 		ArrayList<Joueur> j = new ArrayList<Joueur>();

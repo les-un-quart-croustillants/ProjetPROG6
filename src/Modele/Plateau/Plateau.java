@@ -4,13 +4,11 @@ import Modele.Plateau.Construct.Construct;
 import Modele.Plateau.Exception.BewareOfOrcasException;
 import Modele.Plateau.Exception.ItsOnlyYouException;
 import Modele.Plateau.Exception.PlateauException;
+import Modele.Plateau.Exception.PlateauFileFormatException;
 import Utils.Couple;
 import Utils.Position;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import static java.lang.Integer.max;
@@ -51,15 +49,16 @@ public class Plateau implements Serializable {
 
 	@Deprecated
 	public Plateau(int size, Construct c) {
-		this(size,1,c);
+		this(c);
 	}
 
+	@Deprecated
 	public Plateau(int size, int nb_pingouins, Construct c) {
-		this.size = size;
-		this.tab = new Cellule[size][size];
-		this.history = new LinkedList<>();
-		this.undoList = new LinkedList<>();
-		initTab(c, nb_pingouins);
+		this(c);
+	}
+
+	public Plateau(Construct c) {
+		this(c.constructTab(),new LinkedList<>(),new LinkedList<>());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,23 +127,15 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	private void initTab(Construct c, int borne) {
-		int tmp, nb_1 = 0;
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				if (!(((i % 2) == 0) && (j == (size - 1)))) {
-					tmp = c.getCellValue(i,j);
-					tab[i][j] = new Cellule(new Position(i,j), false, tmp);
-					if (tmp == 1)
-						nb_1++;
-				}
-				else {
-					tab[i][j] = new Cellule(new Position(i,j), true, 0);
-				}
-			}
-		}
-		verif_borne(borne, nb_1);
+	/**
+	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
+	 * @param nb_pingouin : equibvalent à nb_fish_1
+	 */
+	private void initTab(int nb_pingouin) {
+		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
+		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
 	}
+
 
 	private void verif_borne(int borne, int nb_1) { // TODO : add multiples bornes
 		Random r = new Random();
@@ -158,35 +149,72 @@ public class Plateau implements Serializable {
 		}
 	}
 
-	/**
-	 * wrapper for initTab(int nb_fish_1, int nb_fish_2, int nb_fish_3)
-	 * @param nb_pingouin : equibvalent à nb_fish_1
-	 */
-	private void initTab(int nb_pingouin) {
-		int nb_autres = (((size * size) - (size + 1) / 2) - nb_pingouin) / 2;
-		initTab(nb_pingouin, (nb_autres > 0)?nb_autres:0, (nb_autres > 0)?nb_autres:0);
+	private static BufferedReader openFile(String filename) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(filename));
+	}
+
+	public static Couple<Boolean, Integer> checkFileToParse(String filename) {
+		int nb_pingouins = 0,
+				ref_size = 0,
+				line_nb = 0,
+				size = 0,
+				tmp;
+		String s;
+		String[] splitted;
+		BufferedReader br;
+			try {
+				br = openFile(filename);
+				s = br.readLine();
+				if (s != null)
+					ref_size = s.split(" ").length + 1;
+				while(s != null) {
+					splitted = s.split(" ");
+					size = splitted.length + ((line_nb % 2 == 0)? 1 : 0);
+					if (size != ref_size)
+						throw new PlateauFileFormatException(filename);
+					for (int i = 0; i < size; i++) {
+						if ((line_nb % 2 != 0) || (i != size - 1)) {
+							tmp = Integer.parseInt(splitted[i]);
+							if (tmp == 1)
+								nb_pingouins++;
+						}
+					}
+					s = br.readLine();
+					line_nb++;
+				}
+			} catch (PlateauFileFormatException | IndexOutOfBoundsException | IOException | NumberFormatException e ) {
+				System.err.println(e.getMessage());
+				return new Couple<>(false, nb_pingouins);
+			}
+		return new Couple<>(true, nb_pingouins);
 	}
 
 	public static Plateau parse(String filename) throws IOException {
 		ArrayList<Cellule[]> list = new ArrayList<>();
 		Cellule[] line;
 		int line_nb = 0;
-		BufferedReader br = new BufferedReader(new FileReader(filename));
-		String s = br.readLine();
+		BufferedReader br = openFile(filename);
+		String s;
 		String[] splited;
 
-		while (s != null) {
-			splited = s.split(" ");
-			line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
-			for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
-				if ((line_nb % 2 == 0) && (i == line.length - 1)) // Gestion des fins de lignes
-					line[i] = new Cellule(new Position(line_nb,i),true,0);
-				else
-					line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
-			}
-			line_nb++;
-			list.add(line);
+		try {
 			s = br.readLine();
+			while (s != null) {
+				splited = s.split(" ");
+				line = new Cellule[splited.length + ((line_nb % 2 == 0)?1:0)];
+				for (int i = 0; i < line.length; i++) { // Construction des cellules de la ligne
+					if (((line_nb % 2 == 0) && (i == line.length - 1)) || (Integer.parseInt(splited[i]) == 0)) // Gestion des fins de lignes
+						line[i] = new Cellule(new Position(line_nb,i),true,0);
+					else
+						line[i] = new Cellule(new Position(line_nb, i),false, Integer.parseInt(splited[i]));
+				}
+				line_nb++;
+				list.add(line);
+				s = br.readLine();
+			}
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return null;
 		}
 
 		Cellule[][] tab = new Cellule[line_nb][line_nb];
@@ -539,13 +567,13 @@ public class Plateau implements Serializable {
 	 *     boolean : si on a undo la pose d'un pingouin
 	 *     couple<integer,integer> : le nombre de poissons mangés et l'id du pingouin
 	 */
-	public Couple<Boolean, Couple<Integer,Integer>> undo() {
+	public Move undo() {
 		if (history.isEmpty())
-			return new Couple<>(false, new Couple<>(-1, -1));
+			return null;
 
 		Move m = history.removeLast();
 		Position from = m.getFrom(),
-				to = m.getTo();
+		to = m.getTo();
 		boolean undoPosePingouin = from.equals(Plateau.source);
 		Pingouin pingouin = m.getPingouin();
 		int fishAte = m.getFishAte();
@@ -559,7 +587,7 @@ public class Plateau implements Serializable {
 		pingouin.mangePoisson(-1 * fishAte);
 		if (!undoPosePingouin) // Si from != (-1,-1)
 			getCellule(from).setPenguin(pingouin); // set pingouin on old cell
-		return new Couple<>(undoPosePingouin, new Couple<>(fishAte, pingouin.employeur()));
+		return m;
 	}
 
 	/**
@@ -567,22 +595,21 @@ public class Plateau implements Serializable {
 	 * @return la valeur du coup exécuté si il y'en a un,
 	 * -1 sinon
 	 */
-	public int redo() {
+	public Move redo() {
 		if (undoList.isEmpty())
-			return -1;
+			return null;
 		Move m = undoList.removeLast();
-		int res;
+
 		if (m.getFrom().equals(Plateau.source))
-			res = (poserPingouin_pr(m.getTo(),m.getPingouin())) ? 1 : -1;
+			poserPingouin_pr(m.getTo(),m.getPingouin());
 		else {
 			try {
-				res = jouer_pr(m.getFrom(), m.getTo());
+				jouer_pr(m.getFrom(), m.getTo());
 			} catch (PlateauException e) {
 				System.err.println(e.getMessage());
-				res = -1;
 			}
 		}
-		return res;
+		return m;
 	}
 
 	/**
