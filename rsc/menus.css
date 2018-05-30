@@ -144,7 +144,6 @@
 }
 
 .file_disable {
-	-fx-font-size: 16px;
 	-fx-strikethrough: true;
 	-fx-text-fill : darkred;
 }

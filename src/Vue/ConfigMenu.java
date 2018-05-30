@@ -340,8 +340,10 @@ public class ConfigMenu extends VBox {
 						tg.selectToggle(rb_config);
 						rb_load.setDisable(true);
 					}
-					else
+					else {
+						terrainChargeLbl.getStyleClass().remove("file_disable");
 						nbP1 = res.droit();
+					}
 				} else {
 					tg.selectToggle(rb_config);
 					rb_load.setDisable(true);
