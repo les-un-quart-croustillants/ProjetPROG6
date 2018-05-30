@@ -296,7 +296,30 @@ public class Plateau implements Serializable {
 		}
 		return r;
 	}
+	
+	/**
+	 * getNeighbours : récupère la liste des cases voisine de {@code p}
+	 * @param p : la position de la case courante
+	 * @return : une LinkedList de Cellule
+	 * @See Cellule
+	 */
+	public LinkedList<Position> getNeighboursSansPingouins(Position p) {
+		LinkedList<Position> r = new LinkedList<>();
+		int dec = (p.i() % 2 == 0) ? 0 : 1;
 
+		for (Position candidat: new Position[]{
+				new Position(p.i() - 1,p.j() - dec),
+				new Position(p.i() - 1,p.j() + 1 - dec),
+				new Position(p.i(),p.j() - 1),
+				new Position(p.i(),p.j() + 1),
+				new Position(p.i() + 1,p.j() - dec),
+				new Position(p.i() + 1,p.j() + 1 - dec)}) {
+			if (isInTab(candidat))
+				if (!getCellule(candidat).isDestroyed())
+					r.add(candidat);
+		}
+		return r;
+	}
 	/**
 	 * safeAdd : ajoute une position dans la liste si elle n'y est pas déjà présente,
 	 * appartient au tableau et n'est pas un obstacle (pingouins inclus ou non)
