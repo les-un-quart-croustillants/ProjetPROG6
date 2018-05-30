@@ -1,20 +1,22 @@
 package Vue;
 
-import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
-import Modele.Moteur.*;
-import Modele.Joueurs.*;
-import Modele.Plateau.*;
+import Modele.Joueurs.Joueur;
+import Modele.Joueurs.JoueurIA;
+import Modele.Joueurs.JoueurPhysique;
+import Modele.Moteur.Moteur;
+import Modele.Moteurs.MoteurApp;
+import Modele.Moteurs.MoteurApp.Action;
+import Modele.Plateau.Plateau;
 import Utils.GameConfig;
 import Vue.Donnees.Niveau;
 import Vue.Pane.GamePane;
-import Vue.Pane.ParametrePane;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.util.*;
-import javafx.event.*;
-import Modele.Moteurs.*;
-import Modele.Moteurs.MoteurApp.*;
+import java.util.ArrayList;
 
 public class Menu extends StackPane {
 	private static Menu instance = null;
@@ -45,8 +47,13 @@ public class Menu extends StackPane {
 	}
 
 	private Plateau create_plateau() {
-		Plateau p = new Plateau(ConfigMenu.getInstance().dim, ConfigMenu.getInstance().nbP1,
-				ConfigMenu.getInstance().nbP2, ConfigMenu.getInstance().nbP3);
+		Plateau p;
+		if (ConfigMenu.getInstance().rb_load.isSelected()) {
+			p = Plateau.parse(ConfigMenu.getInstance().terrainCharge.getAbsolutePath());
+		}
+		else {
+			p = new Plateau(ConfigMenu.getInstance().dim, ConfigMenu.getInstance().nbP1, ConfigMenu.getInstance().nbP2, ConfigMenu.getInstance().nbP3);
+		}
 		return p;
 	}
 

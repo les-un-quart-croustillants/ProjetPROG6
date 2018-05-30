@@ -143,6 +143,12 @@
 	-fx-image: url("3poissons.png");
 }
 
+.file_disable {
+	-fx-font-size: 16px;
+	-fx-strikethrough: true;
+	-fx-text-fill : darkred;
+}
+
 .terrain {
 	-fx-pref-width: 600px;
 }
