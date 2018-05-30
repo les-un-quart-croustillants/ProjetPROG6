@@ -634,6 +634,11 @@ public class Moteur implements Serializable {
 	}
 
 	public Couple<Position, Position> sugestion() {
-		return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id(), this.scores(false), Joueur.Difficulte.DIFFICILE);
+		if(this.currentState == State.POSER_PINGOUIN) {
+			Position p = UtilsIA.bestplace(plateau, joueurCourant().id());
+			return new Couple<Position,Position>(p,p);
+		} else {
+			return UtilsIA.jouerCoupDifficile(this.plateau, joueurCourant().id(), this.scores(false), Joueur.Difficulte.DIFFICILE);			
+		}
 	}
 }
