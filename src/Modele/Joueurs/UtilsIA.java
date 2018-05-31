@@ -729,7 +729,6 @@ public class UtilsIA {
 	 * @param d : la difficulte
 	 * @return : le couple de coups 
 	 */
-	@SuppressWarnings("unchecked")
 	public static Couple<Position,Position> jouerCoupDifficile(Plateau plateau,int id,ArrayList<ArrayList<Integer>> scores,Difficulte d) {
 		Plateau plateauclone = plateau.clone();
 		Random r = new Random();
@@ -765,8 +764,8 @@ public class UtilsIA {
 				cur = cur + 25;
 			}
 			// ajustage des heuristiques par rapport au coup courant
-			cur = cur + tableauval[c.droit().i()][c.droit().j()];
-			cur = cur + HeuristiqueCoup.calcul(cur,plateau,c , id);
+			//cur = cur + tableauval[c.droit().i()][c.droit().j()];
+			//cur = cur + HeuristiqueCoup.calcul(cur,plateau,c , id);
 			
 
 			//recuperation de la meilleure heuristique 

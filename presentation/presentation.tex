@@ -12,7 +12,7 @@
 % notice. 
 
 \documentclass{beamer}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage{graphicx}
 \graphicspath{ {./image/} }
 
@@ -223,7 +223,7 @@ Deux piles:
 \begin{block}{}
 \begin{itemize}
  \item<1-> le plus proche possible des bancs de poissons
- \item<2-> en evitant les bords autant que p
+ \item<2-> en evitant les bords autant que possible
  \item<3-> en essayant de bloquer l'ennemi autant que possible
  \item<4-> en essayant de ne pas coller tout ses poissons
 \end{itemize}
@@ -239,96 +239,99 @@ Deux piles:
 \end{block}
 \end{frame}
 
-\begin{frame}{}
-\begin{block}{Spécificité de notre MinMax}
-\begin{itemize}
- \item{
-  \includegraphics[scale=0.4]{IA4}}
-\end{itemize}
-\end{block}
-\end{frame}
 
 
-\subsection{Evaluation des coups à venir}
+\subsection{Évaluation des feuilles}
+
 \begin{frame}{}
-\begin{block}{}
+\begin{block}{Cas favorables}
 \begin{itemize}
- \item<1-> Bloquer un pingouin ennemi
- \item<2-> \includegraphics[scale=0.1]{IA5}
- \item<3-> \includegraphics[scale=0.1]{IA6}
+ \item<1-> Isoler un pingouin ennemi.
+ \item<2-> Isoler tout les pingouins ennemis sur une îles suffisamment petite pour qu'il ne puisse pas gagner en fonction du score courant.
+ \item<3-> Si la partie est finie et que notre score est le plus élevé.
 \end{itemize}
 \end{block}
 \end{frame}
 
 \begin{frame}{}
-\begin{block}{}
+\begin{block}{Cas défavorables}
 \begin{itemize}
- \item<1-> Ne pas se faire bloquer un pingouin
- \item<2-> Ne pas condamner un pingouin
- \item<3-> \includegraphics[scale=0.09]{IA7}
- \item<4-> \includegraphics[scale=0.09]{IA8}
+ \item<1-> Avoir un pingouin isolé.
+ \item<2-> Avoir tout nos pingouins isolés sur une île trop petit pour pouvoir gagner.
+ \item<3-> Une grande île sans pingouins dessus.
+ \item<4-> Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour qu'ils s'assurent la victoire.
+ \item<5-> Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour qu'ils s'assurent la victoire.
 \end{itemize}
 \end{block}
 \end{frame}
 
-\begin{frame}{}
-\begin{block}{Evaluation des feuilles}
-\begin{itemize}
- \item<1-> On essaie de ne pas laisser de trop grande partie de banquise à un pingouin ennemi seul
- \item<2-> On essai de s'isoler sur une grande partie de banquise
- \item<3-> On évite de laisser des grandes îles sans aucun Pingouins dessus.
- \item<4-> Si la partie est finie et que notre score est le plus élevé, on renvoie 
-une heuristique maximale.
- \item<5-> Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour s'assurer la victoire, on renvoie une heuristique minimale.
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}{}
-\begin{block}{}
-\begin{itemize}
- \item{ \includegraphics[scale=0.4]{IA9}}
-\end{itemize}
-\end{block}
-\end{frame}
+\subsection{Fin de partie}
 
 \begin{frame}{}
 \begin{block}{Fin de partie}
 \begin{itemize}
-  \item{On fait un parcours Eulérien}
+  \item<1->{On fait un parcours Hamiltonien sur chaque île}
+  \item<1->{Si c'est impossible, on essaie au moins de ne pas le briser}
 \end{itemize}
 \end{block}
 \end{frame}
-
 
 \subsection{Améliorations}
 \begin{frame}{}
 \begin{block}{Améliorations possibles}
 \begin{itemize}
- \item<1-> Multi-threader le calcul de l’arbre
+ \item<1-> Multi-Threader le calcul de l’arbre
  \item<2-> Faire en sorte que l’IA difficile puisse changer de stratégie selon la situation
- \item<3-> Optimiser le calcul du parcours Eulérien
-\end{itemize}
-\end{block}
-\begin{block}{Améliorations testées et abandonnées}
-\begin{itemize}
- \item<1-> Multi-threader le calcul de l’arbre
- \item<2-> Faire en sorte que l’IA difficile puisse changer de stratégie selon la situation
- \item<3-> Calculer la profondeur a calculer de façon dynamique, pour chaque branches
+ \item<3-> Optimiser le calcul du parcours Hamiltonien
 \end{itemize}
 \end{block}
 \end{frame}
 
-\subsection{Testes}
+\begin{frame}{}
+\begin{block}{Améliorations testées et abandonnées}
+\begin{itemize}
+ \item<1-> Utiliser MinMax pour calculer le parcours Hamiltonien. 
+ \item<2-> Calculer la profondeur a calculer de façon dynamique, pour chaque branches.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{Tests}
 \begin{frame}{}
 \begin{block}{}
 \begin{itemize}
- \item<1-> \includegraphics[scale=0.2]{IA10}
- \item<2-> \includegraphics[scale=0.2]{IA11}
+
+ \item<1->{
+ \tiny
+ \textbf{\textit{Facile(Bleu) vs Difficile(Rouge) sur différents plateaux.}}
+ \newline
+ \includegraphics[scale=0.14]{IA10}
+}
+
+ \item<2->{ 
+  \tiny
+ \textbf{\textit{Facile(Bleu) vs Moyenne(Rouge) sur différents plateaux.}}
+ \newline
+ \includegraphics[scale=0.14]{IA11}
+ }
 \end{itemize}
 \end{block}
 \end{frame}
 
+
+\begin{frame}{}
+\begin{block}{}
+\begin{itemize}
+
+ \item<1->{
+ \tiny
+ \textbf{\textit{Humain(Bleu) vs Difficile(Rouge)}}
+ \newline
+ \includegraphics[scale=0.20]{IA12}
+}
+\end{itemize}
+\end{block}
+\end{frame}
 
 \subsection{Another Subsection}
 
