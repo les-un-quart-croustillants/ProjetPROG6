@@ -191,17 +191,26 @@
 \subsection{fonctionnalités}
 \begin{frame}{}
 \begin{block}<1->{Défaire/Refaire} %C'est l'undo-rados
+Une classe Move pour stocker un coup \newline
 Deux piles: 
 \begin{itemize}
- \item historique des coups faits 
- \item historique des coups annulés
+ \item historique des coups faits (défaire)
+ \item historique des coups annulés (refaire)
 \end{itemize}
-Et une classe Move pour stocker un coup
 \end{block}
 \begin{block}<2->{Sauvegarde/Chargement}
 \begin{itemize}
 \item Complet
 \item Non modifiables (donnée sérialisée)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{block}{autres}
+\begin{itemize}
+\item<1-> Intelligence artificielle sur un thread à part
+\item<2-> Tests JUnit
 \end{itemize}
 \end{block}
 \end{frame}
