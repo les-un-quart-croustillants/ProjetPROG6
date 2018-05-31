@@ -12,7 +12,7 @@
 % notice. 
 
 \documentclass{beamer}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage{graphicx}
 \graphicspath{ {./image/} }
 
@@ -54,7 +54,7 @@
 % A subtitle is optional and this may be deleted
 \subtitle{Pingouins}
 
-\author{A.~Castel \and C.~Eymond-Laritaz \and G.~Sorin \and L.~Soret \and T.~Vandendorpe \and P.~Reboul}
+\author{A.~Castel \and C.~Eymond Laritaz \and G.~Sorin \and L.~Soret \and T.~Vandendorpe \and P.~Reboul}
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -119,8 +119,87 @@
 
 \subsection{Menu}
 
+<<<<<<< HEAD
+\begin{frame}{Les menus}
+  \begin{block}{Identification des besoins principaux}
+	\begin{itemize}
+	\item <1-> Creer une partie rapide (avec les règles de base)
+	\item <2-> Naviguer entre les différents menus (boutons quitter, retour au menu précédent)
+  	\end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{}
+  \begin{block}{Identification des besoins secondaires}
+	\begin{itemize}
+	\item <1-> Pouvoir charger une partie précédemment sauvegardée
+	\item <2-> Pouvoir jouer sur des terrains personnalisés
+	\item <3-> Configurer et modifier les règles du jeu avant une partie
+  	\end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{}
+  \begin{block}<1->{Contraintes d'ergonomie}
+	\begin{itemize}
+	\item <1-> Lancer une partie en deux clics ou moins
+	\item <2-> Pouvoir facilement configurer les règles du jeu si on recherche une expérience de jeu plus avancée
+  	\end{itemize}
+  \end{block}
+  \begin{block}<3->{Configurations des règles}
+	\begin{itemize}
+	\item <3-> Supprimer et rajouter des joueurs
+	\item <4-> Changer le type des joueurs (IA/Humain)
+	\item <5-> Changer le nombre de pingouins de chaque joueur individuellement
+	\item <6-> Changer la proportion de cases à un, deux ou trois poissons
+	\item <7-> Changer les dimensions du plateau de jeu
+  	\end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Tests d'IHM}
+  \begin{block}{Déroulé}
+	\begin{itemize}
+	\item <1-> Objectifs donnés aux testés
+	\item <2-> Mesure de leur capacité/facilité à remplir les objectifs
+	\end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{De la maquette à la version finale}
+  \begin{block}<1->{Maquette de début de projet}
+	\begin{itemize}
+	\item <1-> Disposition et apparence des menus
+	\item <2-> Présence des options qui peuvent vraisemblablement se trouver dans le jeu final
+	\item <3-> Maquette intéractive (LibreOffice Impress)
+  	\end{itemize}
+  \end{block}
+  \begin{example}<4->{Retours de tests d'IHM}
+    \begin{itemize}
+	\item <4-> Interface claire et lisible
+	\item <5-> Placement des boutons intuitif
+	\end{itemize}
+  \end{example}
+\end{frame}
+
+\begin{frame}{De la maquette à la version finale}
+  \begin{block}<1->{IHM de fin de projet}
+	\begin{itemize}
+	\item <1-> Implémentation de la maquette en tenant compte des retours
+	\item <2-> Supression des fonctionnalités superflues
+	\item <3-> Ajout de fonctionnalités importantes (chargement de terrains...)
+  	\end{itemize}
+  \end{block}
+  \begin{example}<4->{Retours de tests d'IHM}
+    \begin{itemize}
+	\item <4-> Interface claire et lisible
+	\item <5-> Logique des menus cohérente
+	\end{itemize}
+  \end{example}
+=======
 \begin{frame}{}{Optional Subtitle}
 TODO
+>>>>>>> 72988a5b8e8d29d62a40fc2403ecfcfd3aa764e3
 \end{frame}
 
 \subsection{Scene de jeu}
@@ -136,6 +215,12 @@ TODO
     \item <4-> Que peut faire le joueur?
     \end{itemize}
   \end{block}
+\end{frame}
+
+\begin{frame}{Evolution}
+    \begin{center}
+      \includegraphics[scale=0.25]{ancienPlateau}
+    \end{center}
 \end{frame}
 
 \begin{frame}{}
