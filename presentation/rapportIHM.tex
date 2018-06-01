@@ -117,8 +117,51 @@ Nous avons souhaité qu'un joueur puisse constamment savoir qu'elle action il do
 Nous avons choisi de placer les boutons non essentiels au jeu au même endroit qu'on peut les trouver dans d'autre logiciel, afin de ne pas trop changer les habitudes des utilisateurs. Nous avons donc le undo/redo en haut à gauche et les paramètres en haut à droite. Voici quelques remarques interessantes concernant ces options:
 
 \begin{itemize}
-\item Boutons grisés: Certains des boutons peuvent parfois ne pas être activable, ils sont donc grisé dans ce cas.
+\item Boutons grisés: Certains des boutons peuvent parfois ne pas être activables, ils sont alors grisés. C'est les cas des boutons undo/redo lorqu'on est à une extrémité de l'historique par exemple.
+
+\item Distance par rapport au plateau: On nous alerté de la distance au plateau des boutons undo/redo lors des audits IHM pour minimiser le déplacement de souris. Nous n'avons pas souhaité les rapprocher, bien que nous ayons un peu augmenté la taille tu plateau depuis. Nous justifions ce choix par:
+  \begin {enumerate}
+  \item cela ne semblait pas poser de problème lors des tests utilisateurs
+  \item nous pensons que le nombre de fois où un joueur utilise undo/redo dans une partie n'est pas assez important pour justifier une place trop prèt du plateau
+  \item trop prèt du plateau, ces boutons peuvent devenir génants (lors d'un miss clic par exemple)
+  \end{enumerate}
+
+\item Bouton paramètre: lorsqu'on clique sur ce bouton, un petit menu apparaît en haut à droite de la fenêtre. Ce petit menu apparaîssait autrefois au centre, mais nous l'avons déplacé pour minimiser le déplacement de souris.
+  \\
+  \\
+\begin{minipage}{0.3\linewidth}
+ % \begin{center}
+    \includegraphics[width=4cm]{image/parametres.png}    
+    % \end{center}
+\end{minipage}\hfill
+\begin{minipage}{0.7\linewidth}
+    Les boutons ``sauvegarder''/''charger'' ouvre une fenêtre de choix de fichier. Le bouton ``quitter'' ouvre une fenêtre de confirmation pour éviter que la fenêtre de se ferme trop brutalement (remarques issues des tests utilisateurs).
+  \end{minipage}
 \end{itemize}
+
+\section{Retour tests utilisateurs}
+(VOIR ANNEXE pour une fiche d'exemple d'évaluation d'utilisateur)
+On peut catégoriser les retours des tests utilisateurs en 2 parties.
+\begin{itemize}
+\item Les retours attendus, qui correspondent aux questions/actions qu'on voulait tester et qui étaient préalablement écrites dans les feuilles utilisées pour évaluer l'utilisateur.
+\item Les remarques et comportements des  utilisateurs.
+\end{itemize}
+
+\subsection{Les retour attendus}
+Nous avons demandé au utilisateurs d'effectuer certaines actions, et nous avons coché ``echec'', ``facile'', ``moyen'' ou  ``difficile'' en fonction de la réussite de l'utilisateur. Nous avons ensuite pu déterminer où concentrer nos efforts sur l'application.
+
+Nous avons construit un graphique (fournis en annexe), en attribuant une valeur(entre 0 et 3) à la réussite de l'utilisateur. Sur ce graphique, nous pouvons voir que nous avons dû retravailler l'indication du joueur courant et des scores, ainsi que la configuration d'une partie
+
+\subsection{Les remarques et comportements des utilisateurs}
+Nous avons aussi appris beaucoup en écoutant et en observant les utilisateurs, sur des choses auquelles nous n'avions pas pensées ou qui ne s'adaptaient pas au questionnaire précédent:
+\begin{itemize}
+\item Afficher le nombre de pingouins restant à la phase de pose
+\item Gérer les delais entre chaque tour
+\item Certaines couleurs de joueurs étaient peu visibles
+\item Ne pas quitter la partie trop brutalement lorsqu'on clique sur ``quitter''
+\item Le temps pour trouver les éléments cliquable est diminué si ces éléments sont mis en évidence dynamiquement (clignotement, fleche en mouvement, changement d'affichage lors du passage de la souris)
+\end{itemize}
+
 
 \part*{ANNEXES}
 
@@ -188,6 +231,18 @@ Nous avons choisi de placer les boutons non essentiels au jeu au même endroit q
  Si A1 et A2 se sont renommés dans le menu de configuration en effectuant un clic droit sur "HUMAIN", ils pourront partager leurs performances avec une capture d'écran pour montrer que l'un joue mieux que son ami. \\
  Si l'un des amis joue mieux que l'autre, ils peuvent, par le même procédé que celui décrit dans le scénario précédent, permettre à l'un de poser plus de pingouins que l'autre en début de partie pour ainsi rééquilibrer leur rapport de force et ainsi rester amis.} \\
  \hline
- \end{tabular}
+\end{tabular}
+
+\newpage
+\begin{center}
+  \includegraphics[width=12cm]{image/testut.jpg}
+  \\
+  Exemple d'une fiche utilisée pour évaluer un utilisateur
+  \\
+  \vspace{1cm}
+  \includegraphics[width=15cm]{image/graphIHM.png}
+  \\
+  Pourcentage de réussite de tous les utilisateurs sur les actions demandées. (La réussite est une valeur entre 0 à 3 pour ``echec'',''difficile'',''moyen'',''facile'')
+\end{center}
 
 \end{document}
