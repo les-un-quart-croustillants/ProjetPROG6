@@ -64,7 +64,7 @@ Dans le cadre de la conception de notre interface graphique, nous avons imaginé
 %\vspace{0.7cm}
 
 \chapter{Scene de jeu}
-La scène de jeu se décompose en 4 parties principales: la plateau, les scores, la panneau d'information, les paramètres/options.
+La scène de jeu se décompose en 4 parties principales: la plateau, les scores, la panneau d'informations, les paramètres/options.
 
 \begin{center}
   \includegraphics[width=10cm]{image/plateauIHM.png}
@@ -77,7 +77,7 @@ Le plateau est évidemment l'élément pincipal, c'est pourquoi c'est l'élémen
 nous avons constaté que les joueurs, lors de la première utilisation du jeu, comprennent mieux les éléments intéractifs si ces derniers sont dynamiques (clignotement, mouvement, ...). Voici comment nous avons mis en évidence les actions possibles au différentes phases du jeu.
 
 \begin{itemize}
-\item Poser un pingouin: mise en évidence des cases à 1 poissons lors de la phase de pose des pingouins. La couleur de la case est de la couleur du joueur courant et clignote pour signaler un objet avec lequel on peut interragir.
+\item Poser un pingouin: mise en évidence des cases à un poisson lors de la phase de pose des pingouins. La couleur de la case est de la couleur du joueur courant et clignote pour signaler un objet avec lequel on peut interragir.
 
   \begin{center}
     \includegraphics[width=1.5cm]{image/bloc_simple.png}    
@@ -87,7 +87,7 @@ nous avons constaté que les joueurs, lors de la première utilisation du jeu, c
     bloc non cliquable \hspace{0.5cm} bloc cliquable
   \end{center}
 
-\item Selectionner un pingouin: les pingouins sont tous identifiés par des ronds de la couleur de son joueur en dessous de lui. Nous avons ensuite rajouté une flèche sur les pingouins déplaçable du joueur courant. Ces flèches bouge indiquant qu'on peut intéragir avec le pingouin.
+\item Selectionner un pingouin: les pingouins sont tous identifiés par des ronds de la couleur de son joueur en dessous de lui. Nous avons ensuite rajouté une flèche sur les pingouins déplaçable du joueur courant. Ces flèches bougent indiquant qu'on peut intéragir avec le pingouin.
   \begin{center}
     \includegraphics[width=1.5cm]{image/bloc_pingouin.png}    
   \end{center}
@@ -97,21 +97,21 @@ nous avons constaté que les joueurs, lors de la première utilisation du jeu, c
     \includegraphics[width=4cm]{image/case_select_dest.png}    
   \end{center}
 
-\item Déplacement des pingouins: lorsqu'on joue contre l'IA, il est important de montrer au joueur l'action qu'est en train de faire l'IA. Nous avons optez pour une animation lors du déplacement, les contraintes étaient d'avoir une animation visible, mais aussi rapide car si le jeu devient trop lent, il devient ennuyant pour l'utilisateur. Ainsi lorsque le pingouin de l'IA s'apprète à bouger, il s'enflamme, puis se téléporte à sa case destinnation en laissant une trainée de flammes derrière lui.
+\item Déplacement des pingouins: lorsqu'on joue contre l'IA, il est important de montrer au joueur l'action qu'est en train de faire l'IA. Nous avons optez pour une animation lors du déplacement, les contraintes étaient d'avoir une animation visible, mais aussi rapide car si le jeu devient trop lent, il devient ennuyeux pour l'utilisateur. Ainsi lorsque le pingouin de l'IA s'apprète à bouger, il s'enflamme, puis se téléporte à sa case destinnation en laissant une trainée de flammes derrière lui.
   \begin{center}
     \includegraphics[width=8cm]{image/pingouin_deplacement.png}    
   \end{center}
-  Nous avons géré le delai de l'animation en fonction des retours utilisateurs, lors des tests IHM, nous avons testé plusieurs delais et pris celui qui convenait satisfaisait le plus le plus de joueurs.
+  Nous avons géré le delai de l'animation en fonction des retours utilisateurs, lors des tests IHM, nous avons testé plusieurs delais et pris celui qui convenait le plus de joueurs.
 \end{itemize}
 
 \section{Panneau des scores}
-Le joueurs doit connaître plusieurs information concernant l'état courant du jeu. Le panneau des scores en bas de la scène regroupe le nom des joueurs, leurs scores (nombre de poissons mangés), ainsi que le nombre de pingouin qu'il reste à poser (lors de la phase de pose des pingouins). On se sert également de ce panneau pour indiquer le joueur courant à l'aide d'une flêche, bien que nous nous somme rendu compte que les utilisateurs regarde plutôt les informations du plateau (flèche au dessus des pingouins) pour savoir qui doit jouer.
+Le joueurs doit connaître plusieurs informationd concernant l'état courant du jeu. Le panneau des scores en bas de la scène regroupe le nom des joueurs, leurs scores (nombre de poissons mangés), ainsi que le nombre de pingouins qu'il reste à poser (lors de la phase de pose des pingouins). On se sert également de ce panneau pour indiquer le joueur courant à l'aide d'une flêche, bien que nous nous sommes rendus compte que les utilisateurs regardent plutôt les informations du plateau (flèche au dessus des pingouins) pour savoir qui doit jouer.
   \begin{center}
     \includegraphics[width=8cm]{image/tableau_scores.png}    
   \end{center}
 
 \section{Panneau d'information}
-Nous avons souhaité qu'un joueur puisse constamment savoir qu'elle action il doit faire (même s'il ne connait pas les règles du jeu). C'est pourquoi, en plus d'avoir des éléments dynamique sur le plateau l'insitant à intéragir, il existe aussi un panneau informant de ce que doit faire le joueur: ``Poser un pingouin'', ``Selectionner un pingouin'', ``Selectionner une destinnation'', ``Attendre son tour''. Au fil des tests utilisateurs, nous avons dû augmenter la taille du panneau afin de le mettre plus en évidence. En effet nous avons pu constater que tous les utilisateurs n'ont pas le réflex de lire alors que ce panneau peut être important lors des premières parties d'un joueur.
+Nous avons souhaité qu'un joueur puisse constamment savoir qu'elle action il doit faire (même s'il ne connait pas les règles du jeu). C'est pourquoi, en plus d'avoir des éléments dynamiques sur le plateau l'insitant à intéragir, il existe aussi un panneau informant de ce que doit faire le joueur: ``Poser un pingouin'', ``Selectionner un pingouin'', ``Selectionner une destinnation'', ``Attendre son tour''. Au fil des tests utilisateurs, nous avons dû augmenter la taille du panneau afin de le mettre plus en évidence. En effet nous avons pu constater que tous les utilisateurs n'ont pas le réflex de lire alors que ce panneau peut être important lors des premières parties d'un joueur.
 
 \section{Paramètres et options}
 Nous avons choisi de placer les boutons non essentiels au jeu au même endroit qu'on peut les trouver dans d'autre logiciel, afin de ne pas trop changer les habitudes des utilisateurs. Nous avons donc le undo/redo en haut à gauche et les paramètres en haut à droite. Voici quelques remarques interessantes concernant ces options:
@@ -119,11 +119,11 @@ Nous avons choisi de placer les boutons non essentiels au jeu au même endroit q
 \begin{itemize}
 \item Boutons grisés: Certains des boutons peuvent parfois ne pas être activables, ils sont alors grisés. C'est les cas des boutons undo/redo lorqu'on est à une extrémité de l'historique par exemple.
 
-\item Distance par rapport au plateau: On nous alerté de la distance au plateau des boutons undo/redo lors des audits IHM pour minimiser le déplacement de souris. Nous n'avons pas souhaité les rapprocher, bien que nous ayons un peu augmenté la taille tu plateau depuis. Nous justifions ce choix par:
+\item Distance par rapport au plateau: On nous a alerté de la distance au plateau des boutons undo/redo lors des audits IHM pour minimiser le déplacement de souris. Nous n'avons pas souhaité les rapprocher, bien que nous ayons un peu augmenté la taille du plateau depuis. Nous justifions ce choix par:
   \begin {enumerate}
-  \item cela ne semblait pas poser de problème lors des tests utilisateurs
+  \item cela ne semblait pas poser de problèmes lors des tests utilisateurs
   \item nous pensons que le nombre de fois où un joueur utilise undo/redo dans une partie n'est pas assez important pour justifier une place trop prèt du plateau
-  \item trop prèt du plateau, ces boutons peuvent devenir génants (lors d'un miss clic par exemple)
+  \item trop prêt du plateau, ces boutons peuvent devenir génants (lors d'un miss clic par exemple)
   \end{enumerate}
 
 \item Bouton paramètre: lorsqu'on clique sur ce bouton, un petit menu apparaît en haut à droite de la fenêtre. Ce petit menu apparaîssait autrefois au centre, mais nous l'avons déplacé pour minimiser le déplacement de souris.
@@ -135,7 +135,7 @@ Nous avons choisi de placer les boutons non essentiels au jeu au même endroit q
     % \end{center}
 \end{minipage}\hfill
 \begin{minipage}{0.7\linewidth}
-    Les boutons ``sauvegarder''/''charger'' ouvre une fenêtre de choix de fichier. Le bouton ``quitter'' ouvre une fenêtre de confirmation pour éviter que la fenêtre de se ferme trop brutalement (remarques issues des tests utilisateurs).
+    Les boutons ``sauvegarder''/''charger'' ouvrent une fenêtre de choix de fichier. Le bouton ``quitter'' ouvre une fenêtre de confirmation pour éviter que la fenêtre ne se ferme trop brutalement (remarques issues des tests utilisateurs).
   \end{minipage}
 \end{itemize}
 
@@ -150,10 +150,10 @@ On peut catégoriser les retours des tests utilisateurs en 2 parties.
 \subsection{Les retour attendus}
 Nous avons demandé au utilisateurs d'effectuer certaines actions, et nous avons coché ``echec'', ``facile'', ``moyen'' ou  ``difficile'' en fonction de la réussite de l'utilisateur. Nous avons ensuite pu déterminer où concentrer nos efforts sur l'application.
 
-Nous avons construit un graphique (fournis en annexe), en attribuant une valeur(entre 0 et 3) à la réussite de l'utilisateur. Sur ce graphique, nous pouvons voir que nous avons dû retravailler l'indication du joueur courant et des scores, ainsi que la configuration d'une partie
+Nous avons construit un graphique (fourni en annexe), en attribuant une valeur (entre 0 et 3) à la réussite de l'utilisateur. Sur ce graphique, nous pouvons voir que nous avons dû retravailler l'indication du joueur courant et des scores, ainsi que la configuration d'une partie.
 
 \subsection{Les remarques et comportements des utilisateurs}
-Nous avons aussi appris beaucoup en écoutant et en observant les utilisateurs, sur des choses auquelles nous n'avions pas pensées ou qui ne s'adaptaient pas au questionnaire précédent:
+Nous avons aussi appris beaucoup en écoutant et en observant les utilisateurs, sur des choses auxquelles nous n'avions pas pensées ou qui ne s'adaptaient pas au questionnaire précédent:
 \begin{itemize}
 \item Afficher le nombre de pingouins restant à la phase de pose
 \item Gérer les delais entre chaque tour
@@ -176,7 +176,7 @@ Nous avons aussi appris beaucoup en écoutant et en observant les utilisateurs, 
 \end{itemize} }\\
  \hline
  Scenario & \parbox{13cm}{ E souhaite faire une partie. Il n'a aucune idée de l'existence d'une fonction pour modifier la configuration du jeu, ni ne connaît les règles. Sa connaissance de la langue française lui permet d'inférer que le bouton "NOUVELLE PARTIE" en évidence le rapproche de son objectif: démarrer une partie. \\
- Il arrive sur un panneau où il trouve trois boutons, "Config." en petit, "JOUER" en plus gros, et "Retour" en petit à nouveau. Il clique naturellement sur le bouton "JOUER", et la partie avec les règles de base se lance, à savoir 4 joueurs, dont le joueur humain qui commence, avec chacun deux pingouins. Il ne connaît pas les règles et a la présence d'esprit de regarder les éléments d'interface à sa disposition. Il tombe sur un court texte lui décrivant les actions qu'il peut faire à tout moment. En suivant les indications, il parvient à terminer sa première partie.} \\
+ Il arrive sur un panneau où il trouve trois boutons, "Config." en petit, "JOUER" en plus gros, et "Retour" en petit à nouveau. Il clique naturellement sur le bouton "JOUER", et la partie avec les règles de bases se lance, à savoir 4 joueurs, avec le joueur humain qui commence, avec chacun deux pingouins. Il ne connaît pas les règles et a la présence d'esprit de regarder les éléments d'interface à sa disposition. Il tombe sur un court texte lui décrivant les actions qu'il peut faire à tout moment. En suivant les indications, il parvient à terminer sa première partie.} \\
  \hline
  \end{tabular}
 
