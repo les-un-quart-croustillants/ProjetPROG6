@@ -23,38 +23,34 @@
 \maketitle{}
 \tableofcontents
 \chapter{Introduction}
-Le jeu Pingouin est un jeu à somme nulle où un certain nombre de joueurs s'affrontent à tour de rôles. Une IA difficile peut donc utiliser un algorithme de type MinMax pour évaluer les coups possibles.Pour créer l'IA la plus efficace possible, nous avons identifié quatre grandes phases de jeu lors du déroulement de chaque parties :
+Le jeu Pingouin est un jeu à somme nulle où un certain nombre de joueurs s'affrontent à tour de rôles. Une IA difficile peut donc utiliser un algorithme de type MinMax pour évaluer les coups possibles. Pour créer l'IA la plus efficace possible, nous avons identifié trois grandes phases de jeu lors du déroulement de chaque parties :
 
 -Le placement des pingouins en début de partie sur les cases à un poisson.
 
--Les déplacements en début de partie, lorsque l'algorithme MinMax ne calcule pas assez de coups à l'avance pour différencier avec pertinence les différents coups possibles.
-
--Après plusieurs coups, où les coups d'avance que calcule le MinMax sont 
-suffisants pour évaluer la qualité d'un coup.
+-Le déplacement des pingouins tout au long de la partie .
 
 -La fin de partie, où les pingouins sont seuls sur des îles et qu'il faut faire le parcours le plus avantageux.
-Nous allons donc détailler ici comment son gérées ces différentes phases dans notre IA difficile, et comment sont utilisés des parties de l'IA difficile pour créer des IA plus simples.
+Nous allons donc détailler ici comment sont gérées ces différentes phases dans notre IA difficile, et comment sont utilisés des parties de l'IA difficile pour créer des IA plus simples.
 \chapter{IA Difficile}
-Notre IA difficile à une stratégie bien définie, à la fois maximiser le nombre de poissons récupérés et faire des îles, soit pour enfermer les pingouins ennemis, soit pour s'assurer une grande quantité de poissons en fin de parti\setlength{\topmargin}{0cm}
-e.
+Notre IA difficile a une stratégie bien définie, à la fois maximiser le nombre de poissons récupérés et faire des îles, soit pour enfermer les pingouins ennemis, soit pour s'assurer une grande quantité de poissons en fin de partie.
 Pour ce faire, nous avons utilisé un algorithme de type MinMax avec élagage Alpha-Beta.
-\section{Placement en debut de partie}
+\section{Placement en début de partie}
 En début de partie, il n'est possible de se placer que sur des cases contenant un seul poisson, nous calculons donc une valeur heuristique sur toutes les cases contenant un seul poisson, et notre pingouin est placé sur la case ayant la valeur la plus élevée.
-Ces valeurs sont calculées en fonction du nombre de cases a trois poissons voisines accessibles. 
+Ces valeurs sont calculées en fonction du nombre de cases à trois poissons voisines accessibles. 
 \newline
-On prend aussi en compte que placer un pingouin sur un bord de la carte n'est pas une bonne idée (encore moins dans un coin), ainsi que du fait qu'il faut éviter de mettre tout ses pingouins dans la même zone de la carte.
+On prend aussi en compte que placer un pingouin sur un bord de la carte n'est pas une bonne idée (encore moins dans un coin), ainsi que du fait qu'il faut éviter de mettre l'intégralité de ses pingouins dans la même zone de la carte.
 \newline
 On prend aussi en compte le placement des pingouins ennemis, car on tente de les priver du plus grand nombre de cases possible.
 
 
 \section{Heuristique}
-Nous évaluons les feuilles de l'arbre, donc nous évaluons le résultat de l'exécution d'un certain nombre de coups sur le plateau initial.
+Nous évaluons les feuilles de l'arbre, c'est à dire le résultat de l'exécution d'un certain nombre de coups sur le plateau initial.
 \newline
 
 \vspace{0.3cm}
 \textbf{Valeurs calculées sur les feuilles :}
 \newline
-Les heuristiques sur les feuilles sont calculés en fonction des îles présentes sur le plateau de jeu, et sur les scores des différents joueurs.
+Les valeurs heuristiques sur les feuilles sont calculées en fonction des îles présentes sur le plateau de jeu, et sur les scores des différents joueurs.
 \newline
 On calcule la liste des îles, et on évalue chacune d'entre elles en fonction du nombre de poissons qu'elle contient ainsi que du nombre de pingouins alliés et ennemis qu'elle contient.
 \newline
@@ -72,14 +68,14 @@ En particulier,
 \newline
 -Ne pas se faire isoler un pingouin sur un bout de banquise.
 \newline
--On évite de laisser des grandes îles sans aucun pingouins dessus. 
+-Éviter de laisser des grandes îles sans aucun pingouins dessus. 
 \newline
--Si la partie est finie et que notre score est le plus élevé, on renvoie une heuristique maximale.
+-Si la partie est finie et que notre score est le plus élevé, on renvoie une valeur maximale.
 \newline
--Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour s'assurer la victoire, on renvoie une heuristique minimale.
+-Si un ou plusieurs pingouins ennemis sont isolés sur une île suffisamment grande pour s'assurer la victoire, on renvoie une valeur minimale.
 \newline
 \newline
-Lorsque deux fils de la racine ont deux valeurs heuristiques identiques, et que cette heuristique est la plus grande, les fils sont départagés en fonction du coup qu'il représentent, dans le but de choisir le coup le plus avantageux directement. 
+Lorsque deux fils de la racine ont deux valeurs heuristiques identiques, et que cette valeur est la plus grande, les fils sont départagés en fonction du coup qu'il représentent, dans le but de choisir le coup le plus avantageux directement. 
 \vspace{0.3cm}
 
 \section{Fin de partie}
@@ -90,14 +86,14 @@ Pour ce faire, on calcule un parcours Hamiltonien sur l'île. La complexité pou
 
 \chapter{IA facile et IA moyenne}
 \section{IA facile}
-L'IA facile se comporte comme l'IA difficile pour la première phase de jeu, mais sa stratégie est très différente, elle n'est pas aléatoire mais essaie de récupérer le plus de poissons possibles en un minimum de coups, elle récupère donc rapidement beaucoup de points, mais elle ne priorise pas forcement le fait de bloquer un ennemi.
+L'IA facile se comporte comme l'IA difficile pour la première phase de jeu, mais sa stratégie est très différente. Elle n'est pas aléatoire mais essaie de récupérer le plus de poissons possibles en un minimum de coups, elle récupère donc rapidement beaucoup de points, mais elle ne priorise pas forcement le fait de bloquer un ennemi.
 Cela donne une IA qui n'est pas très performante quand il y a peu de pingouins pour beaucoup de cases, mais une IA très correcte lorsque la tendance s'inverse.
 \newline
 L'IA facile ne calcule pas de parcours Hamiltonien lorsqu'un pingouin est seul sur une île, et les pingouins seuls sur des îles peuvent être  déplacés. 
 
 \section{IA moyenne}
 L'IA moyenne est basée sur l'IA difficile, sauf qu'elle calcule une partie de l'arbre inférieure à l'IA difficile, et par conséquent elle anticipe moins et ses coups sont parfois moins bons.
-Dans cette IA, les pingouins seuls sur des îles ne sont déplacés, et en fin de partie on tente de maximiser le nombre de poissons récupérés sur les îles.
+Dans cette IA, les pingouins seuls sur des îles ne sont pas déplacés, et en fin de partie on tente de maximiser le nombre de poissons récupérés sur les îles où un pingouin allié est seul.
 
 
 \chapter{Changements possibles}
@@ -117,30 +113,30 @@ Dans cette IA, les pingouins seuls sur des îles ne sont déplacés, et en fin d
 \chapter{Résultats}
 \section{Graphiques}
 \begin{center}
-  \includegraphics[width=11.5cm]{graph1.png}
+  \includegraphics[width=11.5cm]{image/IA10.png}
   \newline
 \textbf{\textit{Facile(bleu) vs Difficile(Rouge) sur différents plateaux.}}
   \newline
   
-  \includegraphics[width=11.5cm]{graph2.png}
+  \includegraphics[width=11.5cm]{image/IA11.png}
   \newline
 \textbf{\textit{Facile(Bleu) vs Moyenne(Rouge) sur différents plateaux.}}
-  \includegraphics[width=18cm]{graph3.png}
+  \includegraphics[width=18cm]{image/IA12.png}
   \newline
-\textbf{\textit{Humain(Bleu) vs Difficile(Rouge)}}
+\textbf{\textit{Humain(Gris) vs Difficile(Rouge)}}
 \end{center}
 
 
 \section{Interpretation}
 
-Nous pouvons voir que les IA respectent assez bien la hiérarchie difficile > moyenne > facile entre elles. 
-Les parties représentées dans ces graphiques représentent des parties à deux joueurs avec 4 pingouins, les tendances sont exactement les mêmes si on modifie le nombre de pingouins par joueurs.
+Nous pouvons voir que les IA respectent assez bien la hiérarchie "difficile > moyenne > facile" entre elles. 
+Les parties représentées dans ces graphiques représentent des parties à deux joueurs avec quatre pingouins. Les tendances sont exactement les mêmes si on modifie le nombre de pingouins par joueurs.
 Cette hiérarchie est aussi assez bien respectée lors des parties avec un nombre de joueurs supérieur à deux, mais vu que nous nous sommes concentrés en priorité sur les parties à deux joueurs, il existe des anomalies que nous n'avons pas eu le temps de résoudre.
 \newline
-Par exemple, une partie à quatre joueurs, avec 3 IA difficiles et une IA facile sur un plateau de taille standard sera souvent remportée par l'IA facile, simplement car sa stratégie est bien supérieure à celles des IA difficiles dans cette situation.
+Par exemple, une partie à quatre joueurs, avec trois IA difficiles et une IA facile sur un plateau de taille standard sera souvent remportée par l'IA facile, simplement car sa stratégie est bien supérieure à celles des IA difficiles dans cette situation.
 \newline
-Pour ce qui est des tests contre des humains, nous avons choisit différents profils; des gens qui n'avait jamais joué au jeu auparavant, et des joueurs expérimentés.
-Les résultats sont assez différents en fonction du type de joueur, les joueurs expérimentés gagnent en général contre l'IA difficile, mais ce sont tout de mêmes des parties assez serrées.
+Pour ce qui est des tests contre des humains, nous avons choisi différents profils; des gens qui n'avait jamais joué au jeu auparavant, et des joueurs expérimentés.
+Les résultats sont assez différents en fonction du type de joueur, les joueurs expérimentés gagnent en général contre l'IA difficile, mais ce sont tout de même des parties assez serrées.
 Les joueurs débutant quant à eux, perdent une grande majorité du temps.
 
 
